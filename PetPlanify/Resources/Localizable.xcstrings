@@ -1,0 +1,169 @@
+{
+  "sourceLanguage" : "es",
+  "strings" : {
+    "¡Buenos días!" : {
+
+    },
+    "%@ · %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "Acompaña sus rutinas y celebra cada nuevo aprendizaje." : {
+
+    },
+    "Actividad hoy" : {
+
+    },
+    "Adecuada" : {
+
+    },
+    "Ajustes" : {
+
+    },
+    "Alegre" : {
+
+    },
+    "Alimentación" : {
+
+    },
+    "Anota detalles cotidianos que quieras recordar." : {
+
+    },
+    "Así va el día de Neo" : {
+
+    },
+    "Cena" : {
+
+    },
+    "Desayuno completado" : {
+
+    },
+    "Descanso" : {
+
+    },
+    "Entrenamiento" : {
+
+    },
+    "Estable" : {
+
+    },
+    "Estado de ánimo" : {
+
+    },
+    "Estamos preparando este espacio" : {
+
+    },
+    "Evolución" : {
+
+    },
+    "Evolución del peso" : {
+
+    },
+    "Evolución del peso de Neo" : {
+
+    },
+    "Galería" : {
+
+    },
+    "Guarda aquí sus mejores momentos y recuerdos." : {
+
+    },
+    "Hidratación" : {
+
+    },
+    "Imagen de perfil de Neo" : {
+
+    },
+    "Inicio" : {
+
+    },
+    "Más" : {
+
+    },
+    "Mes" : {
+
+    },
+    "Neo" : {
+
+    },
+    "Neo, teckel, 3 años" : {
+
+    },
+    "Notas" : {
+
+    },
+    "Observa cómo cambian su peso, actividad y bienestar." : {
+
+    },
+    "Organiza sus comidas, cantidades y hábitos de alimentación." : {
+
+    },
+    "Paseo y juego" : {
+
+    },
+    "Pasos hoy" : {
+
+    },
+    "Personaliza PetPlanify y la información de Neo." : {
+
+    },
+    "Peso" : {
+
+    },
+    "Peso actual" : {
+
+    },
+    "Peso estable; valor actual 6,8 kilogramos" : {
+
+    },
+    "Pronto podrás organizar esta parte del cuidado de Neo de una forma sencilla y tranquila." : {
+
+    },
+    "Próxima cita veterinaria" : {
+
+    },
+    "Próxima comida" : {
+
+    },
+    "Rango saludable: 6,5–7,5 kg" : {
+
+    },
+    "Recordatorios" : {
+
+    },
+    "Resumen rápido" : {
+
+    },
+    "Reúne el seguimiento de salud y las próximas visitas veterinarias." : {
+
+    },
+    "Revisión general" : {
+
+    },
+    "Salud" : {
+
+    },
+    "Teckel · 3 años" : {
+
+    },
+    "Ten presentes las tareas importantes para cuidar de Neo." : {
+
+    },
+    "Todo lo importante sobre Neo, de un vistazo." : {
+
+    },
+    "Última comida" : {
+
+    },
+    "Últimos seis meses" : {
+
+    }
+  },
+  "version" : "1.0"
+}

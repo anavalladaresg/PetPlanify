@@ -27,7 +27,6 @@ struct MobileAppShell: View {
         NavigationStack {
             FeatureDestinationView(section: section)
                 .navigationTitle(section.title)
-                .navigationBarTitleDisplayMode(.inline)
         }
         .tabItem {
             Label(section.title, systemImage: section.icon)
@@ -63,4 +62,3 @@ private struct MoreView: View {
         .navigationTitle("Más")
     }
 }
-

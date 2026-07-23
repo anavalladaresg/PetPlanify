@@ -25,6 +25,8 @@ struct MacAppShell: View {
                 .id(selection)
         }
         .navigationSplitViewStyle(.balanced)
+        .tint(AppTheme.green)
+        .frame(minWidth: 900, minHeight: 650)
         .accessibilityIdentifier("navigation.mac")
     }
 }
@@ -52,4 +54,3 @@ private struct NeoSidebarProfile: View {
         .accessibilityIdentifier("profile.neo")
     }
 }
-
