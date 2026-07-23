@@ -32,6 +32,36 @@
     "Alimentación" : {
 
     },
+    "Alimento actual" : {
+
+    },
+    "Alimento anterior" : {
+
+    },
+    "Alimento diario (g)" : {
+
+    },
+    "Alimento seco" : {
+
+    },
+    "Calorías aprox." : {
+
+    },
+    "Cambios recientes del plan de Neo" : {
+
+    },
+    "Cantidad diaria" : {
+
+    },
+    "Cerrar" : {
+
+    },
+    "Comidas" : {
+
+    },
+    "Completada el %@" : {
+
+    },
     "Anota detalles cotidianos que quieras recordar." : {
 
     },
@@ -41,6 +71,9 @@
     "Cena" : {
 
     },
+    "Desayuno" : {
+
+    },
     "Desayuno completado" : {
 
     },
@@ -48,6 +81,12 @@
 
     },
     "Entrenamiento" : {
+
+    },
+    "Editar plan" : {
+
+    },
+    "El plan diario de Neo, organizado con calma." : {
 
     },
     "Estable" : {
@@ -69,6 +108,12 @@
 
     },
     "Galería" : {
+
+    },
+    "Historial de alimentos" : {
+
+    },
+    "Horario de comidas" : {
 
     },
     "Guarda aquí sus mejores momentos y recuerdos." : {
@@ -116,6 +161,9 @@
     "Peso" : {
 
     },
+    "Peso (kg)" : {
+
+    },
     "Peso actual" : {
 
     },
@@ -131,6 +179,18 @@
     "Próxima comida" : {
 
     },
+    "Periodo del gráfico" : {
+
+    },
+    "Plan actual" : {
+
+    },
+    "Plan anterior" : {
+
+    },
+    "Progreso de la transición" : {
+
+    },
     "Rango saludable: 6,5–7,5 kg" : {
 
     },
@@ -138,6 +198,15 @@
 
     },
     "Resumen rápido" : {
+
+    },
+    "Rango saludable" : {
+
+    },
+    "Relación entre peso y alimentación" : {
+
+    },
+    "Relación entre peso y alimentación de Neo" : {
 
     },
     "Reúne el seguimiento de salud y las próximas visitas veterinarias." : {
@@ -152,16 +221,40 @@
     "Teckel · 3 años" : {
 
     },
+    "Seguimiento local con datos de ejemplo" : {
+
+    },
     "Ten presentes las tareas importantes para cuidar de Neo." : {
 
     },
     "Todo lo importante sobre Neo, de un vistazo." : {
 
     },
+    "Transición de alimento" : {
+
+    },
     "Última comida" : {
 
     },
     "Últimos seis meses" : {
+
+    },
+    "Ver historial" : {
+
+    },
+    "Ver historial de alimentos" : {
+
+    },
+    "Desde %@" : {
+
+    },
+    "%lld al día" : {
+
+    },
+    "La edición se añadirá más adelante. Por ahora, este panel utiliza datos de ejemplo y no guarda cambios." : {
+
+    },
+    "Muestra el peso en kilogramos y la cantidad diaria de alimento en gramos durante el periodo seleccionado" : {
 
     }
   },
