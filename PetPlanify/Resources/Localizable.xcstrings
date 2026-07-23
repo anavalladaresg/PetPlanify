@@ -768,6 +768,234 @@
     },
     "Vista previa sin almacenamiento" : {
 
+    },
+    "%@, %@, categoría %@, %@" : {
+
+    },
+    "%lld trucos" : {
+
+    },
+    "1 truco" : {
+
+    },
+    "Abre el detalle del hito" : {
+
+    },
+    "Actividad" : {
+
+    },
+    "Actividad diaria" : {
+
+    },
+    "Actividad diaria media de Neo" : {
+
+    },
+    "Actividad media" : {
+
+    },
+    "Actividad registrada" : {
+
+    },
+    "Cambia el periodo mostrado en los gráficos" : {
+
+    },
+    "Cambio de rutina" : {
+
+    },
+    "Cambio en 6 meses" : {
+
+    },
+    "Categoría" : {
+
+    },
+    "Comenzó el plan de ejemplo con dos comidas diarias de 120 g." : {
+
+    },
+    "Consulta veterinaria registrada en el historial de salud." : {
+
+    },
+    "Contexto" : {
+
+    },
+    "Dato manual" : {
+
+    },
+    "Datos registrados manualmente" : {
+
+    },
+    "Desde el registro anterior" : {
+
+    },
+    "De 7,3 kg en enero a 6,8 kg en junio. Rango saludable registrado: 6,5 a 7,5 kg." : {
+
+    },
+    "Descripción" : {
+
+    },
+    "Detalle del hito" : {
+
+    },
+    "Diferencia del periodo" : {
+
+    },
+    "El peso es un registro de seguimiento y no sustituye la valoración veterinaria." : {
+
+    },
+    "Entrenamiento este mes" : {
+
+    },
+    "Este hito utiliza datos de ejemplo y no contiene una valoración automática." : {
+
+    },
+    "Filtrar hitos" : {
+
+    },
+    "Fin" : {
+
+    },
+    "Hito" : {
+
+    },
+    "Hitos" : {
+
+    },
+    "Hitos recientes" : {
+
+    },
+    "Inicio del plan de alimentación actual" : {
+
+    },
+    "La actividad mostrada es un registro descriptivo y no establece una cantidad ideal." : {
+
+    },
+    "La media registrada cambia de 24 minutos al día en enero a 35 minutos al día en junio." : {
+
+    },
+    "Los trucos dominados registrados cambian de uno en enero a cuatro en junio." : {
+
+    },
+    "Media de junio" : {
+
+    },
+    "Media de minutos al día" : {
+
+    },
+    "Mejor respuesta al ver otros perros" : {
+
+    },
+    "Mes más activo" : {
+
+    },
+    "Minutos" : {
+
+    },
+    "Muestra hitos de una categoría" : {
+
+    },
+    "No hay hitos en esta categoría." : {
+
+    },
+    "Observación personal" : {
+
+    },
+    "Paseo prolongado registrado como parte de su actividad cotidiana." : {
+
+    },
+    "Paseos este mes" : {
+
+    },
+    "Periodo de evolución" : {
+
+    },
+    "Peso registrado y rango saludable de referencia" : {
+
+    },
+    "Peso registrado: 7,3 kg" : {
+
+    },
+    "Primer paseo largo de primavera" : {
+
+    },
+    "Primer registro de peso incluido en este periodo de seguimiento." : {
+
+    },
+    "Progreso de entrenamiento" : {
+
+    },
+    "Progreso registrado" : {
+
+    },
+    "Rango inferior" : {
+
+    },
+    "Rango superior" : {
+
+    },
+    "Referencia registrada" : {
+
+    },
+    "Registro de junio" : {
+
+    },
+    "Registro local de la evolución de Neo" : {
+
+    },
+    "Registros mensuales" : {
+
+    },
+    "Respondió mejor al aumentar la distancia y mantener una sesión tranquila." : {
+
+    },
+    "Revisión general y vacunación anual registradas en el seguimiento de Neo." : {
+
+    },
+    "Revisión veterinaria anual" : {
+
+    },
+    "Seguimiento veterinario" : {
+
+    },
+    "Según datos registrados" : {
+
+    },
+    "Selección" : {
+
+    },
+    "Sin valoración asociada" : {
+
+    },
+    "Suma de ejemplo" : {
+
+    },
+    "Todos" : {
+
+    },
+    "Trucos dominados" : {
+
+    },
+    "Trucos dominados por mes" : {
+
+    },
+    "Una mirada serena a los cambios registrados de Neo." : {
+
+    },
+    "Último registro" : {
+
+    },
+    "Último registro manual" : {
+
+    },
+    "último año" : {
+
+    },
+    "último mes" : {
+
+    },
+    "últimos 3 meses" : {
+
+    },
+    "últimos 6 meses" : {
+
     }
   },
   "version" : "1.0"

@@ -7,24 +7,21 @@ PetPlanify is a native SwiftUI companion for organizing the everyday care of a p
 - Xcode 27
 - iOS 27 or macOS 27
 
-Open `PetPlanify.xcodeproj` in Xcode and run the shared `PetPlanify` scheme on an
-iPhone simulator or on My Mac.
+Open `PetPlanify.xcodeproj` in Xcode and run the shared `PetPlanify` scheme on
+My Mac. iPhone validation is intentionally reserved for the final
+physical-device testing phase.
 
 Unsigned command-line builds:
 
 ```sh
 xcodebuild -project PetPlanify.xcodeproj -scheme PetPlanify \
   -destination "platform=macOS" CODE_SIGNING_ALLOWED=NO build
-
-xcodebuild -project PetPlanify.xcodeproj -scheme PetPlanify \
-  -destination "platform=iOS Simulator,name=<available-iPhone>,OS=27.0" \
-  CODE_SIGNING_ALLOWED=NO build
 ```
 
 The application currently includes adaptive navigation and completed `Inicio`,
-`Alimentación`, `Salud`, and `Entrenamiento` dashboards backed by mock data. The
-remaining care sections are clean placeholders. Persistence and cloud features
-are intentionally out of scope for now.
+`Alimentación`, `Salud`, `Entrenamiento`, and `Evolución` dashboards backed by
+mock data. `Recordatorios`, `Notas`, and `Ajustes` remain clean placeholders.
+Persistence and cloud features are intentionally out of scope for now.
 
 GitHub is intentionally used as lightweight source control and remote backup:
 normal development happens directly on `main` with small descriptive commits.
