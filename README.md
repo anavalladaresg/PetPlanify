@@ -22,9 +22,9 @@ xcodebuild -project PetPlanify.xcodeproj -scheme PetPlanify \
 ```
 
 The application currently includes adaptive navigation and completed `Inicio`,
-`Alimentación`, and `Salud` dashboards backed by mock data. The remaining care
-sections are clean placeholders. Persistence and cloud features are
-intentionally out of scope for now.
+`Alimentación`, `Salud`, and `Entrenamiento` dashboards backed by mock data. The
+remaining care sections are clean placeholders. Persistence and cloud features
+are intentionally out of scope for now.
 
 GitHub is intentionally used as lightweight source control and remote backup:
 normal development happens directly on `main` with small descriptive commits.

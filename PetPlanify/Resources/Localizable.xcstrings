@@ -4,6 +4,9 @@
     "¡Buenos días!" : {
 
     },
+    "%@ – %@" : {
+
+    },
     "%@ · %@" : {
       "localizations" : {
         "es" : {
@@ -14,10 +17,74 @@
         }
       }
     },
+    "%@, %@, %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "%@, %@, %@, %@" : {
+
+    },
+    "%@, %@, %@, actualizado el %@" : {
+
+    },
+    "%@, %@, intensidad %@, %@, %@" : {
+
+    },
+    "%@, %@" : {
+
+    },
+    "%@, %@, %@, etiquetas %@, %@" : {
+
+    },
+    "%@, %lld minutos, %@, trucos %@" : {
+
+    },
+    "%@, %@, %lld %%, última práctica %@" : {
+
+    },
+    "%lld min" : {
+
+    },
+    "%lld minutos" : {
+
+    },
+    "%lld %%" : {
+
+    },
+    "%lld al día" : {
+
+    },
+    "•" : {
+
+    },
+    "Abre los detalles de la observación" : {
+
+    },
+    "Abre los detalles de la vacuna" : {
+
+    },
+    "Abre los detalles de la visita" : {
+
+    },
+    "Abre los metadatos del documento" : {
+
+    },
     "Acompaña sus rutinas y celebra cada nuevo aprendizaje." : {
 
     },
     "Actividad hoy" : {
+
+    },
+    "Activo" : {
+
+    },
+    "Actualizado el %@" : {
 
     },
     "Adecuada" : {
@@ -32,8 +99,21 @@
     "Alimentación" : {
 
     },
+    "Alimento" : {
+
+    },
     "Alimento actual" : {
 
+    },
+    "Alimento actual, %@, marca %@, %@, desde %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Alimento actual, %1$@, marca %2$@, %3$@, desde %4$@"
+          }
+        }
+      }
     },
     "Alimento anterior" : {
 
@@ -42,6 +122,24 @@
 
     },
     "Alimento seco" : {
+
+    },
+    "Añadir documento" : {
+
+    },
+    "Añadir registro" : {
+
+    },
+    "Anota detalles cotidianos que quieras recordar." : {
+
+    },
+    "Antiparasitario interno" : {
+
+    },
+    "Así va el día de Neo" : {
+
+    },
+    "Calendario de vacunas" : {
 
     },
     "Calorías aprox." : {
@@ -53,22 +151,31 @@
     "Cantidad diaria" : {
 
     },
+    "Cena" : {
+
+    },
     "Cerrar" : {
+
+    },
+    "Clínica" : {
+
+    },
+    "Clínica VetSalud" : {
+
+    },
+    "Cobertura registrada" : {
 
     },
     "Comidas" : {
 
     },
+    "Completada" : {
+
+    },
     "Completada el %@" : {
 
     },
-    "Anota detalles cotidianos que quieras recordar." : {
-
-    },
-    "Así va el día de Neo" : {
-
-    },
-    "Cena" : {
+    "Consulta digestiva" : {
 
     },
     "Desayuno" : {
@@ -80,22 +187,58 @@
     "Descanso" : {
 
     },
-    "Entrenamiento" : {
+    "Desde %@" : {
+
+    },
+    "Detalle de observación" : {
+
+    },
+    "Detalle de vacuna" : {
+
+    },
+    "Detalle de visita" : {
+
+    },
+    "Documentos" : {
 
     },
     "Editar plan" : {
 
     },
+    "El almacenamiento de documentos estará disponible más adelante." : {
+
+    },
+    "El historial de bienestar de Neo, claro y ordenado." : {
+
+    },
+    "El historial permanece disponible como referencia." : {
+
+    },
     "El plan diario de Neo, organizado con calma." : {
+
+    },
+    "Entrenamiento" : {
 
     },
     "Estable" : {
 
     },
+    "Estado" : {
+
+    },
     "Estado de ánimo" : {
 
     },
+    "Estado: %@" : {
+
+    },
     "Estamos preparando este espacio" : {
+
+    },
+    "Este elemento representa metadatos de ejemplo. No hay ningún archivo almacenado." : {
+
+    },
+    "Estos registros son observaciones personales y no sustituyen la valoración de un profesional veterinario." : {
 
     },
     "Evolución" : {
@@ -107,31 +250,85 @@
     "Evolución del peso de Neo" : {
 
     },
+    "Fecha" : {
+
+    },
+    "Finalizado" : {
+
+    },
     "Galería" : {
-
-    },
-    "Historial de alimentos" : {
-
-    },
-    "Horario de comidas" : {
 
     },
     "Guarda aquí sus mejores momentos y recuerdos." : {
 
     },
+    "Heces blandas" : {
+
+    },
     "Hidratación" : {
+
+    },
+    "Historial de alimentos" : {
+
+    },
+    "Historial de medicamentos" : {
+
+    },
+    "Horario de comidas" : {
 
     },
     "Imagen de perfil de Neo" : {
 
     },
+    "Información de la visita veterinaria" : {
+
+    },
+    "Información local de ejemplo" : {
+
+    },
     "Inicio" : {
+
+    },
+    "Intensidad" : {
+
+    },
+    "La creación y el almacenamiento de registros estarán disponibles más adelante. Esta versión utiliza únicamente datos de ejemplo." : {
+
+    },
+    "La edición se añadirá más adelante. Por ahora, este panel utiliza datos de ejemplo y no guarda cambios." : {
+
+    },
+    "Leve" : {
 
     },
     "Más" : {
 
     },
+    "Medicamento" : {
+
+    },
+    "Medicamentos" : {
+
+    },
+    "Medicamentos actuales" : {
+
+    },
     "Mes" : {
+
+    },
+    "Metadatos del documento" : {
+
+    },
+    "Moquillo y parvovirus" : {
+
+    },
+    "Moquillo, parvovirus y hepatitis" : {
+
+    },
+    "Motivo" : {
+
+    },
+    "Muestra el peso en kilogramos y la cantidad diaria de alimento en gramos durante el periodo seleccionado" : {
 
     },
     "Neo" : {
@@ -140,10 +337,28 @@
     "Neo, teckel, 3 años" : {
 
     },
+    "No hay medicamentos activos" : {
+
+    },
+    "Nombre" : {
+
+    },
     "Notas" : {
 
     },
     "Observa cómo cambian su peso, actividad y bienestar." : {
+
+    },
+    "Observación" : {
+
+    },
+    "Observación personal registrada" : {
+
+    },
+    "Observado durante el paseo de la mañana." : {
+
+    },
+    "Observado durante un día." : {
 
     },
     "Organiza sus comidas, cantidades y hábitos de alimentación." : {
@@ -153,6 +368,12 @@
 
     },
     "Pasos hoy" : {
+
+    },
+    "Periodo" : {
+
+    },
+    "Periodo del gráfico" : {
 
     },
     "Personaliza PetPlanify y la información de Neo." : {
@@ -170,16 +391,7 @@
     "Peso estable; valor actual 6,8 kilogramos" : {
 
     },
-    "Pronto podrás organizar esta parte del cuidado de Neo de una forma sencilla y tranquila." : {
-
-    },
-    "Próxima cita veterinaria" : {
-
-    },
-    "Próxima comida" : {
-
-    },
-    "Periodo del gráfico" : {
+    "Picor en las orejas" : {
 
     },
     "Plan actual" : {
@@ -188,232 +400,28 @@
     "Plan anterior" : {
 
     },
+    "Polivalente y rabia" : {
+
+    },
     "Progreso de la transición" : {
 
     },
-    "Rango saludable: 6,5–7,5 kg" : {
-
-    },
-    "Recordatorios" : {
-
-    },
-    "Resumen rápido" : {
-
-    },
-    "Rango saludable" : {
-
-    },
-    "Relación entre peso y alimentación" : {
-
-    },
-    "Relación entre peso y alimentación de Neo" : {
-
-    },
-    "Reúne el seguimiento de salud y las próximas visitas veterinarias." : {
-
-    },
-    "Revisión general" : {
-
-    },
-    "Salud" : {
-
-    },
-    "Teckel · 3 años" : {
-
-    },
-    "Seguimiento local con datos de ejemplo" : {
-
-    },
-    "Ten presentes las tareas importantes para cuidar de Neo." : {
-
-    },
-    "Todo lo importante sobre Neo, de un vistazo." : {
-
-    },
-    "Transición de alimento" : {
-
-    },
-    "Última comida" : {
-
-    },
-    "Últimos seis meses" : {
-
-    },
-    "Ver historial" : {
-
-    },
-    "Ver historial de alimentos" : {
-
-    },
-    "Desde %@" : {
-
-    },
-    "%lld al día" : {
-
-    },
-    "La edición se añadirá más adelante. Por ahora, este panel utiliza datos de ejemplo y no guarda cambios." : {
-
-    },
-    "Muestra el peso en kilogramos y la cantidad diaria de alimento en gramos durante el periodo seleccionado" : {
-
-    },
-    "Abre los detalles de la observación" : {
-
-    },
-    "Abre los detalles de la vacuna" : {
-
-    },
-    "Abre los detalles de la visita" : {
-
-    },
-    "Abre los metadatos del documento" : {
-
-    },
-    "Activo" : {
-
-    },
-    "Actualizado el %@" : {
-
-    },
-    "Antiparasitario interno" : {
-
-    },
-    "Añadir documento" : {
-
-    },
-    "Añadir registro" : {
-
-    },
-    "Calendario de vacunas" : {
-
-    },
-    "Clínica" : {
-
-    },
-    "Clínica VetSalud" : {
-
-    },
-    "Cobertura registrada" : {
-
-    },
-    "Completada" : {
-
-    },
-    "Consulta digestiva" : {
-
-    },
-    "Detalle de observación" : {
-
-    },
-    "Detalle de vacuna" : {
-
-    },
-    "Detalle de visita" : {
-
-    },
-    "Documentos" : {
-
-    },
-    "El almacenamiento de documentos estará disponible más adelante." : {
-
-    },
-    "El historial de bienestar de Neo, claro y ordenado." : {
-
-    },
-    "El historial permanece disponible como referencia." : {
-
-    },
-    "Estado" : {
-
-    },
-    "Estado: %@" : {
-
-    },
-    "Este elemento representa metadatos de ejemplo. No hay ningún archivo almacenado." : {
-
-    },
-    "Estos registros son observaciones personales y no sustituyen la valoración de un profesional veterinario." : {
-
-    },
-    "Fecha" : {
-
-    },
-    "Finalizado" : {
-
-    },
-    "Heces blandas" : {
-
-    },
-    "Historial de medicamentos" : {
-
-    },
-    "Información de la visita veterinaria" : {
-
-    },
-    "Información local de ejemplo" : {
-
-    },
-    "Intensidad" : {
-
-    },
-    "La creación y el almacenamiento de registros estarán disponibles más adelante. Esta versión utiliza únicamente datos de ejemplo." : {
-
-    },
-    "Leve" : {
-
-    },
-    "Medicamento" : {
-
-    },
-    "Medicamentos" : {
-
-    },
-    "Medicamentos actuales" : {
-
-    },
-    "Metadatos del documento" : {
-
-    },
-    "Moquillo y parvovirus" : {
-
-    },
-    "Moquillo, parvovirus y hepatitis" : {
-
-    },
-    "Motivo" : {
-
-    },
-    "No hay medicamentos activos" : {
-
-    },
-    "Nombre" : {
-
-    },
-    "Observación" : {
-
-    },
-    "Observación personal registrada" : {
-
-    },
-    "Observado durante el paseo de la mañana." : {
-
-    },
-    "Observado durante un día." : {
-
-    },
-    "Periodo" : {
-
-    },
-    "Picor en las orejas" : {
-
-    },
-    "Polivalente y rabia" : {
+    "Pronto podrás organizar esta parte del cuidado de Neo de una forma sencilla y tranquila." : {
 
     },
     "Próxima" : {
 
     },
+    "Próxima cita veterinaria" : {
+
+    },
+    "Próxima comida" : {
+
+    },
     "Próxima vacuna" : {
+
+    },
+    "Próxima vacuna: %@, %@, %@, %@" : {
 
     },
     "Próxima visita" : {
@@ -425,22 +433,52 @@
     "Puppy" : {
 
     },
+    "Rango saludable" : {
+
+    },
+    "Rango saludable: 6,5–7,5 kg" : {
+
+    },
+    "Recordatorios" : {
+
+    },
     "Refuerzo puppy" : {
 
     },
     "Registro de vacunación de Neo" : {
 
     },
-    "Resumen" : {
+    "Relación entre peso y alimentación" : {
+
+    },
+    "Relación entre peso y alimentación de Neo" : {
 
     },
     "Resuelto" : {
+
+    },
+    "Resumen" : {
+
+    },
+    "Resumen rápido" : {
+
+    },
+    "Reúne el seguimiento de salud y las próximas visitas veterinarias." : {
 
     },
     "Revisión anual" : {
 
     },
     "Revisión anual y vacunación" : {
+
+    },
+    "Revisión general" : {
+
+    },
+    "Salud" : {
+
+    },
+    "Seguimiento local con datos de ejemplo" : {
 
     },
     "Segundo refuerzo puppy" : {
@@ -455,13 +493,256 @@
     "Tamaño" : {
 
     },
+    "Teckel · 3 años" : {
+
+    },
+    "Ten presentes las tareas importantes para cuidar de Neo." : {
+
+    },
     "Tipo" : {
+
+    },
+    "Todo lo importante sobre Neo, de un vistazo." : {
+
+    },
+    "Transición de alimento" : {
 
     },
     "Tratamientos anteriores registrados" : {
 
     },
+    "Última actualización" : {
+
+    },
+    "Última comida" : {
+
+    },
+    "Últimos seis meses" : {
+
+    },
     "Vacuna" : {
+
+    },
+    "Abre el detalle de la nota" : {
+
+    },
+    "Abre el detalle de la sesión" : {
+
+    },
+    "Abre el detalle del truco" : {
+
+    },
+    "Abre una vista previa para añadir un truco" : {
+
+    },
+    "Abre una vista previa para registrar una sesión" : {
+
+    },
+    "Agua" : {
+
+    },
+    "Algunas distracciones" : {
+
+    },
+    "Ayer" : {
+
+    },
+    "Añadir truco" : {
+
+    },
+    "Buena concentración" : {
+
+    },
+    "Concentración" : {
+
+    },
+    "Confianza" : {
+
+    },
+    "Detalle de la nota" : {
+
+    },
+    "Detalle de la sesión" : {
+
+    },
+    "Detalle del truco" : {
+
+    },
+    "Dominado" : {
+
+    },
+    "Dominados" : {
+
+    },
+    "Duración" : {
+
+    },
+    "Déjalo" : {
+
+    },
+    "El registro de sesiones estará disponible más adelante. Esta vista previa no inicia un temporizador ni guarda información." : {
+
+    },
+    "En progreso" : {
+
+    },
+    "En trabajo" : {
+
+    },
+    "Estas notas son observaciones personales y no sustituyen la valoración de un educador canino o profesional veterinario." : {
+
+    },
+    "Etiquetas" : {
+
+    },
+    "Fecha y hora" : {
+
+    },
+    "Hoy" : {
+
+    },
+    "Inseguridad cerca del agua" : {
+
+    },
+    "La creación y el almacenamiento de trucos estarán disponibles más adelante. Esta versión utiliza únicamente datos de ejemplo." : {
+
+    },
+    "Mantuvo la posición durante varios segundos con una distracción leve." : {
+
+    },
+    "Mejor respuesta a “quieto”" : {
+
+    },
+    "Mejora" : {
+
+    },
+    "Minutos esta semana" : {
+
+    },
+    "Minutos registrados" : {
+
+    },
+    "Mostró incomodidad al acercarse a la orilla. Se evitó forzar el contacto." : {
+
+    },
+    "Neo se excita al ver perros grandes y quiere acercarse. Mejoró al aumentar la distancia y usar premios de alto valor." : {
+
+    },
+    "Notas de comportamiento" : {
+
+    },
+    "Nunca" : {
+
+    },
+    "Observación personal sobre Neo" : {
+
+    },
+    "Otros perros" : {
+
+    },
+    "Paseo" : {
+
+    },
+    "Paseo y entrenamiento" : {
+
+    },
+    "Pequeños avances que fortalecen la rutina de Neo." : {
+
+    },
+    "Por empezar" : {
+
+    },
+    "Premios" : {
+
+    },
+    "Premios y elogios" : {
+
+    },
+    "Progreso" : {
+
+    },
+    "Progreso de entrenamiento de Neo" : {
+
+    },
+    "Progreso mantenido" : {
+
+    },
+    "Progreso: %lld %%" : {
+
+    },
+    "Quieto" : {
+
+    },
+    "Reactividad al ver otros perros" : {
+
+    },
+    "Recompensa" : {
+
+    },
+    "Registrar sesión" : {
+
+    },
+    "Registro de ejemplo" : {
+
+    },
+    "Registro local de ejemplo" : {
+
+    },
+    "Repeticiones correctas" : {
+
+    },
+    "Sentado" : {
+
+    },
+    "Sesiones" : {
+
+    },
+    "Sesiones breves y consistentes ayudan a mantener la concentración de Neo." : {
+
+    },
+    "Sesiones recientes" : {
+
+    },
+    "Sesión corta" : {
+
+    },
+    "Tipo de sesión" : {
+
+    },
+    "Toca" : {
+
+    },
+    "Truco" : {
+
+    },
+    "Trucos" : {
+
+    },
+    "Trucos aprendidos" : {
+
+    },
+    "Trucos practicados" : {
+
+    },
+    "Trucos totales" : {
+
+    },
+    "Título" : {
+
+    },
+    "Ven aquí" : {
+
+    },
+    "Ver todas las notas" : {
+
+    },
+    "Ver todas las sesiones" : {
+
+    },
+    "Última práctica" : {
+
+    },
+    "Últimas sesiones" : {
 
     },
     "Vacunación anual" : {
@@ -473,10 +754,13 @@
     "Vacunas completadas" : {
 
     },
-    "Ver todos" : {
+    "Ver historial" : {
 
     },
-    "Vista previa sin almacenamiento" : {
+    "Ver historial de alimentos" : {
+
+    },
+    "Ver todos" : {
 
     },
     "Visitas" : {
@@ -485,25 +769,7 @@
     "Visitas veterinarias" : {
 
     },
-    "Última actualización" : {
-
-    },
-    "%@ – %@" : {
-
-    },
-    "%@, %@, %@, %@" : {
-
-    },
-    "%@, %@, %@, actualizado el %@" : {
-
-    },
-    "%@, %@, intensidad %@, %@, %@" : {
-
-    },
-    "Próxima vacuna: %@, %@, %@, %@" : {
-
-    },
-    "•" : {
+    "Vista previa sin almacenamiento" : {
 
     }
   },
