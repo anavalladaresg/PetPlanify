@@ -256,6 +256,255 @@
     },
     "Muestra el peso en kilogramos y la cantidad diaria de alimento en gramos durante el periodo seleccionado" : {
 
+    },
+    "Abre los detalles de la observación" : {
+
+    },
+    "Abre los detalles de la vacuna" : {
+
+    },
+    "Abre los detalles de la visita" : {
+
+    },
+    "Abre los metadatos del documento" : {
+
+    },
+    "Activo" : {
+
+    },
+    "Actualizado el %@" : {
+
+    },
+    "Antiparasitario interno" : {
+
+    },
+    "Añadir documento" : {
+
+    },
+    "Añadir registro" : {
+
+    },
+    "Calendario de vacunas" : {
+
+    },
+    "Clínica" : {
+
+    },
+    "Clínica VetSalud" : {
+
+    },
+    "Cobertura registrada" : {
+
+    },
+    "Completada" : {
+
+    },
+    "Consulta digestiva" : {
+
+    },
+    "Detalle de observación" : {
+
+    },
+    "Detalle de vacuna" : {
+
+    },
+    "Detalle de visita" : {
+
+    },
+    "Documentos" : {
+
+    },
+    "El almacenamiento de documentos estará disponible más adelante." : {
+
+    },
+    "El historial de bienestar de Neo, claro y ordenado." : {
+
+    },
+    "El historial permanece disponible como referencia." : {
+
+    },
+    "Estado" : {
+
+    },
+    "Estado: %@" : {
+
+    },
+    "Este elemento representa metadatos de ejemplo. No hay ningún archivo almacenado." : {
+
+    },
+    "Estos registros son observaciones personales y no sustituyen la valoración de un profesional veterinario." : {
+
+    },
+    "Fecha" : {
+
+    },
+    "Finalizado" : {
+
+    },
+    "Heces blandas" : {
+
+    },
+    "Historial de medicamentos" : {
+
+    },
+    "Información de la visita veterinaria" : {
+
+    },
+    "Información local de ejemplo" : {
+
+    },
+    "Intensidad" : {
+
+    },
+    "La creación y el almacenamiento de registros estarán disponibles más adelante. Esta versión utiliza únicamente datos de ejemplo." : {
+
+    },
+    "Leve" : {
+
+    },
+    "Medicamento" : {
+
+    },
+    "Medicamentos" : {
+
+    },
+    "Medicamentos actuales" : {
+
+    },
+    "Metadatos del documento" : {
+
+    },
+    "Moquillo y parvovirus" : {
+
+    },
+    "Moquillo, parvovirus y hepatitis" : {
+
+    },
+    "Motivo" : {
+
+    },
+    "No hay medicamentos activos" : {
+
+    },
+    "Nombre" : {
+
+    },
+    "Observación" : {
+
+    },
+    "Observación personal registrada" : {
+
+    },
+    "Observado durante el paseo de la mañana." : {
+
+    },
+    "Observado durante un día." : {
+
+    },
+    "Periodo" : {
+
+    },
+    "Picor en las orejas" : {
+
+    },
+    "Polivalente y rabia" : {
+
+    },
+    "Próxima" : {
+
+    },
+    "Próxima vacuna" : {
+
+    },
+    "Próxima visita" : {
+
+    },
+    "Próximo cuidado" : {
+
+    },
+    "Puppy" : {
+
+    },
+    "Refuerzo puppy" : {
+
+    },
+    "Registro de vacunación de Neo" : {
+
+    },
+    "Resumen" : {
+
+    },
+    "Resuelto" : {
+
+    },
+    "Revisión anual" : {
+
+    },
+    "Revisión anual y vacunación" : {
+
+    },
+    "Segundo refuerzo puppy" : {
+
+    },
+    "Síntomas" : {
+
+    },
+    "Síntomas recientes" : {
+
+    },
+    "Tamaño" : {
+
+    },
+    "Tipo" : {
+
+    },
+    "Tratamientos anteriores registrados" : {
+
+    },
+    "Vacuna" : {
+
+    },
+    "Vacunación anual" : {
+
+    },
+    "Vacunas" : {
+
+    },
+    "Vacunas completadas" : {
+
+    },
+    "Ver todos" : {
+
+    },
+    "Vista previa sin almacenamiento" : {
+
+    },
+    "Visitas" : {
+
+    },
+    "Visitas veterinarias" : {
+
+    },
+    "Última actualización" : {
+
+    },
+    "%@ – %@" : {
+
+    },
+    "%@, %@, %@, %@" : {
+
+    },
+    "%@, %@, %@, actualizado el %@" : {
+
+    },
+    "%@, %@, intensidad %@, %@, %@" : {
+
+    },
+    "Próxima vacuna: %@, %@, %@, %@" : {
+
+    },
+    "•" : {
+
     }
   },
   "version" : "1.0"

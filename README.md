@@ -21,9 +21,9 @@ xcodebuild -project PetPlanify.xcodeproj -scheme PetPlanify \
   CODE_SIGNING_ALLOWED=NO build
 ```
 
-The application currently includes adaptive navigation, the completed `Inicio`
-dashboard, and an `Alimentación` dashboard backed by mock data. The remaining
-care sections are clean placeholders. Persistence and cloud features are
+The application currently includes adaptive navigation and completed `Inicio`,
+`Alimentación`, and `Salud` dashboards backed by mock data. The remaining care
+sections are clean placeholders. Persistence and cloud features are
 intentionally out of scope for now.
 
 GitHub is intentionally used as lightweight source control and remote backup:
