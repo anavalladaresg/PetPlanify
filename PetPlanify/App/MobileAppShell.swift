@@ -38,7 +38,6 @@ struct MobileAppShell: View {
 
 private struct MoreView: View {
     private let sections: [AppSection] = [
-        .gallery,
         .evolution,
         .reminders,
         .notes,

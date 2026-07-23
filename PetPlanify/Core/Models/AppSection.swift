@@ -5,7 +5,6 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
     case nutrition
     case health
     case training
-    case gallery
     case evolution
     case reminders
     case notes
@@ -19,7 +18,6 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
         case .nutrition: "Alimentación"
         case .health: "Salud"
         case .training: "Entrenamiento"
-        case .gallery: "Galería"
         case .evolution: "Evolución"
         case .reminders: "Recordatorios"
         case .notes: "Notas"
@@ -33,7 +31,6 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
         case .nutrition: "takeoutbag.and.cup.and.straw"
         case .health: "heart"
         case .training: "figure.walk"
-        case .gallery: "photo.on.rectangle"
         case .evolution: "chart.line.uptrend.xyaxis"
         case .reminders: "calendar.badge.clock"
         case .notes: "note.text"
@@ -47,7 +44,6 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
         case .nutrition: "Organiza sus comidas, cantidades y hábitos de alimentación."
         case .health: "Reúne el seguimiento de salud y las próximas visitas veterinarias."
         case .training: "Acompaña sus rutinas y celebra cada nuevo aprendizaje."
-        case .gallery: "Guarda aquí sus mejores momentos y recuerdos."
         case .evolution: "Observa cómo cambian su peso, actividad y bienestar."
         case .reminders: "Ten presentes las tareas importantes para cuidar de Neo."
         case .notes: "Anota detalles cotidianos que quieras recordar."
@@ -55,4 +51,3 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
         }
     }
 }
-
