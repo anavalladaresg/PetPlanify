@@ -1,23 +1,5 @@
 import Foundation
 
-enum SettingsSection: String, CaseIterable, Identifiable, Hashable, Sendable {
-    case profile
-    case preferences
-    case dataPrivacy
-    case about
-
-    var id: Self { self }
-
-    var title: String {
-        switch self {
-        case .profile: "Perfil de Neo"
-        case .preferences: "Preferencias"
-        case .dataPrivacy: "Datos y privacidad"
-        case .about: "Acerca de"
-        }
-    }
-}
-
 enum WeightUnit: String, CaseIterable, Identifiable, Hashable, Sendable {
     case kilograms
     case pounds
@@ -137,13 +119,6 @@ struct ReminderPreferences: Hashable, Sendable {
     var advanceTime: ReminderAdvanceTime
 }
 
-struct DataCategorySummary: Identifiable, Hashable, Sendable {
-    let id: String
-    let title: String
-    let count: Int
-    let symbol: String
-}
-
 struct AppInformation: Hashable, Sendable {
     let name: String
     let tagline: String
@@ -159,7 +134,6 @@ struct AppInformation: Hashable, Sendable {
 struct SettingsOverview: Hashable, Sendable {
     let profile: PetProfileSettings
     let preferences: AppPreferences
-    let dataSummaries: [DataCategorySummary]
     let appInformation: AppInformation
 }
 

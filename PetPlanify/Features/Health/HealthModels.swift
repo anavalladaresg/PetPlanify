@@ -1,27 +1,5 @@
 import Foundation
 
-enum HealthSection: String, CaseIterable, Identifiable, Hashable, Sendable {
-    case overview
-    case vaccinations
-    case medications
-    case symptoms
-    case visits
-    case documents
-
-    var id: Self { self }
-
-    var title: String {
-        switch self {
-        case .overview: String(localized: "Resumen")
-        case .vaccinations: String(localized: "Vacunas")
-        case .medications: String(localized: "Medicamentos")
-        case .symptoms: String(localized: "Síntomas")
-        case .visits: String(localized: "Visitas")
-        case .documents: String(localized: "Documentos")
-        }
-    }
-}
-
 enum HealthRecordStatus: Hashable, Sendable {
     case completed
     case upcoming
@@ -108,9 +86,6 @@ struct HealthOverview: Hashable, Sendable {
         visits.first(where: { $0.status == .upcoming })
     }
 
-    var completedVaccinationCount: Int {
-        vaccinations.filter { $0.status == .completed }.count
-    }
 }
 
 enum HealthDetail: Identifiable, Hashable, Sendable {

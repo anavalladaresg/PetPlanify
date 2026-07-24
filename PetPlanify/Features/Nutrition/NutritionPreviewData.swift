@@ -32,32 +32,6 @@ enum NutritionPreviewData {
             ),
             currentWeightKilograms: 6.8,
             healthyWeightRange: 6.5 ... 7.5,
-            chartHistory: [
-                .oneMonth: history(
-                    start: date(year: 2026, month: 5, day: 10),
-                    step: .weekOfYear,
-                    weights: [6.7, 6.8, 6.8, 6.9, 6.8],
-                    amounts: [220, 230, 240, 240, 240]
-                ),
-                .threeMonths: history(
-                    start: date(year: 2026, month: 3, day: 22),
-                    step: .weekOfYear,
-                    weights: [6.6, 6.6, 6.7, 6.7, 6.8, 6.7, 6.8, 6.8, 6.9, 6.8, 6.8, 6.8],
-                    amounts: [220, 220, 220, 220, 220, 220, 230, 230, 240, 240, 240, 240]
-                ),
-                .sixMonths: history(
-                    start: date(year: 2026, month: 1, day: 1),
-                    step: .month,
-                    weights: [6.6, 6.7, 6.6, 6.7, 6.8, 6.8],
-                    amounts: [220, 220, 220, 220, 240, 240]
-                ),
-                .oneYear: history(
-                    start: date(year: 2025, month: 7, day: 1),
-                    step: .month,
-                    weights: [6.5, 6.5, 6.6, 6.5, 6.6, 6.6, 6.6, 6.7, 6.6, 6.7, 6.8, 6.8],
-                    amounts: [210, 210, 210, 210, 220, 220, 220, 220, 220, 220, 240, 240]
-                )
-            ],
             foodHistory: [
                 FoodHistoryEntry(
                     id: 0,
@@ -74,22 +48,6 @@ enum NutritionPreviewData {
             ]
         )
     }()
-
-    private static func history(
-        start: Date,
-        step: Calendar.Component,
-        weights: [Double],
-        amounts: [Int]
-    ) -> [NutritionHistoryPoint] {
-        zip(weights, amounts).enumerated().map { index, values in
-            NutritionHistoryPoint(
-                id: index,
-                date: calendar.date(byAdding: step, value: index, to: start) ?? start,
-                weightKilograms: values.0,
-                dailyFoodGrams: values.1
-            )
-        }
-    }
 
     private static func date(year: Int, month: Int, day: Int) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day))

@@ -1,21 +1,5 @@
 import Foundation
 
-enum TrainingSection: String, CaseIterable, Identifiable, Hashable, Sendable {
-    case tricks
-    case sessions
-    case behaviorNotes
-
-    var id: Self { self }
-
-    var title: String {
-        switch self {
-        case .tricks: String(localized: "Trucos")
-        case .sessions: String(localized: "Sesiones")
-        case .behaviorNotes: String(localized: "Notas de comportamiento")
-        }
-    }
-}
-
 enum TrickStatus: Hashable, Sendable {
     case mastered
     case inProgress
@@ -114,13 +98,6 @@ struct TrainingOverview: Hashable, Sendable {
         tricks.filter { $0.status == .inProgress }.count
     }
 
-    var recentSessionMinutes: Int {
-        sessions.reduce(0) { $0 + $1.durationMinutes }
-    }
-
-    var practisedTrickCount: Int {
-        Set(sessions.flatMap(\.tricks)).count
-    }
 }
 
 enum TrainingDetail: Identifiable, Hashable, Sendable {

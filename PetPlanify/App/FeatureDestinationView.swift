@@ -16,10 +16,6 @@ struct FeatureDestinationView: View {
             TrainingView()
         case .evolution:
             EvolutionView()
-        case .reminders:
-            RemindersView()
-        case .notes:
-            NotesView()
         case .settings:
             SettingsView()
         }

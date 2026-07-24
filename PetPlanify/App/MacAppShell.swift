@@ -2,14 +2,31 @@ import SwiftUI
 
 struct MacAppShell: View {
     @State private var selection: AppSection? = .home
+    @State private var reminders = DailyCarePreviewData.reminders
 
     var body: some View {
         NavigationSplitView {
             VStack(spacing: 0) {
-                List(AppSection.allCases, selection: $selection) { section in
-                    Label(section.title, systemImage: section.icon)
-                        .tag(section)
+                List {
+                    ForEach(AppSection.allCases) { section in
+                        Button {
+                            selection = section
+                        } label: {
+                            Label(section.title, systemImage: section.icon)
+                                .foregroundStyle(selection == section ? AppTheme.green : AppTheme.ink)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 7)
+                                .padding(.horizontal, 9)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                        .fill(selection == section ? AppTheme.greenSoft : .clear)
+                                )
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(selection == section ? .isSelected : [])
                         .accessibilityIdentifier("sidebar.\(section.rawValue)")
+                    }
                 }
                 .listStyle(.sidebar)
                 .scrollContentBackground(.hidden)
@@ -19,10 +36,17 @@ struct MacAppShell: View {
             }
             .background(AppTheme.sidebar)
             .navigationTitle("Neo")
-            .navigationSplitViewColumnWidth(min: 210, ideal: 236, max: 270)
+            .navigationSplitViewColumnWidth(min: 186, ideal: 208, max: 232)
         } detail: {
             FeatureDestinationView(section: selection ?? .home)
                 .id(selection)
+                .toolbar {
+                    ToolbarItem {
+                        AppReminderButton(reminders: $reminders) {
+                            selection = $0
+                        }
+                    }
+                }
         }
         .navigationSplitViewStyle(.balanced)
         .tint(AppTheme.green)
@@ -38,7 +62,7 @@ private struct NeoSidebarProfile: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Neo")
                     .font(.subheadline.weight(.semibold))
-                Text("Teckel · 3 años")
+                Text("Teckel · 2 años")
                     .font(.caption)
                     .foregroundStyle(AppTheme.secondaryInk)
             }
@@ -50,7 +74,7 @@ private struct NeoSidebarProfile: View {
                 .fill(AppTheme.surface.opacity(0.72))
         )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Neo, teckel, 3 años")
+        .accessibilityLabel("Neo, teckel, 2 años")
         .accessibilityIdentifier("profile.neo")
     }
 }

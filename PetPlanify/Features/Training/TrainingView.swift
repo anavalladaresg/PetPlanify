@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct TrainingView: View {
-    @State private var selectedSection: TrainingSection = .tricks
     @State private var presentedDetail: TrainingDetail?
 
     private let overview = TrainingPreviewData.neoOverview
@@ -11,13 +10,11 @@ struct TrainingView: View {
             #if os(macOS)
             TrainingMacView(
                 overview: overview,
-                selectedSection: $selectedSection,
                 onPresent: { presentedDetail = $0 }
             )
             #else
             TrainingPhoneView(
                 overview: overview,
-                selectedSection: $selectedSection,
                 onPresent: { presentedDetail = $0 }
             )
             #endif

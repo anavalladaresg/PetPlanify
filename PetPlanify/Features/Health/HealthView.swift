@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct HealthView: View {
-    @State private var selectedSection: HealthSection = .overview
     @State private var presentedDetail: HealthDetail?
 
     private let overview = HealthPreviewData.neoOverview
@@ -11,13 +10,11 @@ struct HealthView: View {
             #if os(macOS)
             HealthMacView(
                 overview: overview,
-                selectedSection: $selectedSection,
                 onPresent: { presentedDetail = $0 }
             )
             #else
             HealthPhoneView(
                 overview: overview,
-                selectedSection: $selectedSection,
                 onPresent: { presentedDetail = $0 }
             )
             #endif

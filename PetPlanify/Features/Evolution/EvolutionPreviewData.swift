@@ -78,9 +78,7 @@ enum EvolutionPreviewData {
                 context: String(localized: "Dato manual")
             )
         ],
-        healthyWeightRange: 6.5 ... 7.5,
-        walkingMinutesThisMonth: 820,
-        trainingMinutesThisMonth: 75
+        healthyWeightRange: 6.5 ... 7.5
     )
 
     private static let monthDates = (1...6).map { month in

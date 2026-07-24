@@ -8,7 +8,6 @@ struct NutritionView: View {
         var id: String { rawValue }
     }
 
-    @State private var selectedRange: NutritionChartRange = .threeMonths
     @State private var presentedSheet: PresentedSheet?
 
     private let plan = NutritionPreviewData.neoPlan
@@ -18,14 +17,12 @@ struct NutritionView: View {
             #if os(macOS)
             NutritionMacView(
                 plan: plan,
-                selectedRange: $selectedRange,
                 onEditPlan: { presentedSheet = .editPlan },
                 onShowHistory: { presentedSheet = .foodHistory }
             )
             #else
             NutritionPhoneView(
                 plan: plan,
-                selectedRange: $selectedRange,
                 onEditPlan: { presentedSheet = .editPlan },
                 onShowHistory: { presentedSheet = .foodHistory }
             )
@@ -144,4 +141,3 @@ private struct FoodHistoryRow: View {
         return String(localized: "Desde \(NutritionFormatting.date(entry.startDate))")
     }
 }
-

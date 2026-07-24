@@ -2,76 +2,101 @@ import SwiftUI
 
 struct HealthMacView: View {
     let overview: HealthOverview
-    @Binding var selectedSection: HealthSection
     let onPresent: (HealthDetail) -> Void
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                HealthHeader(includesTitle: true) {
-                    onPresent(.addRecord)
-                }
-                HealthSectionSelector(selection: $selectedSection)
-                    .frame(maxWidth: 720)
-
-                HealthSectionContent(
-                    section: selectedSection,
-                    overview: overview,
-                    compact: false,
-                    onPresent: onPresent,
-                    onSelectSection: { selectedSection = $0 }
-                )
-            }
-            .frame(maxWidth: 1_180, alignment: .leading)
-            .padding(32)
-        }
-        .appCanvas()
-        .accessibilityIdentifier("health.screen")
+        HealthDashboardContent(overview: overview, includesTitle: true, compact: false, onPresent: onPresent)
     }
 }
 
 struct HealthPhoneView: View {
     let overview: HealthOverview
-    @Binding var selectedSection: HealthSection
+    let onPresent: (HealthDetail) -> Void
+
+    var body: some View {
+        HealthDashboardContent(overview: overview, includesTitle: false, compact: true, onPresent: onPresent)
+    }
+}
+
+private struct HealthDashboardContent: View {
+    let overview: HealthOverview
+    let includesTitle: Bool
+    let compact: Bool
     let onPresent: (HealthDetail) -> Void
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                HealthHeader(includesTitle: false) {
-                    onPresent(.addRecord)
-                }
-                HealthSectionSelector(selection: $selectedSection)
+            VStack(alignment: .leading, spacing: compact ? 16 : 20) {
+                header
 
-                HealthSectionContent(
-                    section: selectedSection,
-                    overview: overview,
-                    compact: true,
-                    onPresent: onPresent,
-                    onSelectSection: { selectedSection = $0 }
+                if let vaccination = overview.upcomingVaccination {
+                    UpcomingHealthCard(
+                        vaccination: vaccination,
+                        visit: overview.upcomingVisit,
+                        onSelect: { onPresent(.vaccination(vaccination)) }
+                    )
+                }
+
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .top, spacing: 14) {
+                        vaccinationHistory
+                        MedicationCard(
+                            history: overview.medicationHistory,
+                            showsHistory: false,
+                            onShowHistory: { onPresent(.medicationHistory) }
+                        )
+                    }
+                    VStack(spacing: 14) {
+                        vaccinationHistory
+                        MedicationCard(
+                            history: overview.medicationHistory,
+                            showsHistory: false,
+                            onShowHistory: { onPresent(.medicationHistory) }
+                        )
+                    }
+                }
+
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .top, spacing: 14) {
+                        healthObservation
+                        VisitsCard(
+                            visits: Array(overview.visits.dropFirst()),
+                            showsAll: true,
+                            onSelect: { onPresent(.visit($0)) }
+                        )
+                    }
+                    VStack(spacing: 14) {
+                        healthObservation
+                        VisitsCard(
+                            visits: Array(overview.visits.dropFirst()),
+                            showsAll: true,
+                            onSelect: { onPresent(.visit($0)) }
+                        )
+                    }
+                }
+
+                DocumentsCard(
+                    documents: overview.documents,
+                    showsStorageNote: false,
+                    onSelect: { onPresent(.document($0)) },
+                    onShowAll: {}
                 )
             }
-            .padding(.horizontal, 18)
-            .padding(.top, 10)
-            .padding(.bottom, 28)
+            .frame(maxWidth: 1_080, alignment: .leading)
+            .padding(compact ? 18 : 28)
         }
         .appCanvas()
         .accessibilityIdentifier("health.screen")
     }
-}
 
-private struct HealthHeader: View {
-    let includesTitle: Bool
-    let onAddRecord: () -> Void
-
-    var body: some View {
+    private var header: some View {
         ViewThatFits(in: .horizontal) {
-            HStack(alignment: .center, spacing: 20) {
+            HStack {
                 titleBlock
-                Spacer(minLength: 12)
+                Spacer()
                 addButton
             }
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 12) {
                 titleBlock
                 addButton
             }
@@ -79,46 +104,63 @@ private struct HealthHeader: View {
     }
 
     private var titleBlock: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 4) {
             if includesTitle {
                 Text("Salud")
                     .font(.system(.largeTitle, design: .serif, weight: .semibold))
             }
-            Text("El historial de bienestar de Neo, claro y ordenado.")
-                .font(includesTitle ? .title3 : .subheadline)
+            Text("Cuidados, observaciones e historial de Neo")
                 .foregroundStyle(AppTheme.secondaryInk)
-                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
     private var addButton: some View {
-        Button(action: onAddRecord) {
+        Button {
+            onPresent(.addRecord)
+        } label: {
             Label("Añadir registro", systemImage: "plus")
-                .frame(minHeight: 32)
+                .frame(minHeight: 34)
         }
         .buttonStyle(.bordered)
-        .controlSize(.large)
         .accessibilityIdentifier("health.addRecord")
+    }
+
+    private var vaccinationHistory: some View {
+        VaccinationTimelineCard(
+            vaccinations: Array(overview.vaccinations.filter { $0.status == .completed }.suffix(2)),
+            onSelect: { onPresent(.vaccination($0)) }
+        )
+    }
+
+    private var healthObservation: some View {
+        let observation = DailyCarePreviewData.observations.first { $0.context == .health }!
+        return VStack(alignment: .leading, spacing: 8) {
+            Label("Observación reciente", systemImage: "waveform.path.ecg")
+                .font(.headline)
+            Text(observation.title).font(.subheadline.weight(.semibold))
+            Text(observation.body)
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.secondaryInk)
+            Text("Este registro es una observación personal y no sustituye la valoración veterinaria.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryInk)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(18)
+        .appSurface()
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("health.observations")
     }
 }
 
 #Preview("Salud · macOS") {
-    HealthMacView(
-        overview: HealthPreviewData.neoOverview,
-        selectedSection: .constant(.overview),
-        onPresent: { _ in }
-    )
-    .frame(width: 1_100, height: 860)
+    HealthMacView(overview: HealthPreviewData.neoOverview, onPresent: { _ in })
+        .frame(width: 1_100, height: 860)
 }
 
 #Preview("Salud · iPhone") {
     NavigationStack {
-        HealthPhoneView(
-            overview: HealthPreviewData.neoOverview,
-            selectedSection: .constant(.overview),
-            onPresent: { _ in }
-        )
-        .navigationTitle("Salud")
+        HealthPhoneView(overview: HealthPreviewData.neoOverview, onPresent: { _ in })
     }
     .frame(width: 393, height: 852)
 }

@@ -5,21 +5,21 @@ enum HealthPreviewData {
         vaccinations: [
             VaccinationRecord(
                 id: 0,
-                date: date(2022, 5, 28),
+                date: date(2023, 9, 28),
                 title: String(localized: "Puppy"),
                 details: String(localized: "Moquillo y parvovirus"),
                 status: .completed
             ),
             VaccinationRecord(
                 id: 1,
-                date: date(2022, 6, 25),
+                date: date(2023, 10, 25),
                 title: String(localized: "Refuerzo puppy"),
                 details: String(localized: "Moquillo, parvovirus y hepatitis"),
                 status: .completed
             ),
             VaccinationRecord(
                 id: 2,
-                date: date(2022, 7, 23),
+                date: date(2023, 11, 23),
                 title: String(localized: "Segundo refuerzo puppy"),
                 details: String(localized: "Moquillo, parvovirus y hepatitis"),
                 status: .completed
@@ -27,7 +27,7 @@ enum HealthPreviewData {
             VaccinationRecord(
                 id: 3,
                 date: date(2025, 5, 20),
-                title: String(localized: "Vacunación anual"),
+                title: String(localized: "Revisión veterinaria anual"),
                 details: String(localized: "Polivalente y rabia"),
                 status: .completed
             ),

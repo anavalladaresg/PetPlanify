@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MobileAppShell: View {
     @State private var selectedTab: AppSection = .home
+    @State private var reminders = DailyCarePreviewData.reminders
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -12,6 +13,7 @@ struct MobileAppShell: View {
 
             NavigationStack {
                 MoreView()
+                    .toolbar { reminderToolbar }
             }
             .tabItem {
                 Label("Más", systemImage: "ellipsis")
@@ -27,6 +29,7 @@ struct MobileAppShell: View {
         NavigationStack {
             FeatureDestinationView(section: section)
                 .navigationTitle(section.title)
+                .toolbar { reminderToolbar }
         }
         .tabItem {
             Label(section.title, systemImage: section.icon)
@@ -34,13 +37,22 @@ struct MobileAppShell: View {
         .tag(section)
         .accessibilityIdentifier("tab.\(section.rawValue)")
     }
+
+    @ToolbarContentBuilder
+    private var reminderToolbar: some ToolbarContent {
+        ToolbarItem(placement: .automatic) {
+            AppReminderButton(reminders: $reminders) { section in
+                selectedTab = [.home, .nutrition, .health, .training].contains(section)
+                    ? section
+                    : .settings
+            }
+        }
+    }
 }
 
 private struct MoreView: View {
     private let sections: [AppSection] = [
         .evolution,
-        .reminders,
-        .notes,
         .settings
     ]
 

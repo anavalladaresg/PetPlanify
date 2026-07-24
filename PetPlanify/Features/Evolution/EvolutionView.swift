@@ -1,9 +1,8 @@
 import SwiftUI
 
 struct EvolutionView: View {
-    @State private var selectedSection: EvolutionSection = .summary
+    @State private var selectedMetric: EvolutionMetric = .weight
     @State private var selectedRange: EvolutionRange = .sixMonths
-    @State private var selectedCategory: EvolutionMilestoneFilter = .all
     @State private var presentedMilestone: EvolutionMilestone?
 
     private let overview = EvolutionPreviewData.neoOverview
@@ -13,17 +12,15 @@ struct EvolutionView: View {
             #if os(macOS)
             EvolutionMacView(
                 overview: overview,
-                selectedSection: $selectedSection,
+                selectedMetric: $selectedMetric,
                 selectedRange: $selectedRange,
-                selectedCategory: $selectedCategory,
                 onSelectMilestone: { presentedMilestone = $0 }
             )
             #else
             EvolutionPhoneView(
                 overview: overview,
-                selectedSection: $selectedSection,
+                selectedMetric: $selectedMetric,
                 selectedRange: $selectedRange,
-                selectedCategory: $selectedCategory,
                 onSelectMilestone: { presentedMilestone = $0 }
             )
             #endif

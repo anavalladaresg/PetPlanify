@@ -6,8 +6,6 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
     case health
     case training
     case evolution
-    case reminders
-    case notes
     case settings
 
     var id: Self { self }
@@ -19,8 +17,6 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
         case .health: "Salud"
         case .training: "Entrenamiento"
         case .evolution: "Evolución"
-        case .reminders: "Recordatorios"
-        case .notes: "Notas"
         case .settings: "Ajustes"
         }
     }
@@ -32,8 +28,6 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
         case .health: "heart"
         case .training: "figure.walk"
         case .evolution: "chart.line.uptrend.xyaxis"
-        case .reminders: "calendar.badge.clock"
-        case .notes: "note.text"
         case .settings: "gearshape"
         }
     }
@@ -45,8 +39,6 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
         case .health: "Reúne el seguimiento de salud y las próximas visitas veterinarias."
         case .training: "Acompaña sus rutinas y celebra cada nuevo aprendizaje."
         case .evolution: "Observa cómo cambian su peso, actividad y bienestar."
-        case .reminders: "Ten presentes las tareas importantes para cuidar de Neo."
-        case .notes: "Anota detalles cotidianos que quieras recordar."
         case .settings: "Personaliza PetPlanify y la información de Neo."
         }
     }

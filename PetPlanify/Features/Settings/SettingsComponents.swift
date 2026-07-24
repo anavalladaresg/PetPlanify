@@ -1,52 +1,5 @@
 import SwiftUI
 
-struct SettingsSectionSelector: View {
-    @Binding var selection: SettingsSection
-
-    var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 6) {
-                sectionButtons
-            }
-            LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: 138), spacing: 6)],
-                spacing: 6
-            ) {
-                sectionButtons
-            }
-        }
-        .padding(4)
-        .background(AppTheme.surface.opacity(0.66), in: RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(AppTheme.border, lineWidth: 0.75)
-        )
-        .accessibilityIdentifier("settings.sectionPicker")
-    }
-
-    @ViewBuilder
-    private var sectionButtons: some View {
-        ForEach(SettingsSection.allCases) { section in
-            Button {
-                selection = section
-            } label: {
-                Text(section.title)
-                    .font(.subheadline.weight(selection == section ? .semibold : .regular))
-                    .foregroundStyle(selection == section ? AppTheme.ink : AppTheme.secondaryInk)
-                    .frame(maxWidth: .infinity, minHeight: 40)
-                    .padding(.horizontal, 10)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(selection == section ? AppTheme.surfaceMuted : .clear)
-                    )
-            }
-            .buttonStyle(.plain)
-            .accessibilityAddTraits(selection == section ? .isSelected : [])
-            .accessibilityIdentifier("settings.section.\(section.rawValue)")
-        }
-    }
-}
-
 struct SettingsGroupCard<Content: View>: View {
     let title: String
     let symbol: String
@@ -123,52 +76,6 @@ struct SettingsValueRow: View {
         .frame(minHeight: 38)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(label), \(value)")
-    }
-}
-
-struct SettingsActionRow: View {
-    let action: SettingsFutureAction
-    let detail: String
-    let onSelect: () -> Void
-
-    var body: some View {
-        Button(action: onSelect) {
-            HStack(spacing: 12) {
-                Image(systemName: action.symbol)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(AppTheme.orange)
-                    .frame(width: 32, height: 32)
-                    .background(AppTheme.orange.opacity(0.09), in: Circle())
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(action.title)
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(AppTheme.ink)
-                    Text(detail)
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.secondaryInk)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: 8)
-                Text("Más adelante")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(AppTheme.orange)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 5)
-                    .background(AppTheme.orange.opacity(0.09), in: Capsule())
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppTheme.secondaryInk)
-                    .accessibilityHidden(true)
-            }
-            .contentShape(Rectangle())
-            .frame(minHeight: 48)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(action.title)
-        .accessibilityValue("No disponible todavía")
-        .accessibilityHint("Abre información sobre una función futura")
-        .accessibilityIdentifier("settings.action.\(action.rawValue)")
     }
 }
 
@@ -312,53 +219,6 @@ struct SettingsProfileHeader: View {
         .controlSize(.large)
         .accessibilityHint("Abre una vista previa sin almacenamiento")
         .accessibilityIdentifier("settings.editProfile")
-    }
-}
-
-struct SettingsDataSummaryGrid: View {
-    let items: [DataCategorySummary]
-    let compact: Bool
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    private var columns: [GridItem] {
-        if compact && dynamicTypeSize.isAccessibilitySize {
-            return [GridItem(.flexible())]
-        }
-        return Array(
-            repeating: GridItem(.flexible(), spacing: 10),
-            count: compact ? 2 : 3
-        )
-    }
-
-    var body: some View {
-        LazyVGrid(columns: columns, spacing: 10) {
-            ForEach(items) { item in
-                HStack(spacing: 11) {
-                    Image(systemName: item.symbol)
-                        .foregroundStyle(AppTheme.green)
-                        .frame(width: 30, height: 30)
-                        .background(AppTheme.greenSoft.opacity(0.8), in: Circle())
-                        .accessibilityHidden(true)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(
-                            item.count.formatted(
-                                .number.locale(SettingsFormatting.spanishLocale)
-                            )
-                        )
-                            .font(.headline)
-                            .monospacedDigit()
-                        Text(item.title)
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.secondaryInk)
-                    }
-                    Spacer(minLength: 0)
-                }
-                .padding(12)
-                .background(AppTheme.surfaceMuted.opacity(0.55), in: RoundedRectangle(cornerRadius: 13))
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel("\(item.title), \(item.count) registros de demostración")
-            }
-        }
     }
 }
 

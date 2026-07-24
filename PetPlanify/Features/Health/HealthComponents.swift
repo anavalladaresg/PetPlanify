@@ -1,39 +1,5 @@
 import SwiftUI
 
-struct HealthSectionSelector: View {
-    @Binding var selection: HealthSection
-
-    var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 6) {
-                ForEach(HealthSection.allCases) { section in
-                    Button {
-                        selection = section
-                    } label: {
-                        Text(section.title)
-                            .font(.subheadline.weight(selection == section ? .semibold : .regular))
-                            .foregroundStyle(selection == section ? AppTheme.ink : AppTheme.secondaryInk)
-                            .padding(.horizontal, 14)
-                            .frame(minHeight: 40)
-                            .background(
-                                Capsule()
-                                    .fill(selection == section ? AppTheme.surfaceMuted : .clear)
-                            )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityAddTraits(selection == section ? .isSelected : [])
-                    .accessibilityIdentifier("health.section.\(section.rawValue)")
-                }
-            }
-            .padding(4)
-        }
-        .scrollIndicators(.hidden)
-        .background(AppTheme.surface.opacity(0.66), in: Capsule())
-        .overlay(Capsule().stroke(AppTheme.border, lineWidth: 0.75))
-        .accessibilityIdentifier("health.sectionPicker")
-    }
-}
-
 struct HealthStatusBadge: View {
     let status: HealthRecordStatus
 

@@ -44,22 +44,6 @@ struct FoodTransition: Sendable {
     let completionDate: Date
 }
 
-enum NutritionChartRange: String, CaseIterable, Identifiable, Sendable {
-    case oneMonth = "1M"
-    case threeMonths = "3M"
-    case sixMonths = "6M"
-    case oneYear = "1A"
-
-    var id: Self { self }
-}
-
-struct NutritionHistoryPoint: Identifiable, Sendable {
-    let id: Int
-    let date: Date
-    let weightKilograms: Double
-    let dailyFoodGrams: Int
-}
-
 struct FoodHistoryEntry: Identifiable, Sendable {
     let id: Int
     let food: FoodProduct
@@ -77,12 +61,7 @@ struct FoodPlan: Sendable {
     let transition: FoodTransition
     let currentWeightKilograms: Double
     let healthyWeightRange: ClosedRange<Double>
-    let chartHistory: [NutritionChartRange: [NutritionHistoryPoint]]
     let foodHistory: [FoodHistoryEntry]
-
-    func history(for range: NutritionChartRange) -> [NutritionHistoryPoint] {
-        chartHistory[range] ?? []
-    }
 }
 
 enum NutritionFormatting {

@@ -1,110 +1,5 @@
 import SwiftUI
 
-struct TrainingSectionSelector: View {
-    @Binding var selection: TrainingSection
-
-    var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 6) {
-                ForEach(TrainingSection.allCases) { section in
-                    Button {
-                        selection = section
-                    } label: {
-                        Text(section.title)
-                            .font(.subheadline.weight(selection == section ? .semibold : .regular))
-                            .foregroundStyle(selection == section ? AppTheme.ink : AppTheme.secondaryInk)
-                            .padding(.horizontal, 14)
-                            .frame(minHeight: 40)
-                            .background(
-                                Capsule()
-                                    .fill(selection == section ? AppTheme.surfaceMuted : .clear)
-                            )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityAddTraits(selection == section ? .isSelected : [])
-                    .accessibilityIdentifier("training.section.\(section.rawValue)")
-                }
-            }
-            .padding(4)
-        }
-        .scrollIndicators(.hidden)
-        .background(AppTheme.surface.opacity(0.66), in: Capsule())
-        .overlay(Capsule().stroke(AppTheme.border, lineWidth: 0.75))
-        .accessibilityIdentifier("training.sectionPicker")
-    }
-}
-
-struct TrainingOverviewGrid: View {
-    let overview: TrainingOverview
-    let compact: Bool
-
-    private var columns: [GridItem] {
-        Array(
-            repeating: GridItem(.flexible(), spacing: 12),
-            count: compact ? 2 : 4
-        )
-    }
-
-    var body: some View {
-        LazyVGrid(columns: columns, spacing: 12) {
-            TrainingMetricCard(
-                title: "Trucos totales",
-                value: overview.tricks.count.formatted(),
-                symbol: "sparkles",
-                accent: AppTheme.green
-            )
-            TrainingMetricCard(
-                title: "Dominados",
-                value: overview.masteredCount.formatted(),
-                symbol: "checkmark.seal",
-                accent: AppTheme.green
-            )
-            TrainingMetricCard(
-                title: "En progreso",
-                value: overview.inProgressCount.formatted(),
-                symbol: "chart.line.uptrend.xyaxis",
-                accent: AppTheme.orange
-            )
-            TrainingMetricCard(
-                title: "Minutos esta semana",
-                value: overview.weeklyMinutes.formatted(),
-                symbol: "clock",
-                accent: AppTheme.orange
-            )
-        }
-        .accessibilityIdentifier("training.overview")
-    }
-}
-
-struct TrainingMetricCard: View {
-    let title: LocalizedStringKey
-    let value: String
-    let symbol: String
-    let accent: Color
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Image(systemName: symbol)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(accent)
-                .frame(width: 32, height: 32)
-                .background(accent.opacity(0.11), in: Circle())
-                .accessibilityHidden(true)
-            Text(value)
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(AppTheme.ink)
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .frame(maxWidth: .infinity, minHeight: 106, alignment: .topLeading)
-        .padding(16)
-        .appSurface(cornerRadius: 16)
-        .accessibilityElement(children: .combine)
-    }
-}
-
 struct TricksProgressCard: View {
     let tricks: [TrainingTrick]
     let onSelect: (TrainingTrick) -> Void
@@ -350,7 +245,7 @@ struct BehaviorNotesCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            TrainingCardHeader(title: "Notas de comportamiento", symbol: "pawprint")
+            TrainingCardHeader(title: "Observación de comportamiento", symbol: "pawprint")
                 .padding(.bottom, 4)
 
             ForEach(displayedNotes) { note in

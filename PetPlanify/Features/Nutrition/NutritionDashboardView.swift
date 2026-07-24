@@ -2,119 +2,90 @@ import SwiftUI
 
 struct NutritionMacView: View {
     let plan: FoodPlan
-    @Binding var selectedRange: NutritionChartRange
     let onEditPlan: () -> Void
     let onShowHistory: () -> Void
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 26) {
-                NutritionHeader(
-                    includesTitle: true,
-                    onEditPlan: onEditPlan
-                )
-
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .top, spacing: 14) {
-                        CurrentFoodCard(plan: plan, compact: false)
-                            .frame(minWidth: 360)
-                        NutritionMetricsGrid(plan: plan, compact: false)
-                            .frame(minWidth: 430)
-                    }
-                    VStack(spacing: 14) {
-                        CurrentFoodCard(plan: plan, compact: false)
-                        NutritionMetricsGrid(plan: plan, compact: false)
-                    }
-                }
-
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .top, spacing: 14) {
-                        MealScheduleCard(meals: plan.meals)
-                            .frame(minWidth: 360)
-                        FoodTransitionCard(
-                            transition: plan.transition,
-                            onShowHistory: onShowHistory
-                        )
-                        .frame(minWidth: 420)
-                    }
-                    VStack(spacing: 14) {
-                        MealScheduleCard(meals: plan.meals)
-                        FoodTransitionCard(
-                            transition: plan.transition,
-                            onShowHistory: onShowHistory
-                        )
-                    }
-                }
-
-                NutritionChartCard(
-                    plan: plan,
-                    selectedRange: $selectedRange,
-                    compact: false
-                )
-            }
-            .frame(maxWidth: 1_180, alignment: .leading)
-            .padding(32)
-        }
-        .appCanvas()
-        .accessibilityIdentifier("nutrition.screen")
+        NutritionDashboardContent(
+            plan: plan,
+            includesTitle: true,
+            compact: false,
+            onEditPlan: onEditPlan,
+            onShowHistory: onShowHistory
+        )
     }
 }
+
 struct NutritionPhoneView: View {
     let plan: FoodPlan
-    @Binding var selectedRange: NutritionChartRange
+    let onEditPlan: () -> Void
+    let onShowHistory: () -> Void
+
+    var body: some View {
+        NutritionDashboardContent(
+            plan: plan,
+            includesTitle: false,
+            compact: true,
+            onEditPlan: onEditPlan,
+            onShowHistory: onShowHistory
+        )
+    }
+}
+
+private struct NutritionDashboardContent: View {
+    let plan: FoodPlan
+    let includesTitle: Bool
+    let compact: Bool
     let onEditPlan: () -> Void
     let onShowHistory: () -> Void
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                NutritionHeader(
-                    includesTitle: false,
-                    onEditPlan: onEditPlan
-                )
-                CurrentFoodCard(plan: plan, compact: true)
-                NutritionMetricsGrid(plan: plan, compact: true)
-                MealScheduleCard(meals: plan.meals)
-                FoodTransitionCard(
-                    transition: plan.transition,
-                    onShowHistory: onShowHistory
-                )
-                NutritionChartCard(
-                    plan: plan,
-                    selectedRange: $selectedRange,
-                    compact: true
-                )
+            VStack(alignment: .leading, spacing: compact ? 16 : 20) {
+                header
 
-                Button(action: onShowHistory) {
-                    Label("Ver historial de alimentos", systemImage: "clock.arrow.circlepath")
-                        .frame(maxWidth: .infinity)
-                        .frame(minHeight: 44)
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .top, spacing: 14) {
+                        CurrentFoodCard(plan: plan, compact: false)
+                        VStack(spacing: 14) {
+                            planFacts
+                            MealScheduleCard(meals: plan.meals)
+                        }
+                        .frame(minWidth: 360)
+                    }
+                    VStack(spacing: 14) {
+                        CurrentFoodCard(plan: plan, compact: true)
+                        planFacts
+                        MealScheduleCard(meals: plan.meals)
+                    }
                 }
-                .buttonStyle(.bordered)
-                .foregroundStyle(AppTheme.green)
-                .accessibilityIdentifier("nutrition.showHistoryFooter")
+
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .top, spacing: 14) {
+                        completedTransition
+                        nutritionObservation
+                    }
+                    VStack(spacing: 14) {
+                        completedTransition
+                        nutritionObservation
+                    }
+                }
             }
-            .padding(.horizontal, 18)
-            .padding(.top, 10)
-            .padding(.bottom, 28)
+            .frame(maxWidth: 1_080, alignment: .leading)
+            .padding(compact ? 18 : 28)
         }
         .appCanvas()
         .accessibilityIdentifier("nutrition.screen")
     }
-}
 
-private struct NutritionHeader: View {
-    let includesTitle: Bool
-    let onEditPlan: () -> Void
-
-    var body: some View {
+    private var header: some View {
         ViewThatFits(in: .horizontal) {
-            HStack(alignment: .center, spacing: 20) {
+            HStack {
                 titleBlock
-                Spacer(minLength: 12)
+                Spacer()
                 editButton
             }
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 12) {
                 titleBlock
                 editButton
             }
@@ -122,48 +93,91 @@ private struct NutritionHeader: View {
     }
 
     private var titleBlock: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 4) {
             if includesTitle {
                 Text("Alimentación")
                     .font(.system(.largeTitle, design: .serif, weight: .semibold))
             }
-            Text("El plan diario de Neo, organizado con calma.")
-                .font(includesTitle ? .title3 : .subheadline)
+            Text("El plan diario de Neo")
                 .foregroundStyle(AppTheme.secondaryInk)
-                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
     private var editButton: some View {
         Button(action: onEditPlan) {
             Label("Editar plan", systemImage: "pencil")
-                .frame(minHeight: 32)
+                .frame(minHeight: 34)
         }
         .buttonStyle(.bordered)
-        .controlSize(.large)
         .accessibilityIdentifier("nutrition.editPlan")
+    }
+
+    private var planFacts: some View {
+        HStack(spacing: 0) {
+            fact("Cantidad diaria", NutritionFormatting.grams(plan.dailyAmountGrams))
+            Divider().frame(height: 38)
+            fact("Comidas", "\(plan.mealsPerDay) al día")
+            Divider().frame(height: 38)
+            fact("Calorías aprox.", NutritionFormatting.calories(plan.approximateCaloriesPerDay))
+        }
+        .padding(15)
+        .appSurface(cornerRadius: 16)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func fact(_ title: String, _ value: String) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title).font(.caption).foregroundStyle(AppTheme.secondaryInk)
+            Text(value).font(.subheadline.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 10)
+    }
+
+    private var completedTransition: some View {
+        VStack(alignment: .leading, spacing: 9) {
+            Label("Cambio de alimento completado", systemImage: "checkmark.circle.fill")
+                .font(.headline)
+                .foregroundStyle(AppTheme.green)
+            Text("Desde el 10 de mayo · anteriormente \(plan.transition.previousFood.name)")
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.secondaryInk)
+            Button("Ver historial", action: onShowHistory)
+                .buttonStyle(.plain)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(AppTheme.green)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .appSurface(cornerRadius: 16)
+        .accessibilityIdentifier("nutrition.transition")
+    }
+
+    private var nutritionObservation: some View {
+        let observation = DailyCarePreviewData.observations.first { $0.context == .nutrition }!
+        return VStack(alignment: .leading, spacing: 7) {
+            Text("Observación reciente").font(.headline)
+            Text(observation.title).font(.subheadline.weight(.semibold))
+            Text(observation.body)
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.secondaryInk)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .appSurface(cornerRadius: 16)
+        .accessibilityElement(children: .combine)
     }
 }
 
 #Preview("Alimentación · macOS") {
-    NutritionMacView(
-        plan: NutritionPreviewData.neoPlan,
-        selectedRange: .constant(.threeMonths),
-        onEditPlan: {},
-        onShowHistory: {}
-    )
-    .frame(width: 1_080, height: 820)
+    NutritionMacView(plan: NutritionPreviewData.neoPlan, onEditPlan: {}, onShowHistory: {})
+        .frame(width: 1_080, height: 760)
 }
 
 #Preview("Alimentación · iPhone") {
     NavigationStack {
-        NutritionPhoneView(
-            plan: NutritionPreviewData.neoPlan,
-            selectedRange: .constant(.threeMonths),
-            onEditPlan: {},
-            onShowHistory: {}
-        )
-        .navigationTitle("Alimentación")
+        NutritionPhoneView(plan: NutritionPreviewData.neoPlan, onEditPlan: {}, onShowHistory: {})
     }
     .frame(width: 393, height: 852)
 }

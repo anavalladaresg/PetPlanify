@@ -133,7 +133,7 @@ private struct SymptomDetailContent: View {
                 HealthDetailRow(title: "Fecha", value: HealthFormatting.date(record.date))
                 HealthDetailRow(title: "Intensidad", value: record.severity.title)
                 HealthDetailRow(title: "Estado", value: record.status.title)
-                HealthDetailRow(title: "Notas", value: record.notes)
+                HealthDetailRow(title: "Observación", value: record.notes)
             }
             Text("Estos registros son observaciones personales y no sustituyen la valoración de un profesional veterinario.")
                 .font(.caption)

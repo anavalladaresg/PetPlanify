@@ -18,11 +18,13 @@ xcodebuild -project PetPlanify.xcodeproj -scheme PetPlanify \
   -destination "platform=macOS" CODE_SIGNING_ALLOWED=NO build
 ```
 
-The application currently includes adaptive navigation and completed `Inicio`,
-`Alimentación`, `Salud`, `Entrenamiento`, `Evolución`, `Recordatorios`, and
-`Notas` dashboards backed by mock data. `Ajustes` is also implemented with
-temporary local settings. All current application data remains mock data;
-persistence and physical-device iPhone validation are planned for future phases.
+The application has six focused areas: `Inicio`, `Alimentación`, `Salud`,
+`Entrenamiento`, `Evolución`, and `Ajustes`. Notes are lightweight contextual
+observations, while reminders live in their related feature and in a compact
+reminder view. Gallery is not part of PetPlanify.
+
+All current application data remains mock data. Persistence and physical-device
+iPhone validation are planned for future phases.
 
 GitHub is intentionally used as lightweight source control and remote backup:
 normal development happens directly on `main` with small descriptive commits.

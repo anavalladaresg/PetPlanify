@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var selectedSection: SettingsSection = .profile
     @State private var weightUnit: WeightUnit = .kilograms
     @State private var distanceUnit: DistanceUnit = .kilometers
     @State private var reminderPreferences = SettingsPreviewData.reminderPreferences
@@ -12,7 +11,6 @@ struct SettingsView: View {
             #if os(macOS)
             SettingsMacView(
                 overview: SettingsPreviewData.overview,
-                selectedSection: $selectedSection,
                 weightUnit: $weightUnit,
                 distanceUnit: $distanceUnit,
                 reminderPreferences: $reminderPreferences,
@@ -21,7 +19,6 @@ struct SettingsView: View {
             #else
             SettingsPhoneView(
                 overview: SettingsPreviewData.overview,
-                selectedSection: $selectedSection,
                 weightUnit: $weightUnit,
                 distanceUnit: $distanceUnit,
                 reminderPreferences: $reminderPreferences,
@@ -43,7 +40,6 @@ struct SettingsView: View {
 #Preview("Ajustes · macOS") {
     SettingsMacView(
         overview: SettingsPreviewData.overview,
-        selectedSection: .constant(.profile),
         weightUnit: .constant(.kilograms),
         distanceUnit: .constant(.kilometers),
         reminderPreferences: .constant(SettingsPreviewData.reminderPreferences),
@@ -56,7 +52,6 @@ struct SettingsView: View {
     NavigationStack {
         SettingsPhoneView(
             overview: SettingsPreviewData.overview,
-            selectedSection: .constant(.profile),
             weightUnit: .constant(.kilograms),
             distanceUnit: .constant(.kilometers),
             reminderPreferences: .constant(SettingsPreviewData.reminderPreferences),

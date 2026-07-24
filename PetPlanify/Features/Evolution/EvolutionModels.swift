@@ -1,19 +1,17 @@
 import Foundation
 
-enum EvolutionSection: String, CaseIterable, Identifiable, Hashable, Sendable {
-    case summary
+enum EvolutionMetric: String, CaseIterable, Identifiable, Hashable, Sendable {
     case weight
     case activity
-    case milestones
+    case training
 
     var id: Self { self }
 
     var title: String {
         switch self {
-        case .summary: String(localized: "Resumen")
         case .weight: String(localized: "Peso")
         case .activity: String(localized: "Actividad")
-        case .milestones: String(localized: "Hitos")
+        case .training: String(localized: "Entrenamiento")
         }
     }
 }
@@ -75,39 +73,6 @@ enum EvolutionMilestoneCategory: String, CaseIterable, Identifiable, Hashable, S
     }
 }
 
-enum EvolutionMilestoneFilter: String, CaseIterable, Identifiable, Hashable, Sendable {
-    case all
-    case weight
-    case health
-    case nutrition
-    case training
-    case activity
-
-    var id: Self { self }
-
-    var title: String {
-        switch self {
-        case .all: String(localized: "Todos")
-        case .weight: String(localized: "Peso")
-        case .health: String(localized: "Salud")
-        case .nutrition: String(localized: "Alimentación")
-        case .training: String(localized: "Entrenamiento")
-        case .activity: String(localized: "Actividad")
-        }
-    }
-
-    var category: EvolutionMilestoneCategory? {
-        switch self {
-        case .all: nil
-        case .weight: .weight
-        case .health: .health
-        case .nutrition: .nutrition
-        case .training: .training
-        case .activity: .activity
-        }
-    }
-}
-
 struct WeightHistoryPoint: Identifiable, Hashable, Sendable {
     let id: Int
     let date: Date
@@ -141,9 +106,6 @@ struct EvolutionOverview: Hashable, Sendable {
     let trainingHistory: [TrainingProgressPoint]
     let milestones: [EvolutionMilestone]
     let healthyWeightRange: ClosedRange<Double>
-    let walkingMinutesThisMonth: Int
-    let trainingMinutesThisMonth: Int
-
     var currentWeight: Double {
         weightHistory.last?.kilograms ?? 0
     }
@@ -153,22 +115,12 @@ struct EvolutionOverview: Hashable, Sendable {
         return currentWeight - first
     }
 
-    var weightChangeFromPreviousRecord: Double {
-        guard weightHistory.count >= 2 else { return 0 }
-        return weightHistory[weightHistory.count - 1].kilograms
-            - weightHistory[weightHistory.count - 2].kilograms
-    }
-
     var currentActivity: Int {
         activityHistory.last?.averageMinutesPerDay ?? 0
     }
 
     var masteredTricks: Int {
         trainingHistory.last?.masteredTricks ?? 0
-    }
-
-    var mostActivePoint: ActivityHistoryPoint? {
-        activityHistory.max { $0.averageMinutesPerDay < $1.averageMinutesPerDay }
     }
 
     func weights(for range: EvolutionRange) -> [WeightHistoryPoint] {
@@ -183,10 +135,6 @@ struct EvolutionOverview: Hashable, Sendable {
         Array(trainingHistory.suffix(range.pointCount))
     }
 
-    func milestones(filteredBy filter: EvolutionMilestoneFilter) -> [EvolutionMilestone] {
-        guard let category = filter.category else { return milestones }
-        return milestones.filter { $0.category == category }
-    }
 }
 
 enum EvolutionFormatting {
