@@ -1431,6 +1431,333 @@
     },
     "vacuna" : {
 
+    },
+    "%@, %@, %@, clínica veterinaria %@" : {
+
+    },
+    "%@, %lld registros de demostración" : {
+
+    },
+    "%lld años" : {
+
+    },
+    "1 año" : {
+
+    },
+    "1 día de antelación" : {
+
+    },
+    "1 semana de antelación" : {
+
+    },
+    "24 horas" : {
+
+    },
+    "3 días de antelación" : {
+
+    },
+    "Abre información sobre una función futura" : {
+
+    },
+    "Acción informativa" : {
+
+    },
+    "Acerca de" : {
+
+    },
+    "Activa esta preferencia temporal" : {
+
+    },
+    "Activado localmente" : {
+
+    },
+    "Almacenamiento local" : {
+
+    },
+    "Almacenamiento y copias" : {
+
+    },
+    "Apariencia" : {
+
+    },
+    "Apariencia actual" : {
+
+    },
+    "Avisar con" : {
+
+    },
+    "Clara" : {
+
+    },
+    "Clínica veterinaria" : {
+
+    },
+    "Compilación" : {
+
+    },
+    "Crear copia de seguridad" : {
+
+    },
+    "Datos de Neo" : {
+
+    },
+    "Datos de demostración" : {
+
+    },
+    "Datos y privacidad" : {
+
+    },
+    "Desactiva esta preferencia temporal" : {
+
+    },
+    "Desactivado localmente" : {
+
+    },
+    "Desarrollada con SwiftUI" : {
+
+    },
+    "Diseñado y desarrollado por Ana Valladares." : {
+
+    },
+    "Distancia" : {
+
+    },
+    "Día / mes / año" : {
+
+    },
+    "Edad" : {
+
+    },
+    "Editar perfil" : {
+
+    },
+    "El almacenamiento local se añadirá en una fase posterior. Los datos actuales son de demostración." : {
+
+    },
+    "El diario personal de Neo" : {
+
+    },
+    "El mismo día" : {
+
+    },
+    "Español" : {
+
+    },
+    "Especie" : {
+
+    },
+    "Esta pantalla es informativa. No se guardan cambios ni se accede a archivos o servicios externos." : {
+
+    },
+    "Esta preferencia es temporal." : {
+
+    },
+    "Esta versión no envía datos a servidores externos." : {
+
+    },
+    "Estado actual" : {
+
+    },
+    "Experiencia nativa para iPhone y Mac." : {
+
+    },
+    "Exportar datos" : {
+
+    },
+    "Fecha de nacimiento" : {
+
+    },
+    "Formato de fecha" : {
+
+    },
+    "Formato de hora" : {
+
+    },
+    "Idioma" : {
+
+    },
+    "Idioma de la interfaz" : {
+
+    },
+    "Idioma y región" : {
+
+    },
+    "Importar datos" : {
+
+    },
+    "Información de la aplicación" : {
+
+    },
+    "Información del perfil" : {
+
+    },
+    "Kilogramos" : {
+
+    },
+    "Kilómetros" : {
+
+    },
+    "La aplicación no utiliza redes, análisis ni publicidad." : {
+
+    },
+    "La edición del perfil estará disponible cuando se añada el almacenamiento de PetPlanify." : {
+
+    },
+    "La exportación estará disponible cuando PetPlanify incorpore almacenamiento permanente." : {
+
+    },
+    "La importación de datos todavía no está disponible." : {
+
+    },
+    "La interfaz está disponible actualmente en español." : {
+
+    },
+    "La selección solo actualiza los valores mostrados en Ajustes." : {
+
+    },
+    "La sincronización con iCloud no está activa en esta versión." : {
+
+    },
+    "Las copias de seguridad se habilitarán cuando exista almacenamiento permanente." : {
+
+    },
+    "Las notificaciones reales se configurarán en una fase posterior." : {
+
+    },
+    "Libras" : {
+
+    },
+    "Los cambios realizados en esta versión son temporales." : {
+
+    },
+    "Los contenidos actuales son locales y temporales." : {
+
+    },
+    "Los datos actuales son de demostración y todavía no se guardan de forma permanente." : {
+
+    },
+    "Lunes" : {
+
+    },
+    "Macho" : {
+
+    },
+    "Microchip" : {
+
+    },
+    "Millas" : {
+
+    },
+    "Más adelante" : {
+
+    },
+    "Más opciones visuales" : {
+
+    },
+    "No disponible todavía" : {
+
+    },
+    "No elimina ningún dato" : {
+
+    },
+    "No está activa" : {
+
+    },
+    "No hay datos permanentes que restablecer en esta versión." : {
+
+    },
+    "No registrado" : {
+
+    },
+    "No se utilizan servicios de análisis ni publicidad." : {
+
+    },
+    "Perfil de Neo" : {
+
+    },
+    "Perro" : {
+
+    },
+    "Personaliza la experiencia de Neo y consulta cómo gestiona PetPlanify sus datos." : {
+
+    },
+    "PetPlanify" : {
+
+    },
+    "PetPlanify está diseñado para mantener la información de tu mascota bajo tu control." : {
+
+    },
+    "PetPlanify reúne la alimentación, salud, entrenamiento, evolución, recordatorios y notas de Neo en un único espacio." : {
+
+    },
+    "PetPlanify utiliza actualmente una apariencia clara. Se estudiarán más opciones en una fase posterior." : {
+
+    },
+    "Plataformas" : {
+
+    },
+    "Preferencias" : {
+
+    },
+    "Preferencias de recordatorios" : {
+
+    },
+    "Primer día de la semana" : {
+
+    },
+    "Privacidad" : {
+
+    },
+    "Raza" : {
+
+    },
+    "Recordatorios de alimentación" : {
+
+    },
+    "Recordatorios de entrenamiento" : {
+
+    },
+    "Recordatorios de salud" : {
+
+    },
+    "Restablecer datos" : {
+
+    },
+    "Salud e identificación" : {
+
+    },
+    "Sexo" : {
+
+    },
+    "Sin servicios externos" : {
+
+    },
+    "Sincronización con iCloud" : {
+
+    },
+    "SwiftUI" : {
+
+    },
+    "Teckel" : {
+
+    },
+    "Tecnología" : {
+
+    },
+    "Todavía no disponible" : {
+
+    },
+    "Unidades" : {
+
+    },
+    "Versión" : {
+
+    },
+    "Vista previa del perfil" : {
+
+    },
+    "iPhone y Mac" : {
+
     }
   },
   "version" : "1.0"
