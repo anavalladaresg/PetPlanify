@@ -996,6 +996,213 @@
     },
     "últimos 6 meses" : {
 
+    },
+    "%@, %@, categoría %@, %@, estado %@" : {
+
+    },
+    "%lld recordatorios" : {
+
+    },
+    "1 recordatorio" : {
+
+    },
+    "12 de junio" : {
+
+    },
+    "Abre el detalle del recordatorio" : {
+
+    },
+    "Abre todos los datos del recordatorio" : {
+
+    },
+    "Abre una vista previa sin almacenamiento ni notificaciones" : {
+
+    },
+    "Alta" : {
+
+    },
+    "Anual" : {
+
+    },
+    "Baja" : {
+
+    },
+    "Calendario" : {
+
+    },
+    "Completado" : {
+
+    },
+    "Completados" : {
+
+    },
+    "Comprar comida" : {
+
+    },
+    "Comprobar que los registros personales estén actualizados" : {
+
+    },
+    "Control mensual de peso" : {
+
+    },
+    "Dar antiparasitario interno" : {
+
+    },
+    "Detalle del recordatorio" : {
+
+    },
+    "El cambio solo se conserva durante esta sesión" : {
+
+    },
+    "Esta vista no guarda información, no solicita permisos y no programa recordatorios." : {
+
+    },
+    "Este recordatorio utiliza datos de ejemplo y no programa notificaciones ni eventos." : {
+
+    },
+    "Filtrar recordatorios por categoría" : {
+
+    },
+    "Información local de ejemplo para Neo" : {
+
+    },
+    "La creación y las notificaciones estarán disponibles cuando se añada el almacenamiento de PetPlanify." : {
+
+    },
+    "Las tareas importantes de Neo, ordenadas con calma." : {
+
+    },
+    "Los cambios de estado son temporales y solo se conservan durante esta sesión." : {
+
+    },
+    "Marcar como completado" : {
+
+    },
+    "Marcar como pendiente" : {
+
+    },
+    "Media" : {
+
+    },
+    "Medicación" : {
+
+    },
+    "Mensual" : {
+
+    },
+    "Mes anterior" : {
+
+    },
+    "Mes siguiente" : {
+
+    },
+    "No hay recordatorios para este día." : {
+
+    },
+    "No hay recordatorios próximos en esta categoría." : {
+
+    },
+    "No hay recordatorios vencidos en esta categoría." : {
+
+    },
+    "Nuevo recordatorio" : {
+
+    },
+    "Pendiente desde el %@" : {
+
+    },
+    "Pendientes anteriores" : {
+
+    },
+    "Pendientes por llegar" : {
+
+    },
+    "Practicar “quieto”" : {
+
+    },
+    "Prioridad" : {
+
+    },
+    "Prioridad alta" : {
+
+    },
+    "Prioridad baja" : {
+
+    },
+    "Prioridad media" : {
+
+    },
+    "Próximo" : {
+
+    },
+    "Próximos" : {
+
+    },
+    "Próximos recordatorios" : {
+
+    },
+    "Queda aproximadamente una semana de alimento" : {
+
+    },
+    "Recordatorios completados" : {
+
+    },
+    "Recordatorios del %@" : {
+
+    },
+    "Registrar el peso manualmente" : {
+
+    },
+    "Registro personal del recordatorio anual" : {
+
+    },
+    "Registro personal sin instrucciones de dosis" : {
+
+    },
+    "Registros locales" : {
+
+    },
+    "Repetición" : {
+
+    },
+    "Revisar cartilla veterinaria" : {
+
+    },
+    "Revisión general y vacuna anual" : {
+
+    },
+    "Sesión breve" : {
+
+    },
+    "Sesión breve de práctica" : {
+
+    },
+    "Sesión de entrenamiento" : {
+
+    },
+    "Siguiente recordatorio" : {
+
+    },
+    "Sin configurar" : {
+
+    },
+    "Sin próximos recordatorios" : {
+
+    },
+    "Sin repetición" : {
+
+    },
+    "Todavía no hay recordatorios completados" : {
+
+    },
+    "Vencido" : {
+
+    },
+    "Vencidos" : {
+
+    },
+    "Ver detalle" : {
+
     }
   },
   "version" : "1.0"
