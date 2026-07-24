@@ -57,22 +57,23 @@ private struct TrainingDashboardContent: View {
                 }
             }
             .frame(maxWidth: 1_080, alignment: .leading)
-            .padding(compact ? 18 : 28)
+            .padding(compact ? 16 : 28)
+            .padding(.bottom, compact ? 12 : 0)
         }
         .appCanvas()
         .accessibilityIdentifier("training.screen")
     }
 
     private var header: some View {
-        ViewThatFits(in: .horizontal) {
+        Group {
+            if compact {
+                titleBlock
+            } else {
             HStack {
                 titleBlock
                 Spacer()
                 customButton
             }
-            VStack(alignment: .leading, spacing: 10) {
-                titleBlock
-                customButton
             }
         }
     }

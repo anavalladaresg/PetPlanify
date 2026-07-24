@@ -27,6 +27,7 @@ struct HomeView: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var presentedAction: QuickAction?
+    @State private var showsAllUpcoming = false
 
     let pet: PetProfile
 
@@ -34,34 +35,46 @@ struct HomeView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: isCompact ? 18 : 22) {
+            VStack(alignment: .leading, spacing: isCompact ? 14 : 22) {
                 header
                 identity
                 upcoming
             }
             .frame(maxWidth: 960, alignment: .leading)
-            .padding(isCompact ? 18 : 28)
+            .padding(isCompact ? 16 : 28)
+            .padding(.bottom, isCompact ? 12 : 0)
         }
         .appCanvas()
         .accessibilityIdentifier("home.screen")
         .toolbar {
+            #if os(iOS)
+            ToolbarItem(placement: .topBarTrailing) {
+                quickActionMenu
+            }
+            #else
             ToolbarItem(placement: .automatic) {
                 quickActionMenu
             }
+            #endif
         }
         .sheet(item: $presentedAction) { action in
             HomeFutureActionSheet(action: action) {
                 presentedAction = nil
             }
         }
+        .sheet(isPresented: $showsAllUpcoming) {
+            HomeUpcomingSheet(reminders: DailyCarePreviewData.reminders)
+        }
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Inicio")
-                .font(.system(.largeTitle, design: .serif, weight: .semibold))
+            if !isCompact {
+                Text("Inicio")
+                    .font(.system(.largeTitle, design: .serif, weight: .semibold))
+            }
             Text("¿Qué tengo que recordar sobre Neo?")
-                .font(.title3)
+                .font(isCompact ? .headline : .title3)
                 .foregroundStyle(AppTheme.secondaryInk)
         }
         .accessibilityElement(children: .combine)
@@ -69,38 +82,68 @@ struct HomeView: View {
     }
 
     private var identity: some View {
-        HStack(spacing: 14) {
-            PetAvatarView(size: isCompact ? 54 : 62)
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 14) {
+                identityBlock
+                Spacer(minLength: 10)
+                weightBlock
+            }
+            VStack(alignment: .leading, spacing: 12) {
+                identityBlock
+                weightBlock
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(isCompact ? 14 : 16)
+        .appSurface(cornerRadius: isCompact ? 15 : 16)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(pet.name), \(pet.breed), \(pet.age), peso actual \(pet.currentWeight)")
+        .accessibilityIdentifier("home.petSummary")
+    }
+
+    private var identityBlock: some View {
+        HStack(spacing: 12) {
+            PetAvatarView(size: isCompact ? 58 : 62)
             VStack(alignment: .leading, spacing: 3) {
                 Text(pet.name)
                     .font(.system(.title2, design: .serif, weight: .semibold))
                 Text("\(pet.breed) · \(pet.age)")
                     .foregroundStyle(AppTheme.secondaryInk)
             }
-            Spacer()
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("Peso actual")
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.secondaryInk)
-                Text(pet.currentWeight)
-                    .font(.title3.weight(.semibold))
-            }
         }
-        .padding(16)
-        .appSurface(cornerRadius: 16)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(pet.name), \(pet.breed), \(pet.age), peso actual \(pet.currentWeight)")
-        .accessibilityIdentifier("home.petSummary")
+    }
+
+    private var weightBlock: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("Peso actual")
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryInk)
+            Text(pet.currentWeight)
+                .font(.title3.weight(.semibold))
+        }
     }
 
     private var upcoming: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Próximamente")
-                .font(.system(.title2, design: .serif, weight: .semibold))
+        let allReminders = DailyCarePreviewData.reminders
+        let visibleReminders = isCompact ? Array(allReminders.prefix(3)) : allReminders
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Próximamente")
+                    .font(.system(.title2, design: .serif, weight: .semibold))
+                Spacer()
+                if isCompact && allReminders.count > visibleReminders.count {
+                    Button("Ver todos") {
+                        showsAllUpcoming = true
+                    }
+                    .buttonStyle(.plain)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.green)
+                }
+            }
             VStack(spacing: 0) {
-                ForEach(DailyCarePreviewData.reminders.sorted { $0.date < $1.date }) { reminder in
+                ForEach(visibleReminders) { reminder in
                     upcomingRow(reminder)
-                    if reminder.id != DailyCarePreviewData.reminders.last?.id {
+                    if reminder.id != visibleReminders.last?.id {
                         Divider().overlay(AppTheme.border)
                     }
                 }
@@ -131,13 +174,15 @@ struct HomeView: View {
             }
             Spacer()
         }
-        .padding(.vertical, 12)
+        .padding(.vertical, isCompact ? 10 : 12)
         .accessibilityElement(children: .combine)
     }
 
     private func reminderIcon(_ reminder: CareReminder) -> String {
         if reminder.title.contains("Vacuna") { return "syringe" }
         if reminder.title.contains("cita") { return "cross.case" }
+        if reminder.title.contains("interna") { return "pills" }
+        if reminder.title.contains("externa") { return "drop" }
         if reminder.title.contains("Antiparasitario") { return "pills" }
         return "scalemass"
     }
@@ -155,7 +200,44 @@ struct HomeView: View {
             Label("Añadir", systemImage: "plus")
         }
         .help("Añadir información sobre Neo")
-        .accessibilityIdentifier("home.quickActions")
+        .accessibilityIdentifier("app.quickActions")
+    }
+}
+
+private struct HomeUpcomingSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let reminders: [CareReminder]
+
+    var body: some View {
+        NavigationStack {
+            List(reminders) { reminder in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(reminder.title)
+                        .font(.headline)
+                    Text(
+                        reminder.date.formatted(
+                            Date.FormatStyle(date: .long, time: .shortened)
+                                .locale(Locale(identifier: "es_ES"))
+                        )
+                    )
+                    .font(.subheadline)
+                    .foregroundStyle(AppTheme.secondaryInk)
+                    Text(reminder.notes)
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                }
+                .padding(.vertical, 5)
+                .accessibilityElement(children: .combine)
+            }
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.canvas)
+            .navigationTitle("Próximamente")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Cerrar") { dismiss() }
+                }
+            }
+        }
     }
 }
 

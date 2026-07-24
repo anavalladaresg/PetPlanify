@@ -21,6 +21,18 @@ struct TrainingView: View {
             #endif
         }
         .environment(\.locale, TrainingFormatting.spanishLocale)
+        #if os(iOS)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    presentedDetail = .customTrick
+                } label: {
+                    Label("Truco personalizado", systemImage: "plus")
+                }
+                .accessibilityIdentifier("training.addCustom")
+            }
+        }
+        #endif
         .sheet(item: $presentedDetail) { detail in
             TrainingDetailSheet(
                 detail: detail,

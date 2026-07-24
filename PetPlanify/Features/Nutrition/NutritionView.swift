@@ -29,6 +29,18 @@ struct NutritionView: View {
             #endif
         }
         .environment(\.locale, NutritionFormatting.spanishLocale)
+        #if os(iOS)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    presentedSheet = .editPlan
+                } label: {
+                    Label("Editar plan", systemImage: "pencil")
+                }
+                .accessibilityIdentifier("nutrition.editPlan")
+            }
+        }
+        #endif
         .sheet(item: $presentedSheet) { sheet in
             switch sheet {
             case .editPlan:

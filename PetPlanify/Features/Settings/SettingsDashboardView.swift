@@ -14,6 +14,7 @@ struct SettingsMacView: View {
             distanceUnit: $distanceUnit,
             reminderPreferences: $reminderPreferences,
             includesTitle: true,
+            compact: false,
             onPresent: onPresent
         )
     }
@@ -33,6 +34,7 @@ struct SettingsPhoneView: View {
             distanceUnit: $distanceUnit,
             reminderPreferences: $reminderPreferences,
             includesTitle: false,
+            compact: true,
             onPresent: onPresent
         )
     }
@@ -44,6 +46,7 @@ private struct SettingsDashboardContent: View {
     @Binding var distanceUnit: DistanceUnit
     @Binding var reminderPreferences: ReminderPreferences
     let includesTitle: Bool
+    let compact: Bool
     let onPresent: (SettingsFutureAction) -> Void
 
     private var divider: some View { Divider().overlay(AppTheme.border) }
@@ -56,6 +59,7 @@ private struct SettingsDashboardContent: View {
                 SettingsProfileHeader(
                     profile: overview.profile,
                     weightUnit: weightUnit,
+                    compact: compact,
                     onEdit: { onPresent(.editProfile) }
                 )
                 feedingCard
@@ -65,7 +69,8 @@ private struct SettingsDashboardContent: View {
                 aboutCard
             }
             .frame(maxWidth: 900, alignment: .leading)
-            .padding(18)
+            .padding(compact ? 16 : 18)
+            .padding(.bottom, compact ? 12 : 0)
         }
         .appCanvas()
         .accessibilityIdentifier("settings.screen")
@@ -79,9 +84,6 @@ private struct SettingsDashboardContent: View {
             }
             Text("Perfil y configuración de PetPlanify")
                 .foregroundStyle(AppTheme.secondaryInk)
-            Text("Los cambios de esta versión son temporales.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.orange)
         }
     }
 

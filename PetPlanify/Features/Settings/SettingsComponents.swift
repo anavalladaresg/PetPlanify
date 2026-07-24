@@ -45,6 +45,7 @@ struct SettingsGroupCard<Content: View>: View {
         }
         .padding(19)
         .appSurface()
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -139,23 +140,35 @@ where Option.AllCases: RandomAccessCollection {
 struct SettingsProfileHeader: View {
     let profile: PetProfileSettings
     let weightUnit: WeightUnit
+    let compact: Bool
     let onEdit: () -> Void
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 20) {
-                profileIdentity
-                Spacer(minLength: 16)
-                profileMetrics
-                editButton
-            }
-            VStack(alignment: .leading, spacing: 18) {
-                profileIdentity
-                profileMetrics
-                editButton
+        Group {
+            if compact {
+                VStack(alignment: .leading, spacing: 16) {
+                    profileIdentity
+                    profileMetrics
+                    editButton
+                }
+            } else {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 20) {
+                        profileIdentity
+                        Spacer(minLength: 16)
+                        profileMetrics
+                        editButton
+                    }
+                    VStack(alignment: .leading, spacing: 18) {
+                        profileIdentity
+                        profileMetrics
+                        editButton
+                    }
+                }
             }
         }
-        .padding(22)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(compact ? 16 : 22)
         .appSurface()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("settings.profile")
@@ -192,6 +205,7 @@ struct SettingsProfileHeader: View {
                 profile.healthyWeightRangeKilograms.map(weightUnit.formattedRange) ?? "No indicado"
             )
         }
+        .frame(maxWidth: compact ? .infinity : nil, alignment: .leading)
     }
 
     private func metric(_ title: LocalizedStringKey, _ value: String) -> some View {
@@ -216,6 +230,7 @@ struct SettingsProfileHeader: View {
         }
         .buttonStyle(.bordered)
         .controlSize(.large)
+        .frame(maxWidth: compact ? .infinity : nil, alignment: .leading)
         .accessibilityHint("Abre una vista previa sin almacenamiento")
         .accessibilityIdentifier("settings.editProfile")
     }

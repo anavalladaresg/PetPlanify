@@ -44,50 +44,69 @@ private struct NutritionDashboardContent: View {
             VStack(alignment: .leading, spacing: compact ? 16 : 20) {
                 header
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .top, spacing: 14) {
-                        CurrentFoodCard(plan: plan, compact: false)
-                        VStack(spacing: 14) {
-                            planFacts
-                            MealScheduleCard(meals: plan.meals)
-                        }
-                        .frame(minWidth: 360)
-                    }
-                    VStack(spacing: 14) {
+                if compact {
+                    VStack(spacing: 12) {
                         CurrentFoodCard(plan: plan, compact: true)
                         planFacts
                         MealScheduleCard(meals: plan.meals)
                     }
+                } else {
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .top, spacing: 14) {
+                            CurrentFoodCard(plan: plan, compact: false)
+                                .frame(minWidth: 400)
+                            VStack(spacing: 14) {
+                                planFacts
+                                MealScheduleCard(meals: plan.meals)
+                            }
+                            .frame(minWidth: 360)
+                        }
+                        VStack(spacing: 14) {
+                            CurrentFoodCard(plan: plan, compact: false)
+                            planFacts
+                            MealScheduleCard(meals: plan.meals)
+                        }
+                    }
                 }
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .top, spacing: 14) {
+                if compact {
+                    VStack(spacing: 12) {
                         completedTransition
                         nutritionObservation
                     }
-                    VStack(spacing: 14) {
-                        completedTransition
-                        nutritionObservation
+                } else {
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .top, spacing: 14) {
+                            completedTransition
+                                .frame(minWidth: 340)
+                            nutritionObservation
+                                .frame(minWidth: 340)
+                        }
+                        VStack(spacing: 14) {
+                            completedTransition
+                            nutritionObservation
+                        }
                     }
                 }
             }
             .frame(maxWidth: 1_080, alignment: .leading)
-            .padding(compact ? 18 : 28)
+            .padding(compact ? 16 : 28)
+            .padding(.bottom, compact ? 12 : 0)
         }
         .appCanvas()
         .accessibilityIdentifier("nutrition.screen")
     }
 
     private var header: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack {
+        Group {
+            if compact {
                 titleBlock
-                Spacer()
-                editButton
-            }
-            VStack(alignment: .leading, spacing: 12) {
-                titleBlock
-                editButton
+            } else {
+                HStack {
+                    titleBlock
+                    Spacer()
+                    editButton
+                }
             }
         }
     }

@@ -13,6 +13,9 @@ struct MobileAppShell: View {
             mobileTab(.settings)
         }
         .tint(AppTheme.green)
+        #if os(iOS)
+        .tabBarMinimizeBehavior(.onScrollDown)
+        #endif
         .accessibilityIdentifier("navigation.iphone")
     }
 
@@ -21,6 +24,9 @@ struct MobileAppShell: View {
             FeatureDestinationView(section: section)
                 .navigationTitle(section.title)
                 .toolbar { reminderToolbar }
+                #if os(iOS)
+                .navigationBarTitleDisplayMode(.large)
+                #endif
         }
         .tabItem {
             Label(section.title, systemImage: section.icon)
@@ -31,10 +37,18 @@ struct MobileAppShell: View {
 
     @ToolbarContentBuilder
     private var reminderToolbar: some ToolbarContent {
+        #if os(iOS)
+        ToolbarItem(placement: .topBarLeading) {
+            AppReminderButton(reminders: $reminders) { section in
+                selectedTab = section
+            }
+        }
+        #else
         ToolbarItem(placement: .automatic) {
             AppReminderButton(reminders: $reminders) { section in
                 selectedTab = section
             }
         }
+        #endif
     }
 }

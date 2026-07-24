@@ -7,10 +7,17 @@ struct CurrentFoodCard: View {
     var body: some View {
         Group {
             if compact {
-                VStack(alignment: .leading, spacing: 18) {
-                    packagePlaceholder
-                        .frame(maxWidth: .infinity)
-                    foodDetails
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 14) {
+                        packagePlaceholder
+                            .frame(width: 92)
+                        foodDetails
+                    }
+                    VStack(alignment: .leading, spacing: 14) {
+                        packagePlaceholder
+                            .frame(maxWidth: .infinity)
+                        foodDetails
+                    }
                 }
             } else {
                 HStack(spacing: 22) {
@@ -20,7 +27,7 @@ struct CurrentFoodCard: View {
                 }
             }
         }
-        .padding(20)
+        .padding(compact ? 16 : 20)
         .appSurface()
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
