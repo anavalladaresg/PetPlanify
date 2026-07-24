@@ -59,7 +59,7 @@ struct HealthWeightCard: View {
                     AxisValueLabel()
                 }
             }
-            .frame(height: compact ? 210 : 250)
+            .frame(height: compact ? 200 : 250)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Evolución del peso de Neo")
             .accessibilityValue("De 7,3 kg en enero a 6,8 kg en junio. El rango mostrado fue introducido manualmente.")

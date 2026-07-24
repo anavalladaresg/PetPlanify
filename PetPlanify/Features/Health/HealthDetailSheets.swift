@@ -26,10 +26,13 @@ struct HealthDetailSheet: View {
 
     private var title: String {
         switch detail {
-        case .addRecord: "Añadir registro"
-        case .registerWeight: "Registrar peso"
+        case .addRecord: String(localized: "Añadir registro")
+        case .registerWeight: String(localized: "Registrar peso")
         case let .vaccination(record): record.title
-        case .medicationHistory: "Historial de medicación"
+        case .vaccinationHistory: String(localized: "Historial de vacunas")
+        case .dewormingHistory: String(localized: "Historial de desparasitación")
+        case .addDeworming: String(localized: "Añadir desparasitación")
+        case .medicationHistory: String(localized: "Historial de medicación")
         case let .visit(visit): visit.reason
         }
     }
@@ -40,7 +43,7 @@ struct HealthDetailSheet: View {
         case .addRecord:
             futureState(
                 symbol: "cross.case",
-                message: "Las visitas, vacunas y medicaciones podrán añadirse cuando definamos el formulario y el modelo definitivo."
+                message: "Las visitas, vacunas, desparasitaciones y medicaciones podrán añadirse cuando definamos el formulario y el modelo definitivo."
             )
         case .registerWeight:
             futureState(
@@ -54,6 +57,29 @@ struct HealthDetailSheet: View {
                 HealthDetailRow(title: "Clínica", value: record.clinic)
                 HealthDetailRow(title: "Detalle", value: record.details)
             }
+        case .vaccinationHistory:
+            detailCard {
+                ForEach(overview.vaccinations.sorted { $0.date > $1.date }) { record in
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(record.title).font(.headline)
+                        Text("\(HealthFormatting.date(record.date)) · \(record.clinic)")
+                            .font(.subheadline)
+                            .foregroundStyle(AppTheme.secondaryInk)
+                        Text("\(record.details) · \(record.status.title)")
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.secondaryInk)
+                    }
+                    .padding(.vertical, 8)
+                    .accessibilityElement(children: .combine)
+                }
+            }
+        case .dewormingHistory:
+            dewormingHistory
+        case .addDeworming:
+            futureState(
+                symbol: "shield.lefthalf.filled",
+                message: "El formulario permitirá registrar desparasitación interna o externa sin incluir instrucciones de dosis."
+            )
         case .medicationHistory:
             detailCard {
                 if overview.medications.isEmpty {
@@ -75,6 +101,47 @@ struct HealthDetailSheet: View {
         case let .visit(visit):
             visitContent(visit)
         }
+    }
+
+    private var dewormingHistory: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            ForEach(overview.dewormingRecords) { record in
+                detailCard {
+                    HealthDetailRow(title: "Tipo", value: record.kind.title)
+                    HealthDetailRow(
+                        title: "Última aplicación",
+                        value: formattedDate(
+                            record.administeredAt,
+                            fallback: String(localized: "No registrada")
+                        )
+                    )
+                    HealthDetailRow(
+                        title: "Próxima aplicación",
+                        value: formattedDate(
+                            record.nextDueAt,
+                            fallback: String(localized: "No indicada")
+                        )
+                    )
+                    HealthDetailRow(
+                        title: "Producto",
+                        value: record.productName ?? String(localized: "No indicado")
+                    )
+                    HealthDetailRow(title: "Estado", value: record.status().title)
+                    if let notes = record.notes {
+                        HealthDetailRow(title: "Notas", value: notes)
+                    }
+                }
+            }
+            Text("Estos registros son personales y no contienen instrucciones de dosis ni sustituyen la valoración veterinaria.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryInk)
+        }
+        .accessibilityIdentifier("health.dewormingHistory")
+    }
+
+    private func formattedDate(_ date: Date?, fallback: String) -> String {
+        guard let date else { return fallback }
+        return HealthFormatting.date(date)
     }
 
     private func visitContent(_ visit: VeterinaryVisit) -> some View {
@@ -118,7 +185,7 @@ struct HealthDetailSheet: View {
         }
     }
 
-    private func futureState(symbol: String, message: String) -> some View {
+    private func futureState(symbol: String, message: LocalizedStringKey) -> some View {
         VStack(spacing: 16) {
             Image(systemName: symbol)
                 .font(.system(size: 34, weight: .light))
@@ -141,7 +208,7 @@ struct HealthDetailSheet: View {
 }
 
 private struct HealthDetailRow: View {
-    let title: String
+    let title: LocalizedStringKey
     let value: String
 
     var body: some View {

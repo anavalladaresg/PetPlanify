@@ -31,6 +31,6 @@ struct CareReminder: Identifiable, Hashable, Sendable {
     var isCompleted: Bool
 
     var isOverdue: Bool {
-        !isCompleted && date < PreviewData.referenceDate
+        !isCompleted && date < Date.now
     }
 }

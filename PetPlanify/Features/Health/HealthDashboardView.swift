@@ -28,9 +28,14 @@ private struct HealthDashboardContent: View {
         ScrollView {
             VStack(alignment: .leading, spacing: compact ? 16 : 20) {
                 header
-                if let vaccination = overview.upcomingVaccination {
-                    UpcomingHealthCard(vaccination: vaccination) {
-                        onPresent(.vaccination(vaccination))
+                if let care = nextCare {
+                    UpcomingHealthCard(
+                        title: care.title,
+                        date: care.date,
+                        context: care.context,
+                        symbol: care.symbol
+                    ) {
+                        onPresent(care.destination)
                     }
                 }
 
@@ -38,22 +43,29 @@ private struct HealthDashboardContent: View {
                     onPresent(.registerWeight)
                 }
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .top, spacing: 14) {
-                        VaccinationTimelineCard(vaccinations: overview.vaccinations) {
-                            onPresent(.vaccination($0))
-                        }
+                if compact {
+                    VStack(spacing: 12) {
+                        vaccinationCard
+                        DewormingCard(
+                            records: overview.dewormingRecords,
+                            onShowHistory: { onPresent(.dewormingHistory) },
+                            onAdd: { onPresent(.addDeworming) }
+                        )
                         MedicationCard(overview: overview) {
                             onPresent(.medicationHistory)
                         }
-                        .frame(minWidth: 300)
                     }
-                    VStack(spacing: 14) {
-                        VaccinationTimelineCard(vaccinations: overview.vaccinations) {
-                            onPresent(.vaccination($0))
+                } else {
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .top, spacing: 14) {
+                            vaccinationCard
+                                .frame(minWidth: 340)
+                            dewormingAndMedication
+                                .frame(minWidth: 380)
                         }
-                        MedicationCard(overview: overview) {
-                            onPresent(.medicationHistory)
+                        VStack(spacing: 14) {
+                            vaccinationCard
+                            dewormingAndMedication
                         }
                     }
                 }
@@ -63,22 +75,92 @@ private struct HealthDashboardContent: View {
                 }
             }
             .frame(maxWidth: 1_080, alignment: .leading)
-            .padding(compact ? 18 : 28)
+            .padding(compact ? 16 : 28)
+            .padding(.bottom, compact ? 12 : 0)
         }
         .appCanvas()
         .accessibilityIdentifier("health.screen")
     }
 
+    private struct UpcomingCare {
+        let title: String
+        let date: Date
+        let context: String
+        let symbol: String
+        let destination: HealthDetail
+    }
+
+    private var nextCare: UpcomingCare? {
+        var care: [UpcomingCare] = []
+        if let vaccination = overview.upcomingVaccination {
+            care.append(
+                UpcomingCare(
+                    title: vaccination.title,
+                    date: vaccination.date,
+                    context: vaccination.clinic,
+                    symbol: "syringe",
+                    destination: .vaccination(vaccination)
+                )
+            )
+        }
+        if let visit = overview.upcomingVisit {
+            care.append(
+                UpcomingCare(
+                    title: visit.reason,
+                    date: visit.date,
+                    context: visit.clinic,
+                    symbol: "cross.case",
+                    destination: .visit(visit)
+                )
+            )
+        }
+        for record in overview.dewormingRecords {
+            guard let nextDueAt = record.nextDueAt, nextDueAt > Date.now else { continue }
+            care.append(
+                UpcomingCare(
+                    title: record.kind.title,
+                    date: nextDueAt,
+                    context: record.productName ?? String(localized: "Cuidado registrado manualmente"),
+                    symbol: record.kind.symbol,
+                    destination: .dewormingHistory
+                )
+            )
+        }
+        return care.min { $0.date < $1.date }
+    }
+
     private var header: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack {
+        Group {
+            if compact {
                 titleBlock
-                Spacer()
-                addButton
+            } else {
+                HStack {
+                    titleBlock
+                    Spacer()
+                    addButton
+                }
             }
-            VStack(alignment: .leading, spacing: 10) {
-                titleBlock
-                addButton
+        }
+    }
+
+    private var vaccinationCard: some View {
+        VaccinationTimelineCard(
+            vaccinations: overview.vaccinations,
+            maxRecords: compact ? 3 : 4,
+            onSelect: { onPresent(.vaccination($0)) },
+            onShowHistory: { onPresent(.vaccinationHistory) }
+        )
+    }
+
+    private var dewormingAndMedication: some View {
+        VStack(spacing: 14) {
+            DewormingCard(
+                records: overview.dewormingRecords,
+                onShowHistory: { onPresent(.dewormingHistory) },
+                onAdd: { onPresent(.addDeworming) }
+            )
+            MedicationCard(overview: overview) {
+                onPresent(.medicationHistory)
             }
         }
     }

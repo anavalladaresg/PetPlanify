@@ -39,6 +39,66 @@ struct MedicationRecord: Identifiable, Hashable, Sendable {
     let status: HealthRecordStatus
 }
 
+enum DewormingKind: String, CaseIterable, Identifiable, Hashable, Codable, Sendable {
+    case internalDeworming
+    case externalDeworming
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .internalDeworming:
+            String(localized: "Desparasitación interna")
+        case .externalDeworming:
+            String(localized: "Desparasitación externa")
+        }
+    }
+
+    var reminderTitle: String {
+        switch self {
+        case .internalDeworming:
+            String(localized: "Próxima desparasitación interna")
+        case .externalDeworming:
+            String(localized: "Próxima desparasitación externa")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .internalDeworming: "pills"
+        case .externalDeworming: "drop"
+        }
+    }
+}
+
+enum DewormingStatus: String, Hashable, Codable, Sendable {
+    case upcoming
+    case completed
+    case overdue
+
+    var title: String {
+        switch self {
+        case .upcoming: String(localized: "Próxima")
+        case .completed: String(localized: "Completada")
+        case .overdue: String(localized: "Vencida")
+        }
+    }
+}
+
+struct DewormingRecord: Identifiable, Hashable, Codable, Sendable {
+    let id: UUID
+    let kind: DewormingKind
+    let productName: String?
+    let administeredAt: Date?
+    let nextDueAt: Date?
+    let notes: String?
+
+    func status(relativeTo referenceDate: Date = .now) -> DewormingStatus {
+        guard let nextDueAt else { return .completed }
+        return nextDueAt < referenceDate ? .overdue : .upcoming
+    }
+}
+
 struct HealthDocument: Identifiable, Hashable, Sendable {
     let id: Int
     let filename: String
@@ -63,15 +123,20 @@ struct HealthOverview: Hashable, Sendable {
     let weightRecords: [HealthWeightRecord]
     let healthyWeightRange: ClosedRange<Double>?
     let vaccinations: [VaccinationRecord]
+    let dewormingRecords: [DewormingRecord]
     let medications: [MedicationRecord]
     let visits: [VeterinaryVisit]
 
     var currentWeight: Double { weightRecords.last?.kilograms ?? 0 }
     var upcomingVaccination: VaccinationRecord? {
-        vaccinations.first { $0.status == .upcoming }
+        vaccinations
+            .filter { $0.status == .upcoming && $0.date > Date.now }
+            .min { $0.date < $1.date }
     }
     var upcomingVisit: VeterinaryVisit? {
-        visits.first { $0.status == .upcoming }
+        visits
+            .filter { $0.status == .upcoming && $0.date > Date.now }
+            .min { $0.date < $1.date }
     }
     var activeMedications: [MedicationRecord] {
         medications.filter { $0.status == .active }
@@ -82,6 +147,9 @@ enum HealthDetail: Identifiable, Hashable, Sendable {
     case addRecord
     case registerWeight
     case vaccination(VaccinationRecord)
+    case vaccinationHistory
+    case dewormingHistory
+    case addDeworming
     case medicationHistory
     case visit(VeterinaryVisit)
 
@@ -90,6 +158,9 @@ enum HealthDetail: Identifiable, Hashable, Sendable {
         case .addRecord: "add-record"
         case .registerWeight: "register-weight"
         case let .vaccination(record): "vaccination-\(record.id)"
+        case .vaccinationHistory: "vaccination-history"
+        case .dewormingHistory: "deworming-history"
+        case .addDeworming: "add-deworming"
         case .medicationHistory: "medication-history"
         case let .visit(record): "visit-\(record.id)"
         }

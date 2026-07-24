@@ -20,6 +20,18 @@ struct HealthView: View {
             #endif
         }
         .environment(\.locale, HealthFormatting.spanishLocale)
+        #if os(iOS)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    presentedDetail = .addRecord
+                } label: {
+                    Label("Añadir registro", systemImage: "plus")
+                }
+                .accessibilityIdentifier("health.addRecord")
+            }
+        }
+        #endif
         .sheet(item: $presentedDetail) { detail in
             HealthDetailSheet(
                 detail: detail,

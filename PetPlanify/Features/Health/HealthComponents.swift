@@ -17,13 +17,16 @@ struct HealthStatusBadge: View {
 }
 
 struct UpcomingHealthCard: View {
-    let vaccination: VaccinationRecord
+    let title: String
+    let date: Date
+    let context: String
+    let symbol: String
     let onSelect: () -> Void
 
     var body: some View {
         Button(action: onSelect) {
             HStack(spacing: 14) {
-                Image(systemName: "syringe")
+                Image(systemName: symbol)
                     .font(.title3)
                     .foregroundStyle(AppTheme.orange)
                     .frame(width: 42, height: 42)
@@ -33,37 +36,48 @@ struct UpcomingHealthCard: View {
                     Text("Próximo cuidado")
                         .font(.caption)
                         .foregroundStyle(AppTheme.secondaryInk)
-                    Text(vaccination.title)
+                    Text(title)
                         .font(.headline)
                         .foregroundStyle(AppTheme.ink)
-                    Text("\(HealthFormatting.date(vaccination.date)) · \(vaccination.clinic)")
+                    Text("\(HealthFormatting.date(date)) · \(context)")
                         .font(.caption)
                         .foregroundStyle(AppTheme.secondaryInk)
                 }
                 Spacer()
-                HealthStatusBadge(status: vaccination.status)
+                Text("Próxima")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.orange)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(AppTheme.orange.opacity(0.1), in: Capsule())
                 Image(systemName: "chevron.right")
                     .font(.caption)
                     .foregroundStyle(AppTheme.secondaryInk)
                     .accessibilityHidden(true)
             }
-            .padding(14)
+            .padding(12)
             .contentShape(Rectangle())
             .appSurface(cornerRadius: 16)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Próximo cuidado, \(vaccination.title), \(HealthFormatting.date(vaccination.date)), \(vaccination.clinic)")
+        .accessibilityLabel("Próximo cuidado, \(title), \(HealthFormatting.date(date)), \(context)")
         .accessibilityIdentifier("health.upcoming")
     }
 }
 
 struct VaccinationTimelineCard: View {
     let vaccinations: [VaccinationRecord]
+    let maxRecords: Int
     let onSelect: (VaccinationRecord) -> Void
+    let onShowHistory: () -> Void
+
+    private var displayedRecords: [VaccinationRecord] {
+        Array(vaccinations.sorted { $0.date > $1.date }.prefix(maxRecords))
+    }
 
     var body: some View {
         HealthGroupCard("Vacunas", symbol: "syringe", identifier: "health.vaccinations") {
-            ForEach(vaccinations.sorted { $0.date > $1.date }) { record in
+            ForEach(displayedRecords) { record in
                 Button {
                     onSelect(record)
                 } label: {
@@ -85,11 +99,129 @@ struct VaccinationTimelineCard: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(AppTheme.ink)
-                if record.id != vaccinations.sorted(by: { $0.date > $1.date }).last?.id {
+                if record.id != displayedRecords.last?.id {
                     Divider().overlay(AppTheme.border)
                 }
             }
+            if vaccinations.count > displayedRecords.count {
+                Button("Ver historial completo", action: onShowHistory)
+                    .buttonStyle(.plain)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.green)
+                    .frame(minHeight: 36)
+            }
         }
+    }
+}
+
+struct DewormingCard: View {
+    let records: [DewormingRecord]
+    let onShowHistory: () -> Void
+    let onAdd: () -> Void
+
+    var body: some View {
+        HealthGroupCard(
+            "Desparasitación",
+            symbol: "shield.lefthalf.filled",
+            identifier: "health.deworming"
+        ) {
+            ForEach(DewormingKind.allCases) { kind in
+                if let record = records.first(where: { $0.kind == kind }) {
+                    DewormingRow(record: record)
+                    if kind != DewormingKind.allCases.last {
+                        Divider().overlay(AppTheme.border)
+                    }
+                }
+            }
+
+            HStack {
+                Button("Ver historial", action: onShowHistory)
+                    .buttonStyle(.plain)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.green)
+                Spacer()
+                Button(action: onAdd) {
+                    Label("Añadir desparasitación", systemImage: "plus")
+                }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("health.addDeworming")
+            }
+            .padding(.top, 4)
+        }
+    }
+}
+
+private struct DewormingRow: View {
+    let record: DewormingRecord
+
+    private var status: DewormingStatus {
+        record.status()
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: record.kind.symbol)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(record.kind == .internalDeworming ? AppTheme.orange : AppTheme.green)
+                .frame(width: 34, height: 34)
+                .background(
+                    (record.kind == .internalDeworming ? AppTheme.orange : AppTheme.green).opacity(0.1),
+                    in: Circle()
+                )
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(record.kind.title)
+                    .font(.subheadline.weight(.semibold))
+                if let administeredAt = record.administeredAt {
+                    Text("Última aplicación: \(HealthFormatting.shortDate(administeredAt))")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                }
+                if let nextDueAt = record.nextDueAt {
+                    Text("Próxima aplicación: \(HealthFormatting.shortDate(nextDueAt))")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                }
+                if let productName = record.productName {
+                    Text("Producto: \(productName)")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                }
+            }
+            Spacer(minLength: 8)
+            Text(status.title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(status == .overdue ? AppTheme.secondaryInk : AppTheme.green)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(AppTheme.surfaceMuted, in: Capsule())
+        }
+        .padding(.vertical, 9)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityDescription)
+        .accessibilityIdentifier(
+            record.kind == .internalDeworming
+                ? "health.internalDeworming"
+                : "health.externalDeworming"
+        )
+    }
+
+    private var accessibilityDescription: String {
+        let last = formattedDate(
+            record.administeredAt,
+            fallback: String(localized: "Sin registro anterior")
+        )
+        let next = formattedDate(
+            record.nextDueAt,
+            fallback: String(localized: "Sin próxima fecha")
+        )
+        return "\(record.kind.title), última aplicación \(last), próxima aplicación \(next), \(status.title)"
+    }
+
+    private func formattedDate(_ date: Date?, fallback: String) -> String {
+        guard let date else { return fallback }
+        return HealthFormatting.date(date)
     }
 }
 
@@ -185,6 +317,7 @@ struct HealthGroupCard<Content: View>: View {
         }
         .padding(18)
         .appSurface()
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityIdentifier(identifier)
     }
 }

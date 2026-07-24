@@ -1,14 +1,33 @@
 import Foundation
 
 enum PreviewData {
-    static let referenceDate = DateComponents(
-        calendar: Calendar(identifier: .gregorian),
-        timeZone: TimeZone(identifier: "Europe/Madrid"),
-        year: 2026,
-        month: 6,
-        day: 12,
-        hour: 9
-    ).date!
+    static let referenceDate = Date.now
+    static let spanishTimeZone = TimeZone(identifier: "Europe/Madrid") ?? .gmt
+
+    static func date(
+        daysFromReference days: Int,
+        hour: Int = 12,
+        minute: Int = 0
+    ) -> Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = spanishTimeZone
+        let start = calendar.startOfDay(for: referenceDate)
+        let day = calendar.date(byAdding: .day, value: days, to: start) ?? start
+        return calendar.date(
+            bySettingHour: hour,
+            minute: minute,
+            second: 0,
+            of: day
+        ) ?? day
+    }
+
+    static func monthStart(monthsFromReference months: Int) -> Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = spanishTimeZone
+        let components = calendar.dateComponents([.year, .month], from: referenceDate)
+        let currentMonth = calendar.date(from: components) ?? referenceDate
+        return calendar.date(byAdding: .month, value: months, to: currentMonth) ?? currentMonth
+    }
 
     static let neo = PetProfile(
         name: "Neo",

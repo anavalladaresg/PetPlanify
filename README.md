@@ -21,6 +21,9 @@ xcodebuild -project PetPlanify.xcodeproj -scheme PetPlanify \
 The application has five focused areas: `Inicio`, `Alimentación`, `Salud`,
 `Entrenamiento`, and `Ajustes`. Weight history belongs to Health, behavior
 observations belong to Training, and reminders live in a compact global view.
+Health includes internal and external deworming alongside vaccines,
+medication, veterinary visits, and their linked documents. The iPhone
+composition uses native navigation and full-width mobile layouts.
 
 All current application data remains mock data. Progressive onboarding,
 functional forms, persistence, and physical-device iPhone validation are
