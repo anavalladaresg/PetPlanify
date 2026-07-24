@@ -1203,6 +1203,234 @@
     },
     "Ver detalle" : {
 
+    },
+    "%@, categoría %@, %@, %@, %@, %@" : {
+
+    },
+    "%lld notas" : {
+
+    },
+    "Abre una vista previa sin almacenamiento" : {
+
+    },
+    "Activa" : {
+
+    },
+    "Actualizada" : {
+
+    },
+    "Archivada" : {
+
+    },
+    "Archivadas" : {
+
+    },
+    "Archivar" : {
+
+    },
+    "Borrar búsqueda" : {
+
+    },
+    "Buscar notas" : {
+
+    },
+    "Cambio en el apetito" : {
+
+    },
+    "Categorías" : {
+
+    },
+    "Comió más despacio de lo habitual durante el desayuno, pero terminó toda la ración." : {
+
+    },
+    "Contenido" : {
+
+    },
+    "Creada" : {
+
+    },
+    "Desfijar nota" : {
+
+    },
+    "Después de la revisión veterinaria" : {
+
+    },
+    "Edición de ejemplo sin guardado" : {
+
+    },
+    "Editar" : {
+
+    },
+    "Editar nota" : {
+
+    },
+    "Esta vista no guarda ni modifica información." : {
+
+    },
+    "Este registro es una observación personal y no sustituye la valoración de un profesional veterinario." : {
+
+    },
+    "Estuvo activo y tranquilo durante casi una hora. Descansó bien al volver a casa." : {
+
+    },
+    "Fijada" : {
+
+    },
+    "Fijadas" : {
+
+    },
+    "Fijar nota" : {
+
+    },
+    "Filtra por título, contenido o etiqueta" : {
+
+    },
+    "Filtrar notas por categoría" : {
+
+    },
+    "General" : {
+
+    },
+    "Inicio progresivo del alimento actual con buena tolerancia." : {
+
+    },
+    "La creación y edición estarán disponibles cuando se añada el almacenamiento de PetPlanify." : {
+
+    },
+    "La revisión anual fue bien. Mantener seguimiento del peso y revisar la próxima vacuna en la fecha indicada." : {
+
+    },
+    "Leer nota completa" : {
+
+    },
+    "Los cambios de fijado y archivo son temporales y solo se conservan durante esta sesión." : {
+
+    },
+    "Los cambios solo se conservan durante esta sesión." : {
+
+    },
+    "Mejor respuesta durante el paseo" : {
+
+    },
+    "Mostró inseguridad al acercarse a la orilla. No se forzó el contacto y se mantuvo una distancia cómoda." : {
+
+    },
+    "Más antiguas" : {
+
+    },
+    "Más interés por los paseos al aumentar las horas de luz." : {
+
+    },
+    "Más recientes" : {
+
+    },
+    "Neo mantuvo mejor la atención al aumentar la distancia respecto a otros perros y usar premios de alto valor." : {
+
+    },
+    "No archivada" : {
+
+    },
+    "No fijada" : {
+
+    },
+    "No hay notas que coincidan" : {
+
+    },
+    "Nota destacada" : {
+
+    },
+    "Nota general de primavera" : {
+
+    },
+    "Notas activas" : {
+
+    },
+    "Notas archivadas" : {
+
+    },
+    "Notas de Neo" : {
+
+    },
+    "Notas fijadas" : {
+
+    },
+    "Nueva comida" : {
+
+    },
+    "Nueva nota" : {
+
+    },
+    "Observaciones de Neo, ordenadas y fáciles de encontrar." : {
+
+    },
+    "Observación sobre el agua" : {
+
+    },
+    "Orden de las notas" : {
+
+    },
+    "Paseo largo por Aldán" : {
+
+    },
+    "Peso manual registrado: 6,8 kg." : {
+
+    },
+    "Peso registrado" : {
+
+    },
+    "Prueba con otra búsqueda o categoría." : {
+
+    },
+    "Restaurar" : {
+
+    },
+    "Todas" : {
+
+    },
+    "Todavía no hay notas archivadas" : {
+
+    },
+    "Todavía no hay notas fijadas" : {
+
+    },
+    "agua" : {
+
+    },
+    "alimento" : {
+
+    },
+    "apetito" : {
+
+    },
+    "atención" : {
+
+    },
+    "desayuno" : {
+
+    },
+    "descanso" : {
+
+    },
+    "paseo" : {
+
+    },
+    "peso" : {
+
+    },
+    "primavera" : {
+
+    },
+    "registro manual" : {
+
+    },
+    "revisión" : {
+
+    },
+    "transición" : {
+
+    },
+    "vacuna" : {
+
     }
   },
   "version" : "1.0"
