@@ -117,8 +117,6 @@ private struct NutritionDashboardContent: View {
             fact("Cantidad diaria", NutritionFormatting.grams(plan.dailyAmountGrams))
             Divider().frame(height: 38)
             fact("Comidas", "\(plan.mealsPerDay) al día")
-            Divider().frame(height: 38)
-            fact("Calorías aprox.", NutritionFormatting.calories(plan.approximateCaloriesPerDay))
         }
         .padding(15)
         .appSurface(cornerRadius: 16)

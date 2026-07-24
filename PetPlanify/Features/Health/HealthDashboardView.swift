@@ -28,59 +28,39 @@ private struct HealthDashboardContent: View {
         ScrollView {
             VStack(alignment: .leading, spacing: compact ? 16 : 20) {
                 header
-
                 if let vaccination = overview.upcomingVaccination {
-                    UpcomingHealthCard(
-                        vaccination: vaccination,
-                        visit: overview.upcomingVisit,
-                        onSelect: { onPresent(.vaccination(vaccination)) }
-                    )
+                    UpcomingHealthCard(vaccination: vaccination) {
+                        onPresent(.vaccination(vaccination))
+                    }
+                }
+
+                HealthWeightCard(overview: overview, compact: compact) {
+                    onPresent(.registerWeight)
                 }
 
                 ViewThatFits(in: .horizontal) {
                     HStack(alignment: .top, spacing: 14) {
-                        vaccinationHistory
-                        MedicationCard(
-                            history: overview.medicationHistory,
-                            showsHistory: false,
-                            onShowHistory: { onPresent(.medicationHistory) }
-                        )
+                        VaccinationTimelineCard(vaccinations: overview.vaccinations) {
+                            onPresent(.vaccination($0))
+                        }
+                        MedicationCard(overview: overview) {
+                            onPresent(.medicationHistory)
+                        }
+                        .frame(minWidth: 300)
                     }
                     VStack(spacing: 14) {
-                        vaccinationHistory
-                        MedicationCard(
-                            history: overview.medicationHistory,
-                            showsHistory: false,
-                            onShowHistory: { onPresent(.medicationHistory) }
-                        )
+                        VaccinationTimelineCard(vaccinations: overview.vaccinations) {
+                            onPresent(.vaccination($0))
+                        }
+                        MedicationCard(overview: overview) {
+                            onPresent(.medicationHistory)
+                        }
                     }
                 }
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .top, spacing: 14) {
-                        healthObservation
-                        VisitsCard(
-                            visits: Array(overview.visits.dropFirst()),
-                            showsAll: true,
-                            onSelect: { onPresent(.visit($0)) }
-                        )
-                    }
-                    VStack(spacing: 14) {
-                        healthObservation
-                        VisitsCard(
-                            visits: Array(overview.visits.dropFirst()),
-                            showsAll: true,
-                            onSelect: { onPresent(.visit($0)) }
-                        )
-                    }
+                VisitsCard(visits: overview.visits) {
+                    onPresent(.visit($0))
                 }
-
-                DocumentsCard(
-                    documents: overview.documents,
-                    showsStorageNote: false,
-                    onSelect: { onPresent(.document($0)) },
-                    onShowAll: {}
-                )
             }
             .frame(maxWidth: 1_080, alignment: .leading)
             .padding(compact ? 18 : 28)
@@ -96,7 +76,7 @@ private struct HealthDashboardContent: View {
                 Spacer()
                 addButton
             }
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 10) {
                 titleBlock
                 addButton
             }
@@ -109,7 +89,7 @@ private struct HealthDashboardContent: View {
                 Text("Salud")
                     .font(.system(.largeTitle, design: .serif, weight: .semibold))
             }
-            Text("Cuidados, observaciones e historial de Neo")
+            Text("Peso, cuidados e historial veterinario de Neo")
                 .foregroundStyle(AppTheme.secondaryInk)
         }
     }
@@ -119,43 +99,15 @@ private struct HealthDashboardContent: View {
             onPresent(.addRecord)
         } label: {
             Label("Añadir registro", systemImage: "plus")
-                .frame(minHeight: 34)
         }
         .buttonStyle(.bordered)
         .accessibilityIdentifier("health.addRecord")
-    }
-
-    private var vaccinationHistory: some View {
-        VaccinationTimelineCard(
-            vaccinations: Array(overview.vaccinations.filter { $0.status == .completed }.suffix(2)),
-            onSelect: { onPresent(.vaccination($0)) }
-        )
-    }
-
-    private var healthObservation: some View {
-        let observation = DailyCarePreviewData.observations.first { $0.context == .health }!
-        return VStack(alignment: .leading, spacing: 8) {
-            Label("Observación reciente", systemImage: "waveform.path.ecg")
-                .font(.headline)
-            Text(observation.title).font(.subheadline.weight(.semibold))
-            Text(observation.body)
-                .font(.subheadline)
-                .foregroundStyle(AppTheme.secondaryInk)
-            Text("Este registro es una observación personal y no sustituye la valoración veterinaria.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .appSurface()
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("health.observations")
     }
 }
 
 #Preview("Salud · macOS") {
     HealthMacView(overview: HealthPreviewData.neoOverview, onPresent: { _ in })
-        .frame(width: 1_100, height: 860)
+        .frame(width: 1_100, height: 900)
 }
 
 #Preview("Salud · iPhone") {

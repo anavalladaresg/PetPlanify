@@ -2,208 +2,180 @@ import SwiftUI
 
 struct TrainingDetailSheet: View {
     let detail: TrainingDetail
+    let library: [TrickDefinition]
+    let selectedIDs: Set<String>
+    let onAdd: (TrickDefinition) -> Void
     let onDismiss: () -> Void
+    @State private var difficulty: TrickDifficulty?
+    @State private var category: TrickCategory?
+
+    private var filteredLibrary: [TrickDefinition] {
+        library.filter { trick in
+            (difficulty == nil || trick.difficulty == difficulty)
+                && (category == nil || trick.category == category)
+        }
+    }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(title)
-                            .font(.system(.title2, design: .serif, weight: .semibold))
-                        Text(subtitle)
-                            .font(.subheadline)
-                            .foregroundStyle(AppTheme.secondaryInk)
-                    }
-                    Spacer(minLength: 16)
+            VStack(alignment: .leading, spacing: 18) {
+                HStack {
+                    Text(title)
+                        .font(.system(.title2, design: .serif, weight: .semibold))
+                    Spacer()
                     Button("Cerrar", action: onDismiss)
                         .buttonStyle(.bordered)
                 }
-
-                detailContent
+                content
             }
-            .frame(maxWidth: 560, alignment: .leading)
-            .padding(28)
+            .frame(maxWidth: 680, alignment: .leading)
+            .padding(26)
         }
         .appCanvas()
-        .accessibilityIdentifier("training.detailSheet")
+        .accessibilityIdentifier("training.detail")
     }
 
     private var title: String {
         switch detail {
-        case .addTrick: String(localized: "Añadir truco")
-        case .addSession: String(localized: "Registrar sesión")
-        case .trick: String(localized: "Detalle del truco")
-        case .session: String(localized: "Detalle de la sesión")
-        case .behaviorNote: String(localized: "Detalle de la nota")
-        }
-    }
-
-    private var subtitle: String {
-        switch detail {
-        case .addTrick, .addSession:
-            String(localized: "Vista previa sin almacenamiento")
-        case .trick:
-            String(localized: "Progreso de entrenamiento de Neo")
-        case .session:
-            String(localized: "Registro local de ejemplo")
-        case .behaviorNote:
-            String(localized: "Observación personal sobre Neo")
+        case .customTrick: "Truco personalizado"
+        case .library: "Explorar trucos"
+        case let .trick(trick): trick.name
+        case let .behavior(observation): observation.title
         }
     }
 
     @ViewBuilder
-    private var detailContent: some View {
+    private var content: some View {
         switch detail {
-        case .addTrick:
-            FutureTrainingContent(
-                symbol: "sparkles",
-                message: "La creación y el almacenamiento de trucos estarán disponibles más adelante. Esta versión utiliza únicamente datos de ejemplo."
-            )
-        case .addSession:
-            FutureTrainingContent(
-                symbol: "stopwatch",
-                message: "El registro de sesiones estará disponible más adelante. Esta vista previa no inicia un temporizador ni guarda información."
-            )
+        case .customTrick:
+            futureCustom
+        case .library:
+            libraryContent
         case let .trick(trick):
-            TrickDetailContent(trick: trick)
-        case let .session(session):
-            SessionDetailContent(session: session)
-        case let .behaviorNote(note):
-            BehaviorNoteDetailContent(note: note)
+            guideContent(trick)
+        case let .behavior(observation):
+            behaviorContent(observation)
         }
     }
-}
 
-private struct FutureTrainingContent: View {
-    let symbol: String
-    let message: LocalizedStringKey
-
-    var body: some View {
-        VStack(spacing: 18) {
-            Image(systemName: symbol)
-                .font(.system(size: 34, weight: .light))
-                .foregroundStyle(AppTheme.green)
-                .accessibilityHidden(true)
-            Text(message)
-                .foregroundStyle(AppTheme.secondaryInk)
+    private var futureCustom: some View {
+        VStack(spacing: 15) {
+            TrickIllustration(symbol: "plus", size: 70)
+            Text("La creación de trucos personalizados se activará con los formularios funcionales.")
                 .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+                .foregroundStyle(AppTheme.secondaryInk)
         }
         .frame(maxWidth: .infinity)
-        .padding(24)
+        .padding(28)
         .appSurface()
     }
-}
 
-private struct TrickDetailContent: View {
-    let trick: TrainingTrick
-
-    var body: some View {
-        VStack(spacing: 14) {
-            TrainingDetailSurface {
-                TrainingDetailRow(title: "Truco", value: trick.name)
-                TrainingDetailRow(title: "Estado", value: trick.status.title)
-                TrainingDetailRow(title: "Progreso", value: "\(trick.progress) %")
-                TrainingProgressDots(progress: trick.progress, accent: accent)
-                TrainingDetailRow(
-                    title: "Repeticiones correctas",
-                    value: trick.successfulRepetitions.formatted()
-                )
-                TrainingDetailRow(title: "Última práctica", value: trick.lastPractised.title)
-                TrainingDetailRow(title: "Recompensa", value: trick.reward.title)
+    private var libraryContent: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            ViewThatFits(in: .horizontal) {
+                HStack { difficultyPicker; categoryPicker }
+                VStack { difficultyPicker; categoryPicker }
             }
-
-            Label(
-                "Sesiones breves y consistentes ayudan a mantener la concentración de Neo.",
-                systemImage: "info.circle"
-            )
-            .font(.caption)
-            .foregroundStyle(AppTheme.secondaryInk)
-            .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
-    private var accent: Color {
-        switch trick.status {
-        case .mastered: AppTheme.green
-        case .inProgress: AppTheme.orange
-        case .notStarted: AppTheme.secondaryInk
-        }
-    }
-}
-
-private struct SessionDetailContent: View {
-    let session: TrainingSession
-
-    var body: some View {
-        TrainingDetailSurface {
-            TrainingDetailRow(
-                title: "Fecha y hora",
-                value: TrainingFormatting.sessionDate(session.date)
-            )
-            TrainingDetailRow(title: "Tipo de sesión", value: session.type)
-            TrainingDetailRow(
-                title: "Duración",
-                value: String(localized: "\(session.durationMinutes) minutos")
-            )
-            TrainingDetailRow(
-                title: "Trucos practicados",
-                value: session.tricks.joined(separator: ", ")
-            )
-            TrainingDetailRow(title: "Observación", value: session.result)
-            TrainingDetailRow(title: "Estado", value: String(localized: "Registro de ejemplo"))
-        }
-    }
-}
-
-private struct BehaviorNoteDetailContent: View {
-    let note: BehaviorNote
-
-    var body: some View {
-        VStack(spacing: 14) {
-            TrainingDetailSurface {
-                TrainingDetailRow(title: "Título", value: note.title)
-                TrainingDetailRow(title: "Fecha", value: TrainingFormatting.date(note.date))
-                TrainingDetailRow(title: "Estado", value: note.status.title)
-                TrainingDetailRow(title: "Etiquetas", value: note.tags.joined(separator: ", "))
-                TrainingDetailRow(title: "Observación", value: note.description)
+            ForEach(filteredLibrary) { trick in
+                HStack(spacing: 12) {
+                    TrickIllustration(symbol: trick.symbol, size: 48)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(trick.name).font(.headline)
+                        Text("\(trick.difficulty.title) · \(trick.category.title)")
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.secondaryInk)
+                        if !trick.prerequisites.isEmpty {
+                            Text("Requisitos: \(trick.prerequisites.joined(separator: ", "))")
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.secondaryInk)
+                        }
+                    }
+                    Spacer()
+                    Button(selectedIDs.contains(trick.id) ? "Elegido" : "Añadir") {
+                        onAdd(trick)
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(selectedIDs.contains(trick.id))
+                }
+                .padding(12)
+                .appSurface(cornerRadius: 14)
             }
-
-            Text("Estas notas son observaciones personales y no sustituyen la valoración de un educador canino o profesional veterinario.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
-                .fixedSize(horizontal: false, vertical: true)
         }
     }
-}
 
-private struct TrainingDetailSurface<Content: View>: View {
-    @ViewBuilder let content: Content
+    private var difficultyPicker: some View {
+        Picker("Dificultad", selection: $difficulty) {
+            Text("Todas las dificultades").tag(TrickDifficulty?.none)
+            ForEach(TrickDifficulty.allCases) { value in
+                Text(value.title).tag(Optional(value))
+            }
+        }
+    }
 
-    var body: some View {
+    private var categoryPicker: some View {
+        Picker("Categoría", selection: $category) {
+            Text("Todas las categorías").tag(TrickCategory?.none)
+            ForEach(TrickCategory.allCases) { value in
+                Text(value.title).tag(Optional(value))
+            }
+        }
+    }
+
+    private func guideContent(_ trick: TrickDefinition) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            content
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(20)
-        .appSurface()
-    }
-}
-
-private struct TrainingDetailRow: View {
-    let title: LocalizedStringKey
-    let value: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title)
+            HStack(spacing: 14) {
+                TrickIllustration(symbol: trick.symbol, size: 72)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("\(trick.difficulty.title) · \(trick.category.title)")
+                        .font(.headline)
+                    Text(trick.guide.objective)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                }
+            }
+            guideSection("Material necesario", text: trick.guide.materials)
+            numberedSection("Pasos", items: trick.guide.steps)
+            numberedSection("Errores habituales", items: trick.guide.commonMistakes)
+            guideSection("Duración de cada intento", text: trick.guide.recommendedAttempt)
+            guideSection("Recompensa", text: trick.guide.reward)
+            guideSection("Cuándo avanzar", text: trick.guide.advancement)
+            guideSection("Precauciones", text: trick.guide.precautions)
+            Text("Esta guía es general y no sustituye el acompañamiento de un profesional de la educación canina.")
                 .font(.caption)
                 .foregroundStyle(AppTheme.secondaryInk)
-            Text(value)
-                .font(.body.weight(.medium))
-                .fixedSize(horizontal: false, vertical: true)
         }
-        .accessibilityElement(children: .combine)
+    }
+
+    private func behaviorContent(_ observation: BehaviorObservation) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(TrainingFormatting.date(observation.date))
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryInk)
+            Text(observation.body)
+            guideSection("Contexto que ayudó", text: observation.helpfulContext)
+            Text("Es una observación personal y no un diagnóstico de comportamiento.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryInk)
+        }
+        .padding(18)
+        .appSurface()
+    }
+
+    private func guideSection(_ title: LocalizedStringKey, text: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title).font(.headline)
+            Text(text).foregroundStyle(AppTheme.secondaryInk)
+        }
+    }
+
+    private func numberedSection(_ title: LocalizedStringKey, items: [String]) -> some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Text(title).font(.headline)
+            ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                HStack(alignment: .top, spacing: 9) {
+                    Text("\(index + 1).").font(.subheadline.weight(.semibold))
+                    Text(item).foregroundStyle(AppTheme.secondaryInk)
+                }
+            }
+        }
     }
 }

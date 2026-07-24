@@ -3,17 +3,13 @@ import Foundation
 enum ObservationContext: String, CaseIterable, Identifiable, Hashable, Sendable {
     case general
     case nutrition
-    case health
-    case training
 
     var id: Self { self }
 
     var title: String {
         switch self {
-        case .general: "General"
-        case .nutrition: "Alimentación"
-        case .health: "Salud"
-        case .training: "Entrenamiento"
+        case .general: String(localized: "General")
+        case .nutrition: String(localized: "Alimentación")
         }
     }
 }

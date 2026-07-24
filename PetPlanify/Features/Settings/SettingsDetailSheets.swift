@@ -53,6 +53,8 @@ struct SettingsDetailSheet: View {
             }
 
             SettingsGroupCard("Datos de Neo", symbol: "pawprint") {
+                previewField("Foto", value: "Avatar local de Neo")
+                rowDivider
                 previewField("Nombre", value: profile.name)
                 rowDivider
                 previewField("Especie", value: profile.species)
@@ -64,9 +66,23 @@ struct SettingsDetailSheet: View {
                     value: SettingsFormatting.date(profile.birthDate)
                 )
                 rowDivider
+                previewField("Edad aproximada", value: profile.age)
+                rowDivider
                 previewField("Sexo", value: profile.sex)
                 rowDivider
+                previewField(
+                    "Peso actual",
+                    value: WeightUnit.kilograms.formattedWeight(kilograms: profile.currentWeightKilograms)
+                )
+                rowDivider
+                previewField(
+                    "Rango saludable opcional",
+                    value: profile.healthyWeightRangeKilograms.map(WeightUnit.kilograms.formattedRange) ?? "No indicado"
+                )
+                rowDivider
                 previewField("Clínica veterinaria", value: profile.veterinaryClinic)
+                rowDivider
+                previewField("Microchip opcional", value: profile.microchipStatus)
             }
 
             limitation(
@@ -103,7 +119,7 @@ struct SettingsDetailSheet: View {
         .accessibilityIdentifier("settings.futureState.\(action.rawValue)")
     }
 
-    private func previewField(_ label: String, value: String) -> some View {
+    private func previewField(_ label: LocalizedStringKey, value: String) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(label)
                 .font(.caption)
@@ -120,7 +136,7 @@ struct SettingsDetailSheet: View {
         .accessibilityElement(children: .combine)
     }
 
-    private func limitation(_ text: String) -> some View {
+    private func limitation(_ text: LocalizedStringKey) -> some View {
         Label(text, systemImage: "info.circle")
             .font(.subheadline)
             .foregroundStyle(AppTheme.secondaryInk)

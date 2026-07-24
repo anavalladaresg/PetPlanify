@@ -14,7 +14,6 @@ struct SettingsMacView: View {
             distanceUnit: $distanceUnit,
             reminderPreferences: $reminderPreferences,
             includesTitle: true,
-            compact: false,
             onPresent: onPresent
         )
     }
@@ -34,7 +33,6 @@ struct SettingsPhoneView: View {
             distanceUnit: $distanceUnit,
             reminderPreferences: $reminderPreferences,
             includesTitle: false,
-            compact: true,
             onPresent: onPresent
         )
     }
@@ -46,26 +44,28 @@ private struct SettingsDashboardContent: View {
     @Binding var distanceUnit: DistanceUnit
     @Binding var reminderPreferences: ReminderPreferences
     let includesTitle: Bool
-    let compact: Bool
     let onPresent: (SettingsFutureAction) -> Void
 
     private var divider: some View { Divider().overlay(AppTheme.border) }
+    private let foodPlan = NutritionPreviewData.neoPlan
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: compact ? 16 : 20) {
+            VStack(alignment: .leading, spacing: 16) {
                 header
                 SettingsProfileHeader(
                     profile: overview.profile,
                     weightUnit: weightUnit,
                     onEdit: { onPresent(.editProfile) }
                 )
-
-                adaptive(first: preferencesCard, second: remindersCard)
-                adaptive(first: dataPrivacyCard, second: aboutCard)
+                feedingCard
+                healthCard
+                preferencesCard
+                dataPrivacyCard
+                aboutCard
             }
-            .frame(maxWidth: 1_080, alignment: .leading)
-            .padding(compact ? 18 : 28)
+            .frame(maxWidth: 900, alignment: .leading)
+            .padding(18)
         }
         .appCanvas()
         .accessibilityIdentifier("settings.screen")
@@ -77,7 +77,7 @@ private struct SettingsDashboardContent: View {
                 Text("Ajustes")
                     .font(.system(.largeTitle, design: .serif, weight: .semibold))
             }
-            Text("Perfil y preferencias de PetPlanify")
+            Text("Perfil y configuración de PetPlanify")
                 .foregroundStyle(AppTheme.secondaryInk)
             Text("Los cambios de esta versión son temporales.")
                 .font(.caption)
@@ -85,11 +85,40 @@ private struct SettingsDashboardContent: View {
         }
     }
 
+    private var feedingCard: some View {
+        SettingsGroupCard("Alimentación", symbol: "fork.knife", identifier: "settings.feeding") {
+            SettingsValueRow(label: "Alimento", value: foodPlan.currentFood.name)
+            divider
+            SettingsValueRow(label: "Cantidad diaria", value: NutritionFormatting.grams(foodPlan.dailyAmountGrams))
+            divider
+            SettingsValueRow(label: "Comidas", value: "\(foodPlan.mealsPerDay) al día")
+            divider
+            actionRow("Editar alimentación", detail: "Producto, cantidades y horarios") {
+                onPresent(.foodPlan)
+            }
+        }
+    }
+
+    private var healthCard: some View {
+        SettingsGroupCard("Salud", symbol: "cross.case", identifier: "settings.health") {
+            SettingsValueRow(label: "Clínica veterinaria", value: overview.profile.veterinaryClinic)
+            divider
+            SettingsValueRow(label: "Microchip", value: overview.profile.microchipStatus)
+            divider
+            SettingsValueRow(
+                label: "Rango saludable opcional",
+                value: overview.profile.healthyWeightRangeKilograms.map(weightUnit.formattedRange) ?? "No indicado"
+            )
+            divider
+            actionRow("Editar datos de salud", detail: "Valores introducidos manualmente") {
+                onPresent(.healthData)
+            }
+        }
+    }
+
     private var preferencesCard: some View {
         SettingsGroupCard("Preferencias", symbol: "slider.horizontal.3", identifier: "settings.preferences") {
             SettingsValueRow(label: "Idioma", value: overview.preferences.language.title)
-            divider
-            SettingsValueRow(label: "Formato", value: "\(overview.preferences.dateFormat) · \(overview.preferences.timeFormat.title)")
             divider
             SettingsSelectionCard(
                 title: "Peso",
@@ -109,34 +138,19 @@ private struct SettingsDashboardContent: View {
                 identifier: "settings.distanceUnit"
             )
             divider
-            Button {
-                onPresent(.appearance)
-            } label: {
-                SettingsValueRow(label: "Apariencia", value: overview.preferences.appearance, symbol: "sun.max", accent: AppTheme.orange)
-            }
-            .buttonStyle(.plain)
-        }
-        .accessibilityIdentifier("settings.units")
-    }
-
-    private var remindersCard: some View {
-        SettingsGroupCard("Recordatorios", symbol: "bell", identifier: "settings.reminders") {
-            SettingsToggleRow(title: "Salud", isOn: $reminderPreferences.healthEnabled, identifier: "settings.reminder.health")
-            divider
-            SettingsToggleRow(title: "Alimentación", isOn: $reminderPreferences.nutritionEnabled, identifier: "settings.reminder.nutrition")
-            divider
-            SettingsToggleRow(title: "Entrenamiento", isOn: $reminderPreferences.trainingEnabled, identifier: "settings.reminder.training")
-            divider
+            SettingsToggleRow(title: "Recordatorios de salud", isOn: $reminderPreferences.healthEnabled, identifier: "settings.reminder.health")
+            SettingsToggleRow(title: "Recordatorios de alimentación", isOn: $reminderPreferences.nutritionEnabled, identifier: "settings.reminder.nutrition")
+            SettingsToggleRow(title: "Recordatorios de entrenamiento", isOn: $reminderPreferences.trainingEnabled, identifier: "settings.reminder.training")
             Picker("Avisar con", selection: $reminderPreferences.advanceTime) {
                 ForEach(ReminderAdvanceTime.allCases) { value in
                     Text(value.title).tag(value)
                 }
             }
-            .accessibilityIdentifier("settings.reminder.advance")
             Text("Las notificaciones reales se configurarán en una fase posterior.")
                 .font(.caption)
                 .foregroundStyle(AppTheme.secondaryInk)
         }
+        .accessibilityIdentifier("settings.units")
     }
 
     private var dataPrivacyCard: some View {
@@ -144,22 +158,9 @@ private struct SettingsDashboardContent: View {
             Text("Los datos actuales son de demostración y todavía no se guardan de forma permanente.")
                 .font(.subheadline)
             divider
-            Button {
+            actionRow("Almacenamiento, iCloud y copias", detail: "Más adelante") {
                 onPresent(.localStorage)
-            } label: {
-                HStack {
-                    Label("Almacenamiento, iCloud y copias", systemImage: "internaldrive")
-                    Spacer()
-                    Text("Más adelante")
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.orange)
-                    Image(systemName: "chevron.right").accessibilityHidden(true)
-                }
-                .frame(minHeight: 42)
-                .foregroundStyle(AppTheme.ink)
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Almacenamiento, iCloud y copias, no disponible todavía")
             divider
             Text("Esta versión no envía datos a servidores externos ni utiliza análisis o publicidad.")
                 .font(.subheadline)
@@ -170,13 +171,13 @@ private struct SettingsDashboardContent: View {
 
     private var aboutCard: some View {
         SettingsGroupCard("Acerca de", symbol: "info.circle", identifier: "settings.about") {
-            SettingsValueRow(label: overview.appInformation.name, value: overview.appInformation.tagline)
+            SettingsValueRow(label: "PetPlanify", value: overview.appInformation.tagline)
             divider
             SettingsValueRow(label: "Versión", value: "\(overview.appInformation.version) (\(overview.appInformation.build))")
             divider
             SettingsValueRow(label: "Plataformas", value: overview.appInformation.platforms)
             divider
-            Text(overview.appInformation.description)
+            Text("PetPlanify reúne la alimentación, salud y entrenamiento de Neo en un único espacio.")
                 .font(.subheadline)
                 .foregroundStyle(AppTheme.secondaryInk)
             Text(overview.appInformation.credit)
@@ -185,15 +186,26 @@ private struct SettingsDashboardContent: View {
         }
     }
 
-    @ViewBuilder
-    private func adaptive<First: View, Second: View>(first: First, second: Second) -> some View {
-        if compact {
-            VStack(spacing: 16) { first; second }
-        } else {
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .top, spacing: 16) { first; second }
-                VStack(spacing: 16) { first; second }
+    private func actionRow(
+        _ title: LocalizedStringKey,
+        detail: LocalizedStringKey,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.subheadline.weight(.semibold))
+                    Text(detail).font(.caption).foregroundStyle(AppTheme.secondaryInk)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .accessibilityHidden(true)
             }
+            .frame(minHeight: 42)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+        .foregroundStyle(AppTheme.ink)
     }
 }

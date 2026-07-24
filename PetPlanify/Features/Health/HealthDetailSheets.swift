@@ -6,204 +6,154 @@ struct HealthDetailSheet: View {
     let onDismiss: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                HStack {
                     Text(title)
                         .font(.system(.title2, design: .serif, weight: .semibold))
-                    Text(subtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(AppTheme.secondaryInk)
+                    Spacer()
+                    Button("Cerrar", action: onDismiss)
+                        .buttonStyle(.bordered)
                 }
-                Spacer(minLength: 16)
-                Button("Cerrar", action: onDismiss)
-                    .buttonStyle(.bordered)
+                content
             }
-
-            detailContent
+            .frame(maxWidth: 580, alignment: .leading)
+            .padding(26)
         }
-        .frame(maxWidth: 560, alignment: .leading)
-        .padding(28)
         .appCanvas()
-        .accessibilityIdentifier("health.detailSheet")
+        .accessibilityIdentifier("health.detail")
     }
 
     private var title: String {
         switch detail {
-        case .addRecord: String(localized: "Añadir registro")
-        case .vaccination: String(localized: "Detalle de vacuna")
-        case .medicationHistory: String(localized: "Historial de medicamentos")
-        case .symptom: String(localized: "Detalle de observación")
-        case .visit: String(localized: "Detalle de visita")
-        case .document: String(localized: "Metadatos del documento")
-        }
-    }
-
-    private var subtitle: String {
-        switch detail {
-        case .addRecord:
-            String(localized: "Vista previa sin almacenamiento")
-        case .vaccination:
-            String(localized: "Registro de vacunación de Neo")
-        case .medicationHistory:
-            String(localized: "Tratamientos anteriores registrados")
-        case .symptom:
-            String(localized: "Observación personal registrada")
-        case .visit:
-            String(localized: "Información de la visita veterinaria")
-        case .document:
-            String(localized: "Información local de ejemplo")
+        case .addRecord: "Añadir registro"
+        case .registerWeight: "Registrar peso"
+        case let .vaccination(record): record.title
+        case .medicationHistory: "Historial de medicación"
+        case let .visit(visit): visit.reason
         }
     }
 
     @ViewBuilder
-    private var detailContent: some View {
+    private var content: some View {
         switch detail {
         case .addRecord:
-            FutureRecordContent()
+            futureState(
+                symbol: "cross.case",
+                message: "Las visitas, vacunas y medicaciones podrán añadirse cuando definamos el formulario y el modelo definitivo."
+            )
+        case .registerWeight:
+            futureState(
+                symbol: "scalemass",
+                message: "El registro de peso será uno de los primeros formularios funcionales de PetPlanify."
+            )
         case let .vaccination(record):
-            VaccinationDetailContent(record: record)
+            detailCard {
+                HealthDetailRow(title: "Fecha", value: HealthFormatting.date(record.date))
+                HealthDetailRow(title: "Estado", value: record.status.title)
+                HealthDetailRow(title: "Clínica", value: record.clinic)
+                HealthDetailRow(title: "Detalle", value: record.details)
+            }
         case .medicationHistory:
-            MedicationHistoryContent(records: overview.medicationHistory)
-        case let .symptom(record):
-            SymptomDetailContent(record: record)
-        case let .visit(record):
-            VisitDetailContent(record: record)
-        case let .document(document):
-            DocumentDetailContent(document: document)
+            detailCard {
+                if overview.medications.isEmpty {
+                    Text("Todavía no hay medicación registrada.")
+                }
+                ForEach(overview.medications) { medication in
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(medication.name).font(.headline)
+                        Text(medication.notes)
+                            .font(.subheadline)
+                            .foregroundStyle(AppTheme.secondaryInk)
+                        Text("\(HealthFormatting.shortDate(medication.startDate)) · \(medication.status.title)")
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.secondaryInk)
+                    }
+                    .padding(.vertical, 8)
+                }
+            }
+        case let .visit(visit):
+            visitContent(visit)
         }
     }
-}
 
-private struct FutureRecordContent: View {
-    var body: some View {
-        VStack(spacing: 18) {
-            Image(systemName: "square.and.pencil")
+    private func visitContent(_ visit: VeterinaryVisit) -> some View {
+        let followUp = visit.followUpDate.map { HealthFormatting.date($0) } ?? "No indicado"
+        return VStack(alignment: .leading, spacing: 14) {
+            detailCard {
+                HealthDetailRow(title: "Fecha", value: HealthFormatting.date(visit.date))
+                HealthDetailRow(title: "Clínica", value: visit.clinic)
+                HealthDetailRow(title: "Estado", value: visit.status.title)
+                HealthDetailRow(title: "Valoración manual", value: visit.notes)
+                HealthDetailRow(
+                    title: "Tratamiento",
+                    value: visit.medications.isEmpty ? "No registrado" : visit.medications.joined(separator: ", ")
+                )
+                HealthDetailRow(
+                    title: "Próximo seguimiento",
+                    value: followUp
+                )
+            }
+
+            if !visit.documents.isEmpty {
+                Text("Documentos de esta visita")
+                    .font(.headline)
+                ForEach(visit.documents) { document in
+                    HStack {
+                        Label(document.filename, systemImage: "doc.text")
+                        Spacer()
+                        Text("\(document.fileType) · \(document.fileSize)")
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.secondaryInk)
+                    }
+                    .padding(12)
+                    .background(AppTheme.surfaceMuted.opacity(0.55), in: RoundedRectangle(cornerRadius: 12))
+                    .accessibilityLabel("\(document.filename), vinculado a \(visit.reason)")
+                }
+            }
+
+            Text("La información es un registro manual y no sustituye la valoración veterinaria.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryInk)
+        }
+    }
+
+    private func futureState(symbol: String, message: String) -> some View {
+        VStack(spacing: 16) {
+            Image(systemName: symbol)
                 .font(.system(size: 34, weight: .light))
                 .foregroundStyle(AppTheme.green)
                 .accessibilityHidden(true)
-            Text("La creación y el almacenamiento de registros estarán disponibles más adelante. Esta versión utiliza únicamente datos de ejemplo.")
-                .foregroundStyle(AppTheme.secondaryInk)
+            Text(message)
                 .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+                .foregroundStyle(AppTheme.secondaryInk)
         }
         .frame(maxWidth: .infinity)
-        .padding(24)
+        .padding(28)
         .appSurface()
     }
-}
 
-private struct VaccinationDetailContent: View {
-    let record: VaccinationRecord
-
-    var body: some View {
-        HealthDetailSurface {
-            HealthDetailRow(title: "Vacuna", value: record.title)
-            HealthDetailRow(title: "Fecha", value: HealthFormatting.date(record.date))
-            HealthDetailRow(title: "Cobertura registrada", value: record.details)
-            HealthDetailRow(title: "Estado", value: record.status.title)
-        }
-    }
-}
-
-private struct MedicationHistoryContent: View {
-    let records: [MedicationRecord]
-
-    var body: some View {
-        HealthDetailSurface {
-            ForEach(records) { record in
-                HealthDetailRow(title: "Medicamento", value: record.name)
-                HealthDetailRow(
-                    title: "Periodo",
-                    value: "\(HealthFormatting.date(record.startDate)) – \(HealthFormatting.date(record.endDate))"
-                )
-                HealthDetailRow(title: "Estado", value: record.status.title)
-            }
-        }
-    }
-}
-
-private struct SymptomDetailContent: View {
-    let record: SymptomRecord
-
-    var body: some View {
-        VStack(spacing: 14) {
-            HealthDetailSurface {
-                HealthDetailRow(title: "Observación", value: record.name)
-                HealthDetailRow(title: "Fecha", value: HealthFormatting.date(record.date))
-                HealthDetailRow(title: "Intensidad", value: record.severity.title)
-                HealthDetailRow(title: "Estado", value: record.status.title)
-                HealthDetailRow(title: "Observación", value: record.notes)
-            }
-            Text("Estos registros son observaciones personales y no sustituyen la valoración de un profesional veterinario.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-}
-
-private struct VisitDetailContent: View {
-    let record: VeterinaryVisit
-
-    var body: some View {
-        HealthDetailSurface {
-            HealthDetailRow(title: "Motivo", value: record.reason)
-            HealthDetailRow(title: "Clínica", value: record.clinic)
-            HealthDetailRow(title: "Fecha", value: HealthFormatting.date(record.date))
-            HealthDetailRow(title: "Estado", value: record.status.title)
-        }
-    }
-}
-
-private struct DocumentDetailContent: View {
-    let document: HealthDocument
-
-    var body: some View {
-        VStack(spacing: 14) {
-            HealthDetailSurface {
-                HealthDetailRow(title: "Nombre", value: document.filename)
-                HealthDetailRow(title: "Tipo", value: document.fileType)
-                HealthDetailRow(title: "Tamaño", value: document.fileSize)
-                HealthDetailRow(
-                    title: "Última actualización",
-                    value: HealthFormatting.date(document.updatedDate)
-                )
-            }
-            Text("Este elemento representa metadatos de ejemplo. No hay ningún archivo almacenado.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-}
-
-private struct HealthDetailSurface<Content: View>: View {
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            content
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(20)
-        .appSurface()
+    private func detailCard<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 10, content: content)
+            .padding(18)
+            .appSurface()
     }
 }
 
 private struct HealthDetailRow: View {
-    let title: LocalizedStringKey
+    let title: String
     let value: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        HStack(alignment: .top, spacing: 14) {
             Text(title)
-                .font(.caption)
                 .foregroundStyle(AppTheme.secondaryInk)
+            Spacer()
             Text(value)
-                .font(.body.weight(.medium))
-                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 330, alignment: .trailing)
         }
+        .font(.subheadline)
         .accessibilityElement(children: .combine)
     }
 }

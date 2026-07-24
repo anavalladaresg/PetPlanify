@@ -14,8 +14,6 @@ struct FeatureDestinationView: View {
             HealthView()
         case .training:
             TrainingView()
-        case .evolution:
-            EvolutionView()
         case .settings:
             SettingsView()
         }

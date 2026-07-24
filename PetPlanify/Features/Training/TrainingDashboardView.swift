@@ -24,51 +24,35 @@ private struct TrainingDashboardContent: View {
     let compact: Bool
     let onPresent: (TrainingDetail) -> Void
 
+    private var available: [TrickDefinition] {
+        let selected = Set(overview.selectedTricks.map(\.id))
+        return overview.library.filter { !selected.contains($0.id) }
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: compact ? 16 : 20) {
                 header
-
-                Text("\(overview.masteredCount) dominado · \(overview.inProgressCount) en progreso · \(overview.weeklyMinutes) min esta semana")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(AppTheme.secondaryInk)
-                    .accessibilityIdentifier("training.summary")
+                SelectedTricksCard(tricks: overview.selectedTricks) {
+                    onPresent(.trick($0))
+                }
 
                 ViewThatFits(in: .horizontal) {
                     HStack(alignment: .top, spacing: 14) {
-                        TricksProgressCard(
-                            tricks: overview.tricks,
-                            onSelect: { onPresent(.trick($0)) }
-                        )
-                        VStack(spacing: 14) {
-                            RecentSessionsCard(
-                                sessions: overview.sessions,
-                                limit: 3,
-                                onSelect: { onPresent(.session($0)) }
-                            )
-                            BehaviorNotesCard(
-                                notes: overview.behaviorNotes,
-                                limit: 1,
-                                onSelect: { onPresent(.behaviorNote($0)) }
-                            )
+                        TrickLibraryPreviewCard(available: available) {
+                            onPresent(.library)
                         }
-                        .frame(minWidth: 350)
+                        BehaviorObservationsCard(observations: overview.behaviorObservations) {
+                            onPresent(.behavior($0))
+                        }
                     }
                     VStack(spacing: 14) {
-                        TricksProgressCard(
-                            tricks: overview.tricks,
-                            onSelect: { onPresent(.trick($0)) }
-                        )
-                        RecentSessionsCard(
-                            sessions: overview.sessions,
-                            limit: 3,
-                            onSelect: { onPresent(.session($0)) }
-                        )
-                        BehaviorNotesCard(
-                            notes: overview.behaviorNotes,
-                            limit: 1,
-                            onSelect: { onPresent(.behaviorNote($0)) }
-                        )
+                        TrickLibraryPreviewCard(available: available) {
+                            onPresent(.library)
+                        }
+                        BehaviorObservationsCard(observations: overview.behaviorObservations) {
+                            onPresent(.behavior($0))
+                        }
                     }
                 }
             }
@@ -84,11 +68,11 @@ private struct TrainingDashboardContent: View {
             HStack {
                 titleBlock
                 Spacer()
-                actions
+                customButton
             }
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 10) {
                 titleBlock
-                actions
+                customButton
             }
         }
     }
@@ -99,38 +83,25 @@ private struct TrainingDashboardContent: View {
                 Text("Entrenamiento")
                     .font(.system(.largeTitle, design: .serif, weight: .semibold))
             }
-            Text("Práctica breve y avances cotidianos")
+            Text("Trucos elegidos para Neo y guías prudentes para enseñarlos")
                 .foregroundStyle(AppTheme.secondaryInk)
         }
     }
 
-    private var actions: some View {
-        HStack(spacing: 9) {
-            Button {
-                onPresent(.addSession)
-            } label: {
-                Label("Registrar sesión", systemImage: "stopwatch")
-                    .frame(minHeight: 34)
-            }
-            .buttonStyle(.bordered)
-            .accessibilityIdentifier("training.addSession")
-
-            Button {
-                onPresent(.addTrick)
-            } label: {
-                Label("Añadir truco", systemImage: "plus")
-                    .frame(minHeight: 34)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(AppTheme.green)
-            .accessibilityIdentifier("training.addTrick")
+    private var customButton: some View {
+        Button {
+            onPresent(.customTrick)
+        } label: {
+            Label("Truco personalizado", systemImage: "plus")
         }
+        .buttonStyle(.bordered)
+        .accessibilityIdentifier("training.addCustom")
     }
 }
 
 #Preview("Entrenamiento · macOS") {
     TrainingMacView(overview: TrainingPreviewData.neoOverview, onPresent: { _ in })
-        .frame(width: 1_100, height: 820)
+        .frame(width: 1_100, height: 840)
 }
 
 #Preview("Entrenamiento · iPhone") {

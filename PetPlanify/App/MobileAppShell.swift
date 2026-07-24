@@ -10,16 +10,7 @@ struct MobileAppShell: View {
             mobileTab(.nutrition)
             mobileTab(.health)
             mobileTab(.training)
-
-            NavigationStack {
-                MoreView()
-                    .toolbar { reminderToolbar }
-            }
-            .tabItem {
-                Label("Más", systemImage: "ellipsis")
-            }
-            .tag(AppSection.settings)
-            .accessibilityIdentifier("tab.more")
+            mobileTab(.settings)
         }
         .tint(AppTheme.green)
         .accessibilityIdentifier("navigation.iphone")
@@ -42,34 +33,8 @@ struct MobileAppShell: View {
     private var reminderToolbar: some ToolbarContent {
         ToolbarItem(placement: .automatic) {
             AppReminderButton(reminders: $reminders) { section in
-                selectedTab = [.home, .nutrition, .health, .training].contains(section)
-                    ? section
-                    : .settings
+                selectedTab = section
             }
         }
-    }
-}
-
-private struct MoreView: View {
-    private let sections: [AppSection] = [
-        .evolution,
-        .settings
-    ]
-
-    var body: some View {
-        List(sections) { section in
-            NavigationLink {
-                FeatureDestinationView(section: section)
-                    .navigationTitle(section.title)
-            } label: {
-                Label(section.title, systemImage: section.icon)
-                    .foregroundStyle(AppTheme.ink)
-                    .padding(.vertical, 7)
-            }
-            .accessibilityIdentifier("more.\(section.rawValue)")
-        }
-        .scrollContentBackground(.hidden)
-        .background(AppTheme.canvas)
-        .navigationTitle("Más")
     }
 }

@@ -2,24 +2,25 @@ import SwiftUI
 
 struct HomeView: View {
     enum QuickAction: String, Identifiable {
-        case meal, weight, observation, session
+        case weight, appointment, observation, trick
+
         var id: String { rawValue }
 
         var title: String {
             switch self {
-            case .meal: "Registrar comida"
             case .weight: "Registrar peso"
+            case .appointment: "Añadir cita veterinaria"
             case .observation: "Añadir observación"
-            case .session: "Registrar sesión"
+            case .trick: "Añadir truco"
             }
         }
 
         var symbol: String {
             switch self {
-            case .meal: "fork.knife"
             case .weight: "scalemass"
+            case .appointment: "calendar.badge.plus"
             case .observation: "square.and.pencil"
-            case .session: "stopwatch"
+            case .trick: "plus.circle"
             }
         }
     }
@@ -36,15 +37,18 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: isCompact ? 18 : 22) {
                 header
                 identity
-                dailySummary
-                quickActions
                 upcoming
             }
-            .frame(maxWidth: 1_080, alignment: .leading)
+            .frame(maxWidth: 960, alignment: .leading)
             .padding(isCompact ? 18 : 28)
         }
         .appCanvas()
         .accessibilityIdentifier("home.screen")
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                quickActionMenu
+            }
+        }
         .sheet(item: $presentedAction) { action in
             HomeFutureActionSheet(action: action) {
                 presentedAction = nil
@@ -54,9 +58,9 @@ struct HomeView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("¡Buenos días!")
+            Text("Inicio")
                 .font(.system(.largeTitle, design: .serif, weight: .semibold))
-            Text("¿Qué necesita Neo hoy?")
+            Text("¿Qué tengo que recordar sobre Neo?")
                 .font(.title3)
                 .foregroundStyle(AppTheme.secondaryInk)
         }
@@ -65,90 +69,93 @@ struct HomeView: View {
     }
 
     private var identity: some View {
-        HStack(spacing: 13) {
-            PetAvatarView(size: isCompact ? 48 : 54)
+        HStack(spacing: 14) {
+            PetAvatarView(size: isCompact ? 54 : 62)
             VStack(alignment: .leading, spacing: 3) {
-                Text("Neo")
-                    .font(.title3.weight(.semibold))
+                Text(pet.name)
+                    .font(.system(.title2, design: .serif, weight: .semibold))
                 Text("\(pet.breed) · \(pet.age)")
                     .foregroundStyle(AppTheme.secondaryInk)
             }
             Spacer()
-            Text(pet.currentWeight)
-                .font(.title3.weight(.semibold))
-                .accessibilityLabel("Peso actual, \(pet.currentWeight)")
-        }
-        .padding(15)
-        .appSurface(cornerRadius: 16)
-        .accessibilityElement(children: .combine)
-    }
-
-    private var dailySummary: some View {
-        LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: isCompact ? 145 : 210), spacing: 12)],
-            spacing: 12
-        ) {
-            SummaryCard(title: "Próxima comida", value: "\(pet.nextMealTime) · Cena", symbol: "fork.knife", identifier: "home.nextMeal")
-            SummaryCard(title: "Actividad hoy", value: pet.activityToday, symbol: "figure.walk", identifier: "home.activity")
-            SummaryCard(title: "Peso actual", value: pet.currentWeight, symbol: "scalemass", identifier: "home.currentWeight")
-            SummaryCard(title: "Próxima atención", value: "Hoy · 10:30", symbol: "cross.case", identifier: "home.nextCare")
-        }
-    }
-
-    private var quickActions: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Acciones rápidas")
-                .font(.system(.title3, design: .serif, weight: .semibold))
-            LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: isCompact ? 145 : 190), spacing: 10)],
-                spacing: 10
-            ) {
-                ForEach([QuickAction.meal, .weight, .observation, .session]) { action in
-                    Button {
-                        presentedAction = action
-                    } label: {
-                        Label(action.title, systemImage: action.symbol)
-                            .frame(maxWidth: .infinity, minHeight: 42)
-                    }
-                    .buttonStyle(.bordered)
-                    .accessibilityIdentifier(action == .observation ? "home.addObservation" : "home.action.\(action.rawValue)")
-                }
+            VStack(alignment: .trailing, spacing: 2) {
+                Text("Peso actual")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.secondaryInk)
+                Text(pet.currentWeight)
+                    .font(.title3.weight(.semibold))
             }
         }
-        .accessibilityIdentifier("home.quickActions")
+        .padding(16)
+        .appSurface(cornerRadius: 16)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(pet.name), \(pet.breed), \(pet.age), peso actual \(pet.currentWeight)")
+        .accessibilityIdentifier("home.petSummary")
     }
 
     private var upcoming: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Próximamente")
-                .font(.system(.title3, design: .serif, weight: .semibold))
+                .font(.system(.title2, design: .serif, weight: .semibold))
             VStack(spacing: 0) {
-                upcomingRow("Revisión veterinaria anual", detail: "Hoy, 10:30", symbol: "cross.case")
-                Divider().overlay(AppTheme.border)
-                upcomingRow("Comprar comida", detail: "18 de junio, 19:00", symbol: "takeoutbag.and.cup.and.straw")
-                Divider().overlay(AppTheme.border)
-                upcomingRow("Practicar «quieto»", detail: "20 de junio, 18:00", symbol: "figure.walk")
+                ForEach(DailyCarePreviewData.reminders.sorted { $0.date < $1.date }) { reminder in
+                    upcomingRow(reminder)
+                    if reminder.id != DailyCarePreviewData.reminders.last?.id {
+                        Divider().overlay(AppTheme.border)
+                    }
+                }
             }
-            .padding(.horizontal, 15)
+            .padding(.horizontal, 16)
             .appSurface(cornerRadius: 16)
         }
         .accessibilityIdentifier("home.upcoming")
     }
 
-    private func upcomingRow(_ title: String, detail: String, symbol: String) -> some View {
+    private func upcomingRow(_ reminder: CareReminder) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: symbol)
+            Image(systemName: reminderIcon(reminder))
                 .foregroundStyle(AppTheme.green)
-                .frame(width: 24)
+                .frame(width: 26)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.subheadline.weight(.semibold))
-                Text(detail).font(.caption).foregroundStyle(AppTheme.secondaryInk)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(reminder.title).font(.subheadline.weight(.semibold))
+                Text(reminder.date.formatted(
+                    Date.FormatStyle(date: .long, time: .shortened)
+                        .locale(Locale(identifier: "es_ES"))
+                ))
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryInk)
+                Text(reminder.notes)
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.secondaryInk)
             }
             Spacer()
         }
         .padding(.vertical, 12)
         .accessibilityElement(children: .combine)
+    }
+
+    private func reminderIcon(_ reminder: CareReminder) -> String {
+        if reminder.title.contains("Vacuna") { return "syringe" }
+        if reminder.title.contains("cita") { return "cross.case" }
+        if reminder.title.contains("Antiparasitario") { return "pills" }
+        return "scalemass"
+    }
+
+    private var quickActionMenu: some View {
+        Menu {
+            ForEach([QuickAction.weight, .appointment, .observation, .trick]) { action in
+                Button {
+                    presentedAction = action
+                } label: {
+                    Label(action.title, systemImage: action.symbol)
+                }
+            }
+        } label: {
+            Label("Añadir", systemImage: "plus")
+        }
+        .help("Añadir información sobre Neo")
+        .accessibilityIdentifier("home.quickActions")
     }
 }
 
@@ -164,7 +171,7 @@ private struct HomeFutureActionSheet: View {
                 .accessibilityHidden(true)
             Text(action.title)
                 .font(.system(.title2, design: .serif, weight: .semibold))
-            Text("Esta acción estará disponible cuando se añada el almacenamiento de PetPlanify.")
+            Text("El formulario será funcional cuando definamos el modelo de datos definitivo.")
                 .foregroundStyle(AppTheme.secondaryInk)
                 .multilineTextAlignment(.center)
             Button("Cerrar", action: onDismiss)
@@ -179,5 +186,5 @@ private struct HomeFutureActionSheet: View {
 
 #Preview("Inicio") {
     HomeView(pet: PreviewData.neo)
-        .frame(width: 1_000, height: 760)
+        .frame(width: 1_000, height: 700)
 }

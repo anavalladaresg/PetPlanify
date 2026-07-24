@@ -18,13 +18,13 @@ xcodebuild -project PetPlanify.xcodeproj -scheme PetPlanify \
   -destination "platform=macOS" CODE_SIGNING_ALLOWED=NO build
 ```
 
-The application has six focused areas: `Inicio`, `Alimentación`, `Salud`,
-`Entrenamiento`, `Evolución`, and `Ajustes`. Notes are lightweight contextual
-observations, while reminders live in their related feature and in a compact
-reminder view. Gallery is not part of PetPlanify.
+The application has five focused areas: `Inicio`, `Alimentación`, `Salud`,
+`Entrenamiento`, and `Ajustes`. Weight history belongs to Health, behavior
+observations belong to Training, and reminders live in a compact global view.
 
-All current application data remains mock data. Persistence and physical-device
-iPhone validation are planned for future phases.
+All current application data remains mock data. Progressive onboarding,
+functional forms, persistence, and physical-device iPhone validation are
+planned for future phases.
 
 GitHub is intentionally used as lightweight source control and remote backup:
 normal development happens directly on `main` with small descriptive commits.

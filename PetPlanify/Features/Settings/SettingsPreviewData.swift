@@ -40,7 +40,7 @@ enum SettingsPreviewData {
         platforms: "iPhone y Mac",
         interfaceLanguage: "Español",
         technology: "SwiftUI",
-        description: "PetPlanify reúne la alimentación, salud, entrenamiento y evolución de Neo en un único espacio.",
+        description: "PetPlanify reúne la alimentación, salud y entrenamiento de Neo en un único espacio.",
         credit: "Diseñado y desarrollado por Ana Valladares."
     )
 

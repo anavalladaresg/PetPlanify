@@ -56,11 +56,8 @@ struct FoodPlan: Sendable {
     let startDate: Date
     let dailyAmountGrams: Int
     let mealsPerDay: Int
-    let approximateCaloriesPerDay: Int
     let meals: [ScheduledMeal]
     let transition: FoodTransition
-    let currentWeightKilograms: Double
-    let healthyWeightRange: ClosedRange<Double>
     let foodHistory: [FoodHistoryEntry]
 }
 
@@ -69,10 +66,6 @@ enum NutritionFormatting {
 
     static func grams(_ value: Int) -> String {
         "\(value.formatted(.number.locale(spanishLocale))) g"
-    }
-
-    static func calories(_ value: Int) -> String {
-        "\(value.formatted(.number.locale(spanishLocale))) kcal/día"
     }
 
     static func weight(_ value: Double) -> String {

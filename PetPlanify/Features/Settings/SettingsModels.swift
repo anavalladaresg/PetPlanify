@@ -8,8 +8,8 @@ enum WeightUnit: String, CaseIterable, Identifiable, Hashable, Sendable {
 
     var title: String {
         switch self {
-        case .kilograms: "Kilogramos"
-        case .pounds: "Libras"
+        case .kilograms: String(localized: "Kilogramos")
+        case .pounds: String(localized: "Libras")
         }
     }
 
@@ -40,8 +40,8 @@ enum DistanceUnit: String, CaseIterable, Identifiable, Hashable, Sendable {
 
     var title: String {
         switch self {
-        case .kilometers: "Kilómetros"
-        case .miles: "Millas"
+        case .kilometers: String(localized: "Kilómetros")
+        case .miles: String(localized: "Millas")
         }
     }
 }
@@ -49,19 +49,19 @@ enum DistanceUnit: String, CaseIterable, Identifiable, Hashable, Sendable {
 enum TimeFormat: String, Hashable, Sendable {
     case twentyFourHours
 
-    var title: String { "24 horas" }
+    var title: String { String(localized: "24 horas") }
 }
 
 enum WeekStartDay: String, Hashable, Sendable {
     case monday
 
-    var title: String { "Lunes" }
+    var title: String { String(localized: "Lunes") }
 }
 
 enum AppLanguage: String, Hashable, Sendable {
     case spanish
 
-    var title: String { "Español" }
+    var title: String { String(localized: "Español") }
 }
 
 enum ReminderAdvanceTime: String, CaseIterable, Identifiable, Hashable, Sendable {
@@ -74,10 +74,10 @@ enum ReminderAdvanceTime: String, CaseIterable, Identifiable, Hashable, Sendable
 
     var title: String {
         switch self {
-        case .sameDay: "El mismo día"
-        case .oneDay: "1 día de antelación"
-        case .threeDays: "3 días de antelación"
-        case .oneWeek: "1 semana de antelación"
+        case .sameDay: String(localized: "El mismo día")
+        case .oneDay: String(localized: "1 día de antelación")
+        case .threeDays: String(localized: "3 días de antelación")
+        case .oneWeek: String(localized: "1 semana de antelación")
         }
     }
 }
@@ -89,7 +89,7 @@ struct PetProfileSettings: Hashable, Sendable {
     let birthDate: Date
     let sex: String
     let currentWeightKilograms: Double
-    let healthyWeightRangeKilograms: ClosedRange<Double>
+    let healthyWeightRangeKilograms: ClosedRange<Double>?
     let microchipStatus: String
     let veterinaryClinic: String
     let referenceDate: Date
@@ -139,6 +139,8 @@ struct SettingsOverview: Hashable, Sendable {
 
 enum SettingsFutureAction: String, Identifiable, Hashable, Sendable {
     case editProfile
+    case foodPlan
+    case healthData
     case appearance
     case localStorage
     case iCloud
@@ -151,20 +153,24 @@ enum SettingsFutureAction: String, Identifiable, Hashable, Sendable {
 
     var title: String {
         switch self {
-        case .editProfile: "Editar perfil"
-        case .appearance: "Apariencia"
-        case .localStorage: "Almacenamiento local"
-        case .iCloud: "Sincronización con iCloud"
-        case .export: "Exportar datos"
-        case .importData: "Importar datos"
-        case .backup: "Crear copia de seguridad"
-        case .reset: "Restablecer datos"
+        case .editProfile: String(localized: "Editar perfil")
+        case .foodPlan: String(localized: "Editar alimentación")
+        case .healthData: String(localized: "Editar datos de salud")
+        case .appearance: String(localized: "Apariencia")
+        case .localStorage: String(localized: "Almacenamiento local")
+        case .iCloud: String(localized: "Sincronización con iCloud")
+        case .export: String(localized: "Exportar datos")
+        case .importData: String(localized: "Importar datos")
+        case .backup: String(localized: "Crear copia de seguridad")
+        case .reset: String(localized: "Restablecer datos")
         }
     }
 
     var symbol: String {
         switch self {
         case .editProfile: "pencil"
+        case .foodPlan: "fork.knife"
+        case .healthData: "cross.case"
         case .appearance: "sun.max"
         case .localStorage: "internaldrive"
         case .iCloud: "icloud"
@@ -178,21 +184,25 @@ enum SettingsFutureAction: String, Identifiable, Hashable, Sendable {
     var explanation: String {
         switch self {
         case .editProfile:
-            "La edición del perfil estará disponible cuando se añada el almacenamiento de PetPlanify."
+            String(localized: "La edición del perfil estará disponible cuando se añada el almacenamiento de PetPlanify.")
+        case .foodPlan:
+            String(localized: "Aquí se editarán el alimento, la marca, las cantidades, los horarios y el número de comidas.")
+        case .healthData:
+            String(localized: "Aquí se editarán la clínica, el microchip y el rango de peso indicado manualmente.")
         case .appearance:
-            "PetPlanify utiliza actualmente una apariencia clara. Se estudiarán más opciones en una fase posterior."
+            String(localized: "PetPlanify utiliza actualmente una apariencia clara. Se estudiarán más opciones en una fase posterior.")
         case .localStorage:
-            "El almacenamiento local se añadirá en una fase posterior. Los datos actuales son de demostración."
+            String(localized: "El almacenamiento local se añadirá en una fase posterior. Los datos actuales son de demostración.")
         case .iCloud:
-            "La sincronización con iCloud no está activa en esta versión."
+            String(localized: "La sincronización con iCloud no está activa en esta versión.")
         case .export:
-            "La exportación estará disponible cuando PetPlanify incorpore almacenamiento permanente."
+            String(localized: "La exportación estará disponible cuando PetPlanify incorpore almacenamiento permanente.")
         case .importData:
-            "La importación de datos todavía no está disponible."
+            String(localized: "La importación de datos todavía no está disponible.")
         case .backup:
-            "Las copias de seguridad se habilitarán cuando exista almacenamiento permanente."
+            String(localized: "Las copias de seguridad se habilitarán cuando exista almacenamiento permanente.")
         case .reset:
-            "No hay datos permanentes que restablecer en esta versión."
+            String(localized: "No hay datos permanentes que restablecer en esta versión.")
         }
     }
 }

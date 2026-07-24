@@ -118,7 +118,6 @@ extension AppSection {
         case .nutrition: "Alimentación"
         case .health: "Salud"
         case .training: "Entrenamiento"
-        case .evolution: "Evolución"
         case .settings: "Ajustes"
         }
     }

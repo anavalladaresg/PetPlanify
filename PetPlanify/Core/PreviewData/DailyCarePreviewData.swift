@@ -8,62 +8,40 @@ enum DailyCarePreviewData {
             title: "Desayuno tranquilo",
             body: "Neo comió más despacio de lo habitual y terminó toda la ración.",
             date: date(2026, 6, 3, 8, 15)
-        ),
-        PetObservation(
-            id: 1,
-            context: .health,
-            title: "Después de la revisión",
-            body: "Mantener el seguimiento del peso y revisar la próxima vacuna en la fecha indicada.",
-            date: date(2026, 6, 12, 18, 20)
-        ),
-        PetObservation(
-            id: 2,
-            context: .training,
-            title: "Mejor respuesta durante el paseo",
-            body: "Neo mantuvo mejor la atención al aumentar la distancia respecto a otros perros.",
-            date: date(2026, 6, 9, 21, 10)
         )
     ]
 
     static let reminders = [
         CareReminder(
             id: 0,
-            title: "Revisión veterinaria anual",
+            title: "Vacuna anual",
             date: date(2026, 6, 12, 10, 30),
             section: .health,
-            notes: "Revisión general y vacuna anual.",
+            notes: "Vacuna anual en Clínica VetSalud.",
             isCompleted: false
         ),
         CareReminder(
             id: 1,
-            title: "Comprar comida",
-            date: date(2026, 6, 18, 19),
-            section: .nutrition,
-            notes: "Queda aproximadamente una semana de alimento.",
+            title: "Próxima cita veterinaria",
+            date: date(2026, 6, 25, 17),
+            section: .health,
+            notes: "Seguimiento general en Clínica VetSalud.",
             isCompleted: false
         ),
         CareReminder(
             id: 2,
-            title: "Practicar «quieto»",
-            date: date(2026, 6, 20, 18),
-            section: .training,
-            notes: "Sesión breve.",
+            title: "Antiparasitario interno",
+            date: date(2026, 7, 1, 9),
+            section: .health,
+            notes: "Recordatorio personal, sin instrucciones de dosis.",
             isCompleted: false
         ),
         CareReminder(
             id: 3,
             title: "Control mensual de peso",
-            date: date(2026, 7, 1, 9),
-            section: .evolution,
-            notes: "Registrar el peso manualmente.",
-            isCompleted: false
-        ),
-        CareReminder(
-            id: 4,
-            title: "Revisar cartilla veterinaria",
-            date: date(2026, 5, 5, 12),
+            date: date(2026, 7, 5, 9),
             section: .health,
-            notes: "Pendiente desde el 5 de mayo.",
+            notes: "Registrar el peso manualmente.",
             isCompleted: false
         )
     ]

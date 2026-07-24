@@ -19,7 +19,6 @@ enum NutritionPreviewData {
             startDate: planStartDate,
             dailyAmountGrams: 240,
             mealsPerDay: 2,
-            approximateCaloriesPerDay: 420,
             meals: [
                 ScheduledMeal(id: 0, kind: .breakfast, time: "07:30", amountGrams: 120),
                 ScheduledMeal(id: 1, kind: .dinner, time: "19:00", amountGrams: 120)
@@ -30,8 +29,6 @@ enum NutritionPreviewData {
                 progress: 1,
                 completionDate: planStartDate
             ),
-            currentWeightKilograms: 6.8,
-            healthyWeightRange: 6.5 ... 7.5,
             foodHistory: [
                 FoodHistoryEntry(
                     id: 0,

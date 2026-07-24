@@ -91,7 +91,7 @@ struct NutritionMetricsGrid: View {
         if compact {
             [GridItem(.adaptive(minimum: 128), spacing: 12)]
         } else {
-            Array(repeating: GridItem(.flexible(), spacing: 12), count: 3)
+            Array(repeating: GridItem(.flexible(), spacing: 12), count: 2)
         }
     }
 
@@ -101,12 +101,6 @@ struct NutritionMetricsGrid: View {
                 title: "Cantidad diaria",
                 value: NutritionFormatting.grams(plan.dailyAmountGrams),
                 symbol: "scalemass",
-                accent: AppTheme.orange
-            )
-            NutritionMetricCard(
-                title: "Calorías aprox.",
-                value: NutritionFormatting.calories(plan.approximateCaloriesPerDay),
-                symbol: "flame",
                 accent: AppTheme.orange
             )
             NutritionMetricCard(

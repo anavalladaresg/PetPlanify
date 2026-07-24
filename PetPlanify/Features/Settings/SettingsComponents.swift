@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct SettingsGroupCard<Content: View>: View {
-    let title: String
+    let title: LocalizedStringKey
     let symbol: String
     let identifier: String?
     @ViewBuilder let content: Content
 
     init(
-        _ title: String,
+        _ title: LocalizedStringKey,
         symbol: String,
         identifier: String? = nil,
         @ViewBuilder content: () -> Content
@@ -49,7 +49,7 @@ struct SettingsGroupCard<Content: View>: View {
 }
 
 struct SettingsValueRow: View {
-    let label: String
+    let label: LocalizedStringKey
     let value: String
     var symbol: String? = nil
     var accent: Color = AppTheme.green
@@ -75,12 +75,11 @@ struct SettingsValueRow: View {
         }
         .frame(minHeight: 38)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(label), \(value)")
     }
 }
 
 struct SettingsToggleRow: View {
-    let title: String
+    let title: LocalizedStringKey
     @Binding var isOn: Bool
     let identifier: String
 
@@ -110,8 +109,8 @@ struct SettingsToggleRow: View {
 
 struct SettingsSelectionCard<Option: CaseIterable & Identifiable & Hashable>: View
 where Option.AllCases: RandomAccessCollection {
-    let title: String
-    let detail: String
+    let title: LocalizedStringKey
+    let detail: LocalizedStringKey
     let options: Option.AllCases
     @Binding var selection: Option
     let label: (Option) -> String
@@ -190,12 +189,12 @@ struct SettingsProfileHeader: View {
             )
             metric(
                 "Rango saludable",
-                weightUnit.formattedRange(profile.healthyWeightRangeKilograms)
+                profile.healthyWeightRangeKilograms.map(weightUnit.formattedRange) ?? "No indicado"
             )
         }
     }
 
-    private func metric(_ title: String, _ value: String) -> some View {
+    private func metric(_ title: LocalizedStringKey, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(title)
                 .font(.caption)

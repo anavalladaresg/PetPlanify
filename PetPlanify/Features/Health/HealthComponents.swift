@@ -6,94 +6,54 @@ struct HealthStatusBadge: View {
     var body: some View {
         Text(status.title)
             .font(.caption.weight(.semibold))
-            .foregroundStyle(accent)
-            .padding(.horizontal, 9)
-            .padding(.vertical, 5)
-            .background(accent.opacity(0.11), in: Capsule())
-            .accessibilityLabel(String(localized: "Estado: \(status.title)"))
-    }
-
-    private var accent: Color {
-        status.isUpcoming ? AppTheme.orange : AppTheme.green
+            .foregroundStyle(status.isUpcoming ? AppTheme.orange : AppTheme.green)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(
+                (status.isUpcoming ? AppTheme.orange : AppTheme.green).opacity(0.1),
+                in: Capsule()
+            )
     }
 }
 
 struct UpcomingHealthCard: View {
     let vaccination: VaccinationRecord
-    let visit: VeterinaryVisit?
     let onSelect: () -> Void
 
     var body: some View {
         Button(action: onSelect) {
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 20) {
-                    eventIcon
-                    details
-                    Spacer(minLength: 12)
-                    dateBlock
+            HStack(spacing: 14) {
+                Image(systemName: "syringe")
+                    .font(.title3)
+                    .foregroundStyle(AppTheme.orange)
+                    .frame(width: 42, height: 42)
+                    .background(AppTheme.orange.opacity(0.1), in: Circle())
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Próximo cuidado")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                    Text(vaccination.title)
+                        .font(.headline)
+                        .foregroundStyle(AppTheme.ink)
+                    Text("\(HealthFormatting.date(vaccination.date)) · \(vaccination.clinic)")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.secondaryInk)
                 }
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        eventIcon
-                        Spacer()
-                        HealthStatusBadge(status: vaccination.status)
-                    }
-                    details
-                    dateBlock
-                }
+                Spacer()
+                HealthStatusBadge(status: vaccination.status)
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.secondaryInk)
+                    .accessibilityHidden(true)
             }
-            .padding(20)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .appSurface()
+            .padding(14)
+            .contentShape(Rectangle())
+            .appSurface(cornerRadius: 16)
         }
         .buttonStyle(.plain)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(
-            String(localized: "Próxima vacuna: \(vaccination.title), \(vaccination.details), \(HealthFormatting.date(vaccination.date)), \(visit?.clinic ?? "")")
-        )
-        .accessibilityHint("Abre los detalles de la vacuna")
+        .accessibilityLabel("Próximo cuidado, \(vaccination.title), \(HealthFormatting.date(vaccination.date)), \(vaccination.clinic)")
         .accessibilityIdentifier("health.upcoming")
-    }
-
-    private var eventIcon: some View {
-        Image(systemName: "cross.case.fill")
-            .font(.system(size: 27, weight: .medium))
-            .foregroundStyle(AppTheme.orange)
-            .frame(width: 56, height: 56)
-            .background(AppTheme.orange.opacity(0.11), in: Circle())
-            .accessibilityHidden(true)
-    }
-
-    private var details: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            HStack(spacing: 8) {
-                Text("Próximo cuidado")
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(AppTheme.secondaryInk)
-                HealthStatusBadge(status: vaccination.status)
-            }
-            Text(vaccination.title)
-                .font(.system(.title3, design: .serif, weight: .semibold))
-            Text(vaccination.details)
-                .font(.subheadline)
-                .foregroundStyle(AppTheme.secondaryInk)
-            if let visit {
-                Text(visit.clinic)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(AppTheme.green)
-            }
-        }
-        .multilineTextAlignment(.leading)
-    }
-
-    private var dateBlock: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(HealthFormatting.date(vaccination.date))
-                .font(.headline)
-            Text("Revisión anual")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
-        }
     }
 }
 
@@ -102,343 +62,129 @@ struct VaccinationTimelineCard: View {
     let onSelect: (VaccinationRecord) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HealthCardHeader(title: "Calendario de vacunas", symbol: "syringe")
-                .padding(.bottom, 8)
-
-            ForEach(Array(vaccinations.enumerated()), id: \.element.id) { index, record in
-                VaccinationTimelineRow(
-                    record: record,
-                    isLast: index == vaccinations.count - 1,
-                    onSelect: { onSelect(record) }
-                )
-            }
-        }
-        .padding(20)
-        .appSurface()
-        .accessibilityIdentifier("health.vaccinations")
-    }
-}
-
-private struct VaccinationTimelineRow: View {
-    let record: VaccinationRecord
-    let isLast: Bool
-    let onSelect: () -> Void
-
-    var body: some View {
-        Button(action: onSelect) {
-            HStack(alignment: .top, spacing: 13) {
-                timeline
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(HealthFormatting.shortDate(record.date))
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(record.status.isUpcoming ? AppTheme.orange : AppTheme.secondaryInk)
-                    Text(record.title)
-                        .font(.subheadline.weight(.semibold))
-                    Text(record.details)
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.secondaryInk)
-                        .fixedSize(horizontal: false, vertical: true)
+        HealthGroupCard("Vacunas", symbol: "syringe", identifier: "health.vaccinations") {
+            ForEach(vaccinations.sorted { $0.date > $1.date }) { record in
+                Button {
+                    onSelect(record)
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: record.status.isUpcoming ? "calendar.badge.clock" : "checkmark.circle")
+                            .foregroundStyle(record.status.isUpcoming ? AppTheme.orange : AppTheme.green)
+                            .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(record.title).font(.subheadline.weight(.semibold))
+                            Text("\(HealthFormatting.shortDate(record.date)) · \(record.details)")
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.secondaryInk)
+                        }
+                        Spacer()
+                        HealthStatusBadge(status: record.status)
+                    }
+                    .padding(.vertical, 9)
+                    .contentShape(Rectangle())
                 }
-                Spacer(minLength: 8)
-                HealthStatusBadge(status: record.status)
-            }
-            .padding(.vertical, 8)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(
-            "\(HealthFormatting.date(record.date)), \(record.title), \(record.details), \(record.status.title)"
-        )
-        .accessibilityHint("Abre los detalles de la vacuna")
-    }
-
-    private var timeline: some View {
-        VStack(spacing: 0) {
-            Circle()
-                .fill(record.status.isUpcoming ? AppTheme.orange : AppTheme.green)
-                .frame(width: 10, height: 10)
-                .overlay(Circle().stroke(AppTheme.surface, lineWidth: 2))
-            if !isLast {
-                Rectangle()
-                    .fill(AppTheme.border)
-                    .frame(width: 1.5)
-                    .frame(minHeight: 54)
+                .buttonStyle(.plain)
+                .foregroundStyle(AppTheme.ink)
+                if record.id != vaccinations.sorted(by: { $0.date > $1.date }).last?.id {
+                    Divider().overlay(AppTheme.border)
+                }
             }
         }
-        .padding(.top, 4)
-        .accessibilityHidden(true)
     }
 }
 
 struct MedicationCard: View {
-    let history: [MedicationRecord]
-    let showsHistory: Bool
+    let overview: HealthOverview
     let onShowHistory: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HealthCardHeader(title: "Medicamentos actuales", symbol: "pills")
-
-            HStack(spacing: 13) {
-                Image(systemName: "checkmark.circle")
-                    .font(.title2)
+        HealthGroupCard("Medicación actual", symbol: "pills", identifier: "health.medications") {
+            if overview.activeMedications.isEmpty {
+                Label("No hay medicamentos activos", systemImage: "checkmark.circle")
+                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(AppTheme.green)
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("No hay medicamentos activos")
-                        .font(.subheadline.weight(.semibold))
-                    Text("El historial permanece disponible como referencia.")
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.secondaryInk)
-                }
-            }
-            .padding(14)
-            .background(AppTheme.greenSoft.opacity(0.45), in: RoundedRectangle(cornerRadius: 14))
-
-            if showsHistory {
-                ForEach(history) { medication in
-                    Divider().overlay(AppTheme.border)
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            Text(medication.name)
-                                .font(.headline)
-                            Spacer()
-                            HealthStatusBadge(status: medication.status)
-                        }
-                        Text(
-                            "\(HealthFormatting.shortDate(medication.startDate)) – \(HealthFormatting.shortDate(medication.endDate))"
-                        )
-                        .font(.subheadline)
-                        .foregroundStyle(AppTheme.secondaryInk)
-                    }
-                    .accessibilityElement(children: .combine)
-                }
+                    .padding(.vertical, 10)
             } else {
-                Button("Ver historial", action: onShowHistory)
-                    .buttonStyle(.plain)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(AppTheme.green)
-                    .frame(minHeight: 44)
-            }
-        }
-        .padding(20)
-        .appSurface()
-        .accessibilityIdentifier("health.medications")
-    }
-}
-
-struct SymptomsCard: View {
-    let symptoms: [SymptomRecord]
-    let showsAll: Bool
-    let onSelect: (SymptomRecord) -> Void
-
-    private var displayedSymptoms: [SymptomRecord] {
-        showsAll ? symptoms : Array(symptoms.prefix(1))
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HealthCardHeader(title: "Síntomas recientes", symbol: "waveform.path.ecg")
-                .padding(.bottom, 7)
-
-            ForEach(displayedSymptoms) { symptom in
-                Button {
-                    onSelect(symptom)
-                } label: {
-                    HStack(alignment: .top, spacing: 12) {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(HealthFormatting.shortDate(symptom.date))
-                                .font(.caption)
-                                .foregroundStyle(AppTheme.secondaryInk)
-                            Text(symptom.name)
-                                .font(.subheadline.weight(.semibold))
-                            Text(symptom.notes)
-                                .font(.caption)
-                                .foregroundStyle(AppTheme.secondaryInk)
-                                .fixedSize(horizontal: false, vertical: true)
-                            HStack(spacing: 8) {
-                                Text(symptom.severity.title)
-                                Text("•")
-                                Text(symptom.status.title)
-                            }
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(AppTheme.green)
-                        }
-                        Spacer(minLength: 8)
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(AppTheme.secondaryInk)
-                            .accessibilityHidden(true)
-                    }
-                    .padding(.vertical, 8)
-                    .contentShape(Rectangle())
+                ForEach(overview.activeMedications) { medication in
+                    Text(medication.name).font(.subheadline.weight(.semibold))
                 }
+            }
+            Button("Ver historial", action: onShowHistory)
                 .buttonStyle(.plain)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(
-                    "\(HealthFormatting.date(symptom.date)), \(symptom.name), intensidad \(symptom.severity.title), \(symptom.status.title), \(symptom.notes)"
-                )
-                .accessibilityHint("Abre los detalles de la observación")
-
-                if symptom.id != displayedSymptoms.last?.id {
-                    Divider().overlay(AppTheme.border)
-                }
-            }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(AppTheme.green)
+                .frame(minHeight: 36)
         }
-        .padding(20)
-        .appSurface()
-        .accessibilityIdentifier("health.symptoms")
     }
 }
 
 struct VisitsCard: View {
     let visits: [VeterinaryVisit]
-    let showsAll: Bool
     let onSelect: (VeterinaryVisit) -> Void
 
-    private var displayedVisits: [VeterinaryVisit] {
-        showsAll ? visits : Array(visits.prefix(1))
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HealthCardHeader(title: showsAll ? "Visitas veterinarias" : "Próxima visita", symbol: "cross.case")
-                .padding(.bottom, 7)
-
-            ForEach(displayedVisits) { visit in
+        HealthGroupCard("Visitas veterinarias", symbol: "cross.case", identifier: "health.visits") {
+            ForEach(visits.sorted { $0.date > $1.date }) { visit in
                 Button {
                     onSelect(visit)
                 } label: {
                     HStack(alignment: .top, spacing: 12) {
-                        Image(systemName: visit.status.isUpcoming ? "calendar.badge.clock" : "checkmark.circle")
-                            .foregroundStyle(visit.status.isUpcoming ? AppTheme.orange : AppTheme.green)
-                            .frame(width: 24)
-                            .accessibilityHidden(true)
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(HealthFormatting.date(visit.date))
-                                .font(.caption.weight(.medium))
-                                .foregroundStyle(visit.status.isUpcoming ? AppTheme.orange : AppTheme.secondaryInk)
-                            Text(visit.reason)
-                                .font(.subheadline.weight(.semibold))
-                            Text(visit.clinic)
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(visit.reason).font(.subheadline.weight(.semibold))
+                            Text("\(HealthFormatting.date(visit.date)) · \(visit.clinic)")
                                 .font(.caption)
                                 .foregroundStyle(AppTheme.secondaryInk)
+                            if !visit.documents.isEmpty {
+                                Label(
+                                    visit.documents.count == 1 ? "1 documento vinculado" : "\(visit.documents.count) documentos vinculados",
+                                    systemImage: "paperclip"
+                                )
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.green)
+                            }
                         }
-                        Spacer(minLength: 8)
+                        Spacer()
                         HealthStatusBadge(status: visit.status)
-                    }
-                    .padding(.vertical, 8)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(
-                    "\(HealthFormatting.date(visit.date)), \(visit.reason), \(visit.clinic), \(visit.status.title)"
-                )
-                .accessibilityHint("Abre los detalles de la visita")
-
-                if visit.id != displayedVisits.last?.id {
-                    Divider().overlay(AppTheme.border)
-                }
-            }
-        }
-        .padding(20)
-        .appSurface()
-        .accessibilityIdentifier("health.visits")
-    }
-}
-
-struct DocumentsCard: View {
-    let documents: [HealthDocument]
-    let showsStorageNote: Bool
-    let onSelect: (HealthDocument) -> Void
-    let onShowAll: () -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HealthCardHeader(title: "Documentos", symbol: "doc.text")
-                .padding(.bottom, 7)
-
-            ForEach(documents) { document in
-                Button {
-                    onSelect(document)
-                } label: {
-                    HStack(alignment: .top, spacing: 12) {
-                        Image(systemName: "doc.richtext")
-                            .foregroundStyle(AppTheme.orange)
-                            .frame(width: 24)
-                            .accessibilityHidden(true)
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(document.filename)
-                                .font(.subheadline.weight(.semibold))
-                                .lineLimit(2)
-                            Text("\(document.fileType) · \(document.fileSize)")
-                                .font(.caption)
-                                .foregroundStyle(AppTheme.secondaryInk)
-                            Text(String(localized: "Actualizado el \(HealthFormatting.shortDate(document.updatedDate))"))
-                                .font(.caption2)
-                                .foregroundStyle(AppTheme.secondaryInk)
-                        }
-                        Spacer(minLength: 8)
                         Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
+                            .font(.caption)
                             .foregroundStyle(AppTheme.secondaryInk)
                             .accessibilityHidden(true)
                     }
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 10)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(
-                    "\(document.filename), \(document.fileType), \(document.fileSize), actualizado el \(HealthFormatting.date(document.updatedDate))"
-                )
-                .accessibilityHint("Abre los metadatos del documento")
-
-                if document.id != documents.last?.id {
+                .foregroundStyle(AppTheme.ink)
+                if visit.id != visits.sorted(by: { $0.date > $1.date }).last?.id {
                     Divider().overlay(AppTheme.border)
                 }
             }
-
-            if showsStorageNote {
-                Text("El almacenamiento de documentos estará disponible más adelante.")
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.secondaryInk)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 8)
-            } else {
-                Button("Ver todos", action: onShowAll)
-                    .buttonStyle(.plain)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(AppTheme.green)
-                    .frame(minHeight: 44)
-            }
         }
-        .padding(20)
-        .appSurface()
-        .accessibilityIdentifier("health.documents")
     }
 }
 
-struct HealthCardHeader: View {
+struct HealthGroupCard<Content: View>: View {
     let title: LocalizedStringKey
     let symbol: String
+    let identifier: String
+    @ViewBuilder let content: Content
+
+    init(_ title: LocalizedStringKey, symbol: String, identifier: String, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.symbol = symbol
+        self.identifier = identifier
+        self.content = content()
+    }
 
     var body: some View {
-        Label(title, systemImage: symbol)
-            .font(.headline)
-            .foregroundStyle(AppTheme.ink)
+        VStack(alignment: .leading, spacing: 6) {
+            Label(title, systemImage: symbol)
+                .font(.system(.title3, design: .serif, weight: .semibold))
+                .foregroundStyle(AppTheme.ink)
+            content
+        }
+        .padding(18)
+        .appSurface()
+        .accessibilityIdentifier(identifier)
     }
-}
-
-#Preview("Calendario de vacunas") {
-    VaccinationTimelineCard(
-        vaccinations: HealthPreviewData.neoOverview.vaccinations,
-        onSelect: { _ in }
-    )
-    .frame(width: 520)
-    .padding()
-    .appCanvas()
 }
