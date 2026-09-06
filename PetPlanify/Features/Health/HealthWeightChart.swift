@@ -24,6 +24,11 @@ struct HealthWeightCard: View {
         return max(0, minimum - padding)...(maximum + padding)
     }
 
+    private var changeFromFirstToLast: Double? {
+        guard records.count > 1, let first = records.first, let last = records.last else { return nil }
+        return unit.fromKilograms(last.weight) - unit.fromKilograms(first.weight)
+    }
+
     var body: some View {
         CareSection(title: "Peso", style: .compact, symbol: "scalemass") {
             weightSummary
@@ -56,13 +61,32 @@ struct HealthWeightCard: View {
                 HStack(alignment: .firstTextBaseline, spacing: AppTheme.Space.md) {
                     weightValue(weight)
                     Spacer(minLength: 0)
-                    weightDate
+                    VStack(alignment: .trailing, spacing: AppTheme.Space.xs) {
+                        weightDate
+                        changeBadge
+                    }
                 }
                 VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
                     weightValue(weight)
                     weightDate
+                    changeBadge
                 }
             }
+        }
+    }
+
+    @ViewBuilder private var changeBadge: some View {
+        if let changeFromFirstToLast {
+            let isIncrease = changeFromFirstToLast >= 0
+            let color = isIncrease ? AppTheme.orange : AppTheme.green
+            let sign = isIncrease ? "+" : "−"
+            Text("\(sign)\(AppFormat.number(abs(changeFromFirstToLast))) \(unit.symbol)")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(color)
+                .padding(.horizontal, 7)
+                .padding(.vertical, 3)
+                .background(color.opacity(0.12), in: Capsule())
+                .accessibilityLabel(String(localized: "Cambio desde el primer registro: \(sign)\(AppFormat.number(abs(changeFromFirstToLast))) \(unit.symbol)"))
         }
     }
 
@@ -98,6 +122,18 @@ struct HealthWeightCard: View {
                 )
                 .foregroundStyle(AppTheme.greenSoft.opacity(0.45))
                 .accessibilityHidden(true)
+            }
+            if records.count > 1 {
+                ForEach(records) { record in
+                    AreaMark(
+                        x: .value("Fecha", record.date),
+                        yStart: .value("Base", yDomain.lowerBound),
+                        yEnd: .value("Peso", unit.fromKilograms(record.weight))
+                    )
+                    .foregroundStyle(AppTheme.green.opacity(0.10))
+                    .interpolationMethod(.monotone)
+                    .accessibilityHidden(true)
+                }
             }
             ForEach(records) { record in
                 LineMark(x: .value("Fecha", record.date), y: .value("Peso", unit.fromKilograms(record.weight)))
@@ -138,7 +174,7 @@ struct HealthWeightCard: View {
         .chartYAxis {
             AxisMarks(position: .leading, values: .automatic(desiredCount: 3)) { _ in
                 AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [2, 4]))
-                    .foregroundStyle(AppTheme.border.opacity(0.55))
+                    .foregroundStyle(AppTheme.border.opacity(0.35))
                 AxisValueLabel().font(.caption2).foregroundStyle(AppTheme.secondaryInk)
             }
         }

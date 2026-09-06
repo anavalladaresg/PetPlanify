@@ -10,8 +10,24 @@ struct TrainingView: View {
         training.observations.sorted { $0.date > $1.date }
     }
 
+    private var masteredCount: Int {
+        training.selectedTricks.filter { $0.status == .mastered }.count
+    }
+
+    private var averageProgress: Int {
+        guard !training.selectedTricks.isEmpty else { return 0 }
+        let total = training.selectedTricks.reduce(0) { $0 + $1.progress }
+        return Int((Double(total) / Double(training.selectedTricks.count)).rounded())
+    }
+
     var body: some View {
         CarePage {
+            TrainingOverview(
+                selectedCount: training.selectedTricks.count,
+                masteredCount: masteredCount,
+                averageProgress: averageProgress
+            )
+
             CareSection(title: "Mis trucos", style: training.selectedTricks.isEmpty ? .highlighted : .plain) {
                 if training.selectedTricks.isEmpty {
                     firstTrick

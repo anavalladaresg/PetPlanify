@@ -15,7 +15,7 @@ struct HealthHistoryView: View {
             .overlay {
                 if recordCount == 0 {
                     ContentUnavailableView {
-                        Label("Todavía no hay registros", systemImage: "cross.case")
+                        Label("Todavía no hay registros", systemImage: kind.systemImage)
                     } actions: {
                         Button("Añadir registro", systemImage: "plus") { sheet = kind.createSheet }
                             .buttonStyle(.borderedProminent)
@@ -76,6 +76,18 @@ struct HealthHistoryView: View {
         case .dewormings: store.snapshot.health.dewormings.count
         case .medications: store.snapshot.health.medications.count
         case .visits: store.snapshot.health.visits.count
+        }
+    }
+}
+
+private extension HealthHistoryKind {
+    var systemImage: String {
+        switch self {
+        case .weights: "scalemass"
+        case .vaccines: "syringe"
+        case .dewormings: "pills"
+        case .medications: "pills.fill"
+        case .visits: "cross.case"
         }
     }
 }

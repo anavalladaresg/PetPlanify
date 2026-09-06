@@ -5,12 +5,22 @@ struct MacAppShell: View {
     @Environment(AppNavigation.self) private var navigation
     var body: some View {
         NavigationSplitView {
-            List(selection: Binding<AppSection?>(get: { navigation.selection }, set: { if let value = $0 { navigation.selection = value } })) {
+            List {
                 ForEach(AppSection.allCases) { section in
-                    Label(section.title, systemImage: section.icon)
-                        .padding(.vertical, 5)
-                        .tag(section)
+                    Button { navigation.selection = section } label: {
+                        Label(section.title, systemImage: section.icon)
+                            .font(.body.weight(navigation.selection == section ? .semibold : .regular))
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(navigation.selection == section ? AppTheme.green : AppTheme.ink)
+                            .padding(.vertical, AppTheme.Space.sm)
+                            .padding(.horizontal, AppTheme.Space.sm)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(navigation.selection == section ? AppTheme.greenSoft.opacity(0.8) : .clear, in: RoundedRectangle(cornerRadius: AppTheme.compactRadius, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 10))
                         .accessibilityIdentifier("sidebar.\(section.rawValue)")
+                        .accessibilityAddTraits(navigation.selection == section ? .isSelected : [])
                 }
             }
             .listStyle(.sidebar)
@@ -27,6 +37,7 @@ struct MacAppShell: View {
                 }.padding(AppTheme.Space.lg)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(AppTheme.sidebar)
+                    .background(RoundedRectangle(cornerRadius: AppTheme.compactRadius).fill(AppTheme.surface.opacity(0.45)).padding(8))
                     .overlay(alignment: .top) { Divider().opacity(0.5) }
                     .accessibilityElement(children: .combine)
             }

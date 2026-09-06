@@ -1,5 +1,135 @@
 import SwiftUI
 
+struct TrainingOverview: View {
+    let selectedCount: Int
+    let masteredCount: Int
+    let averageProgress: Int
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var hasAppeared = false
+
+    private var completion: Double {
+        guard selectedCount > 0 else { return 0 }
+        return Double(masteredCount) / Double(selectedCount)
+    }
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            horizontalLayout
+            verticalLayout
+        }
+        .padding(AppTheme.Space.xl)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            LinearGradient(
+                colors: [AppTheme.greenSoft.opacity(0.9), AppTheme.surface],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+        .appSurface(cornerRadius: AppTheme.heroRadius, elevated: true)
+        .scaleEffect(hasAppeared || reduceMotion ? 1 : 0.985)
+        .opacity(hasAppeared || reduceMotion ? 1 : 0)
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.easeOut(duration: 0.35)) { hasAppeared = true }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("training.overview")
+    }
+
+    private var horizontalLayout: some View {
+        HStack(alignment: .center, spacing: AppTheme.Space.xl) {
+            DogPoseIllustration(pose: .offeringPaw)
+                .frame(width: 122, height: 96)
+            copy
+            Spacer(minLength: AppTheme.Space.sm)
+            TrainingProgressRing(value: completion, label: "Dominados")
+        }
+    }
+
+    private var verticalLayout: some View {
+        VStack(alignment: .leading, spacing: AppTheme.Space.lg) {
+            HStack(alignment: .center, spacing: AppTheme.Space.lg) {
+                DogPoseIllustration(pose: .offeringPaw)
+                    .frame(width: 110, height: 88)
+                copy
+            }
+            HStack(spacing: AppTheme.Space.lg) {
+                TrainingStat(value: selectedCount, label: "En progreso")
+                TrainingStat(value: masteredCount, label: "Dominados")
+                TrainingStat(value: averageProgress, suffix: "%", label: "Avance medio")
+            }
+        }
+    }
+
+    private var copy: some View {
+        VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
+            Text("Entrena a su ritmo")
+                .font(.title2.weight(.semibold))
+                .fontDesign(.serif)
+                .foregroundStyle(AppTheme.ink)
+                .accessibilityAddTraits(.isHeader)
+            Text(selectedCount == 0
+                 ? "Un momento breve cada día hace la diferencia."
+                 : "Pequeños pasos, mucha confianza.")
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.secondaryInk)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct TrainingStat: View {
+    let value: Int
+    var suffix: String = ""
+    let label: LocalizedStringKey
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
+            Text("\(value)\(suffix)")
+                .font(.title3.weight(.semibold).monospacedDigit())
+                .foregroundStyle(AppTheme.ink)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryInk)
+                .lineLimit(2)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+struct TrainingProgressRing: View {
+    let value: Double
+    let label: LocalizedStringKey
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(AppTheme.greenSoft, lineWidth: 8)
+            Circle()
+                .trim(from: 0, to: max(0, min(value, 1)))
+                .stroke(AppTheme.green, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .animation(reduceMotion ? nil : .easeOut(duration: 0.45), value: value)
+            VStack(spacing: 0) {
+                Text("\(Int((value * 100).rounded()))%")
+                    .font(.headline.monospacedDigit())
+                    .foregroundStyle(AppTheme.ink)
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.secondaryInk)
+            }
+        }
+        .frame(width: 82, height: 82)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
+        .accessibilityValue("\(Int((value * 100).rounded())) por ciento")
+    }
+}
+
 struct TrickIllustration: View {
     let definition: TrickDefinition
     var width: CGFloat = 100
@@ -15,25 +145,27 @@ struct TrickIllustration: View {
         }
     }
 
-    private var hasDedicatedPose: Bool {
-        ["sentado", "tumba", "quieto", "pata", "ven-aqui"].contains(definition.id)
-    }
-
     var body: some View {
-        Group {
+        ZStack {
+            RoundedRectangle(cornerRadius: AppTheme.compactRadius, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [AppTheme.greenSoft.opacity(0.82), AppTheme.surfaceMuted.opacity(0.46)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(alignment: .bottomTrailing) {
+                    Image(systemName: definition.iconIdentifier)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(AppTheme.green.opacity(0.42))
+                        .padding(AppTheme.Space.sm)
+                        .accessibilityHidden(true)
+                }
             if let asset = definition.illustrationAssetName {
-                Image(asset).resizable().scaledToFit()
+                Image(asset).resizable().scaledToFit().padding(AppTheme.Space.sm)
             } else {
                 DogPoseIllustration(pose: pose)
-                    .overlay(alignment: .topTrailing) {
-                        if !hasDedicatedPose {
-                            Image(systemName: definition.iconIdentifier)
-                                .font(.caption.weight(.medium))
-                                .foregroundStyle(AppTheme.green)
-                                .padding(5)
-                                .background(AppTheme.surface, in: Circle())
-                        }
-                    }
             }
         }
         .frame(width: width, height: height)

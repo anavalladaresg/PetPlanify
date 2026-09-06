@@ -452,6 +452,9 @@
     "Comida %lld" : {
 
     },
+    "Comidas" : {
+
+    },
     "Cómo recompensar" : {
 
     },
@@ -564,9 +567,6 @@
 
     },
     "Dejar el objeto demasiado cerca o inaccesible durante demasiado tiempo." : {
-
-    },
-    "Desde" : {
 
     },
     "Desde %@" : {
@@ -1056,6 +1056,9 @@
 
     },
     "Hora de la comida %lld" : {
+
+    },
+    "Horario" : {
 
     },
     "iCloud" : {
@@ -1613,6 +1616,9 @@
     "PetPlanify" : {
 
     },
+    "PetPlanify adapta colores y contraste al tema elegido." : {
+
+    },
     "PetPlanify guarda la información localmente. No vende tus datos, no incluye publicidad ni servicios de analítica y no envía los registros de tu mascota a servidores externos. Si activas iCloud, se utiliza tu entorno de Apple." : {
 
     },
@@ -1987,6 +1993,9 @@
 
     },
     "Tecnología" : {
+
+    },
+    "Tema" : {
 
     },
     "Tienes un cuidado pendiente en PetPlanify." : {

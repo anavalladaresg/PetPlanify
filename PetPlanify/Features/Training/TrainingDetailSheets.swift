@@ -210,22 +210,69 @@ struct TrickDetailView: View {
         let layout = dynamicTypeSize.isAccessibilitySize
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: AppTheme.Space.md))
             : AnyLayout(HStackLayout(alignment: .center, spacing: AppTheme.Space.lg))
-        return layout {
-            TrickIllustration(definition: definition, width: 138, height: 112)
-            VStack(alignment: .leading, spacing: AppTheme.Space.sm) {
-                Text(definition.name).font(.title2.weight(.semibold)).fontDesign(.serif)
-                    .accessibilityAddTraits(.isHeader)
-                Text(definition.difficulty.title)
-                    .font(.subheadline.weight(.medium)).foregroundStyle(AppTheme.green)
-                Text(definition.category.title)
-                    .font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
-                if customTrick != nil {
-                    Text("Guía escrita por ti").font(.footnote).foregroundStyle(AppTheme.secondaryInk)
+        return VStack(alignment: .leading, spacing: AppTheme.Space.lg) {
+            layout {
+                TrickIllustration(
+                    definition: definition,
+                    width: dynamicTypeSize.isAccessibilitySize ? 150 : 164,
+                    height: dynamicTypeSize.isAccessibilitySize ? 118 : 132
+                )
+                VStack(alignment: .leading, spacing: AppTheme.Space.sm) {
+                    Text(definition.name)
+                        .font(.title.weight(.semibold))
+                        .fontDesign(.serif)
+                        .accessibilityAddTraits(.isHeader)
+                    Text(customTrick == nil ? "Guía práctica para hacerlo juntos" : "Guía escrita por ti")
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .center, spacing: AppTheme.Space.sm) {
+                    metadata(for: definition)
+                    Spacer(minLength: AppTheme.Space.sm)
+                    if let selected { TrainingProgressRing(value: Double(selected.progress) / 100, label: "Progreso") }
+                }
+                VStack(alignment: .leading, spacing: AppTheme.Space.md) {
+                    metadata(for: definition)
+                    if let selected {
+                        HStack(spacing: AppTheme.Space.sm) {
+                            TrainingProgressRing(value: Double(selected.progress) / 100, label: "Progreso")
+                            Text("\(selected.progress)% completado")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(AppTheme.secondaryInk)
+                        }
+                    }
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .accessibilityElement(children: .combine)
+        .padding(AppTheme.Space.xl)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            LinearGradient(
+                colors: [AppTheme.greenSoft.opacity(0.76), AppTheme.surface],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+        .appSurface(cornerRadius: AppTheme.heroRadius, elevated: true)
+        .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder
+    private func metadata(for definition: TrickDefinition) -> some View {
+        Text(definition.difficulty.title)
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(AppTheme.green)
+            .padding(.horizontal, AppTheme.Space.md)
+            .padding(.vertical, AppTheme.Space.xs)
+            .background(AppTheme.greenSoft.opacity(0.78), in: Capsule())
+        Text(definition.category.title)
+            .font(.subheadline)
+            .foregroundStyle(AppTheme.secondaryInk)
     }
 
     @ViewBuilder

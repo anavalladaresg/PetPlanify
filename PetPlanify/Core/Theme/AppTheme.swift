@@ -13,6 +13,10 @@ enum AppTheme {
     static let orange = adaptive(light: (0.70, 0.34, 0.11), dark: (0.96, 0.65, 0.36))
     static let border = adaptive(light: (0.85, 0.844, 0.80), dark: (0.28, 0.33, 0.28))
     static let orangeSoft = adaptive(light: (0.982, 0.948, 0.89), dark: (0.225, 0.185, 0.125))
+    static let peachSoft = adaptive(light: (0.985, 0.925, 0.86), dark: (0.25, 0.17, 0.13))
+    static let sageSurface = adaptive(light: (0.89, 0.93, 0.85), dark: (0.16, 0.24, 0.18))
+    static let trainingSoft = adaptive(light: (0.91, 0.94, 0.78), dark: (0.19, 0.27, 0.14))
+    static let lavenderSoft = adaptive(light: (0.90, 0.89, 0.94), dark: (0.18, 0.18, 0.25))
     static let shadow = adaptive(light: (0.28, 0.24, 0.16), dark: (0.02, 0.025, 0.02))
     static let cornerRadius: CGFloat = 20
     static let compactRadius: CGFloat = 16
@@ -52,5 +56,10 @@ extension View {
         background(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous).fill(AppTheme.surface)
             .shadow(color: AppTheme.shadow.opacity(elevated ? 0.10 : 0.035), radius: elevated ? 14 : 5, x: 0, y: elevated ? 6 : 2))
             .overlay(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous).stroke(AppTheme.border, lineWidth: 0.75))
+            .overlay(alignment: .top) {
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .stroke(AppTheme.surface.opacity(0.9), lineWidth: 0.7)
+                    .mask(LinearGradient(colors: [.white, .clear], startPoint: .top, endPoint: .center))
+            }
     }
 }

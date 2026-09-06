@@ -41,7 +41,7 @@ struct NutritionView: View {
                     }
                     if !plan.notes.isEmpty { Text(plan.notes).foregroundStyle(AppTheme.secondaryInk) }
                 } else {
-                    EmptyCareState(title: "Su alimentación, a su manera", symbol: "fork.knife", message: "Guarda el alimento, la cantidad y los horarios que ya sigues.")
+                    EmptyCareState(title: "Su alimentación, a su manera", symbol: "fork.knife", message: "Guarda el alimento, la cantidad y los horarios que ya sigues.", illustration: .bowl)
                 }
                 Button(store.snapshot.nutrition.plan == nil ? "Configurar alimentación" : "Editar plan") { editingPlan = true }
                     .buttonStyle(.borderedProminent).accessibilityIdentifier("foodPlan.edit")

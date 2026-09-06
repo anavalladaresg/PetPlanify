@@ -18,7 +18,11 @@ struct SettingsView: View {
         Form {
             Section("Perfil") {
                 HStack(spacing: 12) {
-                    PetAvatarView(size: 52, photoURL: store.profilePhotoURL())
+                    ZStack {
+                        Circle().fill(AppTheme.greenSoft)
+                        PetAvatarView(size: 48, photoURL: store.profilePhotoURL())
+                    }
+                    .frame(width: 56, height: 56)
                     VStack(alignment: .leading) {
                         Text(store.snapshot.pet.name).font(.headline)
                         Text(store.snapshot.pet.ageDescription()).foregroundStyle(AppTheme.secondaryInk)
@@ -30,11 +34,17 @@ struct SettingsView: View {
                 }.accessibilityIdentifier("profile.edit")
             }
             Section("Alimentación") {
-                Button("Editar plan de alimentación") { food = true }
+                Button { food = true } label: {
+                    Label("Editar plan de alimentación", systemImage: "fork.knife")
+                }
             }
             Section("Salud") {
-                Button("Ver registros de salud") { navigation.selection = .health }
-                Button("Editar clínica, microchip y rango de peso") { profile = true }
+                Button { navigation.selection = .health } label: {
+                    Label("Ver registros de salud", systemImage: "heart.fill")
+                }
+                Button { profile = true } label: {
+                    Label("Editar clínica, microchip y rango de peso", systemImage: "cross.case")
+                }
             }
             Section("Preferencias") {
                 Picker("Peso", selection: preference(\.weightUnit)) { ForEach(WeightUnit.allCases) { Text($0.title).tag($0) } }

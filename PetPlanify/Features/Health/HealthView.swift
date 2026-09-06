@@ -76,14 +76,15 @@ struct HealthView: View {
         CareSection(title: "Desparasitación", style: .compact) {
             VStack(spacing: 0) {
                 ForEach(DewormingKind.allCases) { kind in
+                    let accent = kind == .externalDeworming ? AppTheme.orange : AppTheme.green
                     if let record = health.dewormings.filter({ $0.kind == kind }).max(by: { $0.applicationDate < $1.applicationDate }) {
-                        HealthRecordRow(title: kind.shortTitle, subtitle: dewormingSubtitle(record), symbol: kind.symbol, status: record.status().title, statusColor: record.status().displayColor) {
+                        HealthRecordRow(title: kind.shortTitle, subtitle: dewormingSubtitle(record), symbol: kind.symbol, status: record.status().title, statusColor: record.status().displayColor, symbolAccent: accent) {
                             sheet = .deworming(record, kind)
                         }
                     } else {
                         Button { sheet = .deworming(nil, kind) } label: {
                             HStack(spacing: AppTheme.Space.md) {
-                                CareSymbol(systemName: kind.symbol)
+                                CareSymbol(systemName: kind.symbol, accent: accent)
                                 Text(kind.shortTitle).font(.body.weight(.medium)).foregroundStyle(AppTheme.ink)
                                 Spacer(minLength: AppTheme.Space.sm)
                                 Image(systemName: "plus").font(.subheadline.weight(.medium))
@@ -107,7 +108,7 @@ struct HealthView: View {
         CareSection(title: "Medicación", style: .compact, symbol: "pills") {
             let active = health.medications.filter { $0.isActive() }.sorted { $0.startDate > $1.startDate }
             if active.isEmpty {
-                EmptyCareState(title: "No hay medicamentos activos", symbol: "pills")
+                EmptyCareState(title: "No hay medicamentos activos", symbol: "pills", message: "Las medicaciones finalizadas quedan disponibles en el historial.")
             } else {
                 ForEach(active.prefix(3)) { record in
                     HealthRecordRow(title: record.name, subtitle: String(localized: "Desde \(AppFormat.date(record.startDate))"), symbol: "pills", status: record.status().title, statusColor: record.status().displayColor) {
@@ -152,7 +153,7 @@ struct HealthView: View {
         CareSection(title: "Observaciones de salud", style: .plain, symbol: "text.bubble") {
             let records = health.observations.filter { $0.context == .health || $0.context == .general }.sorted { $0.date > $1.date }
             if records.isEmpty {
-                Text("Anota cambios o detalles que quieras comentar en la próxima visita.").foregroundStyle(AppTheme.secondaryInk)
+                EmptyCareState(title: "Aún no hay observaciones", symbol: "text.bubble", message: "Anota cambios o detalles para comentarlos en la próxima visita.")
             }
             ForEach(Array(records.prefix(showsAllObservations ? records.count : 2))) { record in
                 HealthRecordRow(title: record.title, subtitle: "\(AppFormat.date(record.date)) · \(record.body)") {

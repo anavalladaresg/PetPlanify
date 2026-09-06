@@ -69,6 +69,7 @@ struct HealthRecordRow: View {
     var symbol: String = "chevron.right"
     var status: String? = nil
     var statusColor: Color = AppTheme.secondaryInk
+    var symbolAccent: Color = AppTheme.green
     var isHistorical = false
     let action: () -> Void
 
@@ -76,7 +77,7 @@ struct HealthRecordRow: View {
         Button(action: action) {
             HStack(alignment: .center, spacing: 12) {
                 if symbol != "chevron.right" {
-                    CareSymbol(systemName: symbol, accent: isHistorical ? AppTheme.secondaryInk : AppTheme.green)
+                    CareSymbol(systemName: symbol, accent: isHistorical ? AppTheme.secondaryInk : symbolAccent)
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
@@ -88,8 +89,11 @@ struct HealthRecordRow: View {
                         .fixedSize(horizontal: false, vertical: true)
                     if let status {
                         Text(status)
-                            .font(.caption.weight(.medium))
+                            .font(.caption.weight(.semibold))
                             .foregroundStyle(statusColor)
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 3)
+                            .background(statusColor.opacity(0.12), in: Capsule())
                     }
                 }
                 .multilineTextAlignment(.leading)
@@ -162,7 +166,13 @@ struct HealthVisitRow: View {
     @ViewBuilder private var metadata: some View {
         Text(AppFormat.date(visit.date)).font(.caption).foregroundStyle(AppTheme.secondaryInk)
         if visit.date > .now {
-            Text(visit.status().title).font(.caption.weight(.medium)).foregroundStyle(AppTheme.green)
+            let status = visit.status()
+            Text(status.title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(status.displayColor)
+                .padding(.horizontal, 7)
+                .padding(.vertical, 3)
+                .background(status.displayColor.opacity(0.12), in: Capsule())
         }
         if attachmentCount > 0 {
             Label("\(attachmentCount)", systemImage: "paperclip")

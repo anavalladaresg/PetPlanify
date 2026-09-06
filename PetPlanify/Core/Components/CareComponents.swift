@@ -80,9 +80,14 @@ struct EmptyCareState: View {
     let title: LocalizedStringKey
     var symbol: String = "leaf"
     var message: LocalizedStringKey = ""
+    var illustration: PetCareIllustration.Kind? = nil
     var body: some View {
         HStack(alignment: .top, spacing: AppTheme.Space.md) {
-            CareSymbol(systemName: symbol, size: 40)
+            if let illustration {
+                PetCareIllustration(kind: illustration).frame(width: 96, height: 76)
+            } else {
+                CareSymbol(systemName: symbol, size: 40)
+            }
             VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
                 Text(title).font(.body.weight(.medium))
                 if message != "" {
