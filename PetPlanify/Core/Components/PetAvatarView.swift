@@ -34,3 +34,5 @@ struct PetAvatarView: View {
         #endif
     }
 }
+
+#Preview { PetAvatarView(size: 86).padding(30).appCanvas() }

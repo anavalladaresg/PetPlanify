@@ -86,6 +86,7 @@ struct ReminderEditor: View {
     var record: CareReminder?
     @State private var value = CareReminder(date: Date.now.addingTimeInterval(3_600))
     @State private var error: String?
+    @State private var loaded = false
     var body: some View {
         CareForm(title: "Recordatorio", onSave: save) {
             Section {
@@ -97,7 +98,7 @@ struct ReminderEditor: View {
                 if !store.snapshot.preferences.reminders.notificationsEnabled { Text("Puedes activar las notificaciones del dispositivo en Ajustes. El recordatorio estará disponible en la aplicación.").font(.caption).foregroundStyle(AppTheme.secondaryInk) }
             }
             if let error { Text(error).foregroundStyle(.red) }
-        }.onAppear { if let record { value = record } }
+        }.onAppear { guard !loaded else { return }; loaded = true; if let record { value = record } }
     }
     private func save() async -> Bool {
         value.title = value.title.trimmingCharacters(in: .whitespacesAndNewlines)

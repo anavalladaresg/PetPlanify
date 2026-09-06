@@ -7,6 +7,10 @@ enum AppFormat {
     static func weight(_ kg: Double, unit: WeightUnit) -> String {
         "\(number(unit.fromKilograms(kg))) \(unit.symbol)"
     }
+    static func distance(meters: Double, unit: DistanceUnit) -> String {
+        let value = unit == .kilometers ? meters / 1_000 : meters / 1_609.344
+        return "\(number(value)) \(unit == .kilometers ? "km" : "mi")"
+    }
     static func grams(_ value: Double) -> String { "\(number(value)) g" }
     static func date(_ date: Date) -> String { date.formatted(date: .abbreviated, time: .omitted) }
     static func dateTime(_ date: Date) -> String { date.formatted(date: .abbreviated, time: .shortened) }

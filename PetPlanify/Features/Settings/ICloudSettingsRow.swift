@@ -22,6 +22,7 @@ struct ICloudSettingsRow: View {
         if busy { ProgressView() }
         Group { EmptyView() }
             .task {
+                guard store.externalServicesEnabled else { return }
                 available = await provider.isAvailable()
                 status = available ? String(localized: "Disponible") : String(localized: "No configurado")
             }
@@ -54,8 +55,8 @@ struct ICloudSettingsRow: View {
                 status = String(localized: "Sincronizado")
             } else {
                 let archive = try await store.exportBackup().validatedBackup
-                try await provider.upload(archive)
-                status = String(localized: "Sincronizado")
+                let uploaded = try await provider.upload(archive)
+                status = uploaded ? String(localized: "Sincronizado") : String(localized: "Sincronizando")
             }
         } catch { store.report(error); status = String(localized: "Error") }
         busy = false
@@ -64,8 +65,8 @@ struct ICloudSettingsRow: View {
         busy = true; status = String(localized: "Sincronizando")
         do {
             let archive = try await store.exportBackup().validatedBackup
-            try await provider.upload(archive)
-            status = String(localized: "Sincronizado")
+            let uploaded = try await provider.upload(archive)
+            status = uploaded ? String(localized: "Sincronizado") : String(localized: "Sincronizando")
         } catch { store.report(error); status = String(localized: "Error") }
         busy = false; remote = nil
     }

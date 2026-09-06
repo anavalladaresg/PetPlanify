@@ -125,3 +125,11 @@ private enum TrainingPresentation: Identifiable {
         }
     }
 }
+
+#Preview("Entrenamiento") {
+    NavigationStack { TrainingView() }.environment(PetPlanifyStore.preview())
+}
+
+#Preview("Primeros trucos") {
+    NavigationStack { TrainingView() }.environment(PetPlanifyStore.preview(empty: true))
+}

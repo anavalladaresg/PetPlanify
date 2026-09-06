@@ -11,6 +11,7 @@ struct OnboardingView: View {
     @State private var weight = ""
     @State private var error: String?
     @State private var saving = false
+    @State private var photoLoading = false
     var body: some View {
         VStack(spacing: 0) {
             if step == 0 {
@@ -26,7 +27,7 @@ struct OnboardingView: View {
             } else if step < 3 {
                 Form {
                     if step == 1 {
-                        ProfileIdentityFields(draft: $draft, photoData: $photoData, removePhoto: $removePhoto)
+                        ProfileIdentityFields(draft: $draft, photoData: $photoData, removePhoto: $removePhoto, isLoadingPhoto: $photoLoading)
                     } else {
                         ProfileBasicFields(draft: $draft, exactBirthday: $exactBirthday, approximateAge: $approximateAge, weight: $weight, unit: .kilograms)
                     }
@@ -49,7 +50,7 @@ struct OnboardingView: View {
                 Spacer()
                 Button(step == 0 ? "Empezar" : step == 3 ? "Entrar en PetPlanify" : "Continuar") {
                     next()
-                }.buttonStyle(.borderedProminent).controlSize(.large).disabled(saving).accessibilityIdentifier("onboarding.next")
+                }.buttonStyle(.borderedProminent).controlSize(.large).disabled(saving || photoLoading).accessibilityIdentifier("onboarding.next")
             }.padding(22)
         }
         .appCanvas()

@@ -47,6 +47,7 @@ struct CareForm<Content: View>: View {
     @Environment(\.dismiss) private var dismiss
     let title: LocalizedStringKey
     let onSave: () async -> Bool
+    var saveDisabled = false
     @ViewBuilder var content: Content
     @State private var saving = false
     @State private var saveFailed = false
@@ -75,7 +76,7 @@ struct CareForm<Content: View>: View {
                                 if await onSave() { dismiss() } else { saveFailed = true }
                                 saving = false
                             }
-                        }.disabled(saving).accessibilityIdentifier("form.save")
+                        }.disabled(saving || saveDisabled).accessibilityIdentifier("form.save")
                     }
                 }
                 .interactiveDismissDisabled(saving)

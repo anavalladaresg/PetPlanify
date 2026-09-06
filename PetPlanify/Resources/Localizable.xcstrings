@@ -1,747 +1,778 @@
 {
-  "sourceLanguage" : "es",
-  "strings" : {
-    "¿Qué tengo que recordar sobre Neo?" : {
-
-    },
-    "%@ · %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$@"
+  "sourceLanguage": "es",
+  "strings": {
+    "": {},
+    " Detente ante señales de incomodidad y nunca fuerces la conducta.": {},
+    "%@ · %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$@"
           }
         }
       }
     },
-    "%@, %@, %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@, %2$@, %3$@"
+    "%@ · %lld %%": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$lld %%"
           }
         }
       }
     },
-    "%@, %@, %@, clínica veterinaria %@" : {
-
-    },
-    "%@, %@, %@, peso actual %@" : {
-
-    },
-    "%@, %@, %lld por ciento" : {
-
-    },
-    "%@, vinculado a %@" : {
-
-    },
-    "%lld al día" : {
-
-    },
-    "%lld años" : {
-
-    },
-    "%lld documentos vinculados" : {
-
-    },
-    "%lld por ciento" : {
-
-    },
-    "%lld recordatorios pendientes" : {
-
-    },
-    "%lld." : {
-
-    },
-    "1 año" : {
-
-    },
-    "1 día de antelación" : {
-
-    },
-    "1 documento vinculado" : {
-
-    },
-    "1 semana de antelación" : {
-
-    },
-    "3 días de antelación" : {
-
-    },
-    "24 horas" : {
-
-    },
-    "Abre una vista previa sin almacenamiento" : {
-
-    },
-    "Abrir biblioteca" : {
-
-    },
-    "Acerca de" : {
-
-    },
-    "Acompaña sus rutinas y celebra cada nuevo aprendizaje." : {
-
-    },
-    "Activa" : {
-
-    },
-    "Activa esta preferencia temporal" : {
-
-    },
-    "Activado localmente" : {
-
-    },
-    "Ajustes" : {
-
-    },
-    "Alimentación" : {
-
-    },
-    "Alimento" : {
-
-    },
-    "Alimento actual" : {
-
-    },
-    "Alimento actual, %@, marca %@, %@, desde %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Alimento actual, %1$@, marca %2$@, %3$@, desde %4$@"
+    "%@ – %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ – %2$@"
           }
         }
       }
     },
-    "Alimento anterior" : {
-
-    },
-    "Alimento seco" : {
-
-    },
-    "Almacenamiento local" : {
-
-    },
-    "Almacenamiento, iCloud y copias" : {
-
-    },
-    "Añadir" : {
-
-    },
-    "Añadir desparasitación" : {
-
-    },
-    "Añadir información sobre Neo" : {
-
-    },
-    "Añadir registro" : {
-
-    },
-    "Apariencia" : {
-
-    },
-    "Aplicación registrada manualmente." : {
-
-    },
-    "Aprendiendo" : {
-
-    },
-    "Aquí se editarán el alimento, la marca, las cantidades, los horarios y el número de comidas." : {
-
-    },
-    "Aquí se editarán la clínica, el microchip y el rango de peso indicado manualmente." : {
-
-    },
-    "Avanzada" : {
-
-    },
-    "Avisar con" : {
-
-    },
-    "Cambio de alimento completado" : {
-
-    },
-    "Cambios recientes del plan de Neo" : {
-
-    },
-    "Cantidad diaria" : {
-
-    },
-    "Categoría" : {
-
-    },
-    "Cena" : {
-
-    },
-    "Cerrar" : {
-
-    },
-    "Clínica" : {
-
-    },
-    "Clínica veterinaria" : {
-
-    },
-    "Comidas" : {
-
-    },
-    "Completada" : {
-
-    },
-    "Completada el %@" : {
-
-    },
-    "Comportamiento" : {
-
-    },
-    "Comprimido" : {
-
-    },
-    "Contexto que ayudó" : {
-
-    },
-    "Convivencia" : {
-
-    },
-    "Crear copia de seguridad" : {
-
-    },
-    "Cuándo avanzar" : {
-
-    },
-    "Cuidado registrado manualmente" : {
-
-    },
-    "Datos de Neo" : {
-
-    },
-    "Datos y privacidad" : {
-
-    },
-    "De 7,3 kg en enero a 6,8 kg en junio. El rango mostrado fue introducido manualmente." : {
-
-    },
-    "Desactiva esta preferencia temporal" : {
-
-    },
-    "Desactivado localmente" : {
-
-    },
-    "Desayuno" : {
-
-    },
-    "Desde %@" : {
-
-    },
-    "Desde el 10 de mayo · anteriormente %@" : {
-
-    },
-    "Desparasitación" : {
-
-    },
-    "Desparasitación externa" : {
-
-    },
-    "Desparasitación interna" : {
-
-    },
-    "Detalle" : {
-
-    },
-    "Dificultad" : {
-
-    },
-    "Distancia" : {
-
-    },
-    "Diversión" : {
-
-    },
-    "Documentos de esta visita" : {
-
-    },
-    "Dominado" : {
-
-    },
-    "Duración de cada intento" : {
-
-    },
-    "Edad aproximada" : {
-
-    },
-    "Editar alimentación" : {
-
-    },
-    "Editar datos de salud" : {
-
-    },
-    "Editar perfil" : {
-
-    },
-    "Editar plan" : {
-
-    },
-    "El almacenamiento local se añadirá en una fase posterior. Los datos actuales son de demostración." : {
-
-    },
-    "El formulario permitirá registrar desparasitación interna o externa sin incluir instrucciones de dosis." : {
-
-    },
-    "El formulario será funcional cuando definamos el modelo de datos definitivo." : {
-
-    },
-    "El mismo día" : {
-
-    },
-    "El plan diario de Neo" : {
-
-    },
-    "El rango saludable es una referencia introducida manualmente y no sustituye la valoración veterinaria." : {
-
-    },
-    "El registro de peso será uno de los primeros formularios funcionales de PetPlanify." : {
-
-    },
-    "Elegido" : {
-
-    },
-    "Entrenamiento" : {
-
-    },
-    "Errores habituales" : {
-
-    },
-    "Es una observación personal y no un diagnóstico de comportamiento." : {
-
-    },
-    "Español" : {
-
-    },
-    "Especie" : {
-
-    },
-    "Esta guía es general y no sustituye el acompañamiento de un profesional de la educación canina." : {
-
-    },
-    "Esta pantalla es informativa. No se guardan cambios ni se accede a archivos o servicios externos." : {
-
-    },
-    "Esta versión no envía datos a servidores externos ni utiliza análisis o publicidad." : {
-
-    },
-    "Estado" : {
-
-    },
-    "Estos registros son personales y no contienen instrucciones de dosis ni sustituyen la valoración veterinaria." : {
-
-    },
-    "Evolución del peso" : {
-
-    },
-    "Evolución del peso de Neo" : {
-
-    },
-    "Explorar trucos" : {
-
-    },
-    "Exportar datos" : {
-
-    },
-    "Fácil" : {
-
-    },
-    "Fecha" : {
-
-    },
-    "Fecha de nacimiento" : {
-
-    },
-    "Fin" : {
-
-    },
-    "Finalizada" : {
-
-    },
-    "Foto" : {
-
-    },
-    "General" : {
-
-    },
-    "Guías integradas por dificultad, categoría y requisitos previos." : {
-
-    },
-    "Historial de alimentos" : {
-
-    },
-    "Historial de desparasitación" : {
-
-    },
-    "Historial de medicación" : {
-
-    },
-    "Historial de vacunas" : {
-
-    },
-    "Horario de comidas" : {
-
-    },
-    "Idioma" : {
-
-    },
-    "Importar datos" : {
-
-    },
-    "Inicio" : {
-
-    },
-    "Kilogramos" : {
-
-    },
-    "Kilómetros" : {
-
-    },
-    "La creación de trucos personalizados se activará con los formularios funcionales." : {
-
-    },
-    "La edición del perfil estará disponible cuando se añada el almacenamiento de PetPlanify." : {
-
-    },
-    "La edición se añadirá más adelante. Por ahora, este panel utiliza datos de ejemplo y no guarda cambios." : {
-
-    },
-    "La exportación estará disponible cuando PetPlanify incorpore almacenamiento permanente." : {
-
-    },
-    "La importación de datos todavía no está disponible." : {
-
-    },
-    "La información es un registro manual y no sustituye la valoración veterinaria." : {
-
-    },
-    "La sincronización con iCloud no está activa en esta versión." : {
-
-    },
-    "Las copias de seguridad se habilitarán cuando exista almacenamiento permanente." : {
-
-    },
-    "Las notificaciones reales se configurarán en una fase posterior." : {
-
-    },
-    "Las visitas, vacunas, desparasitaciones y medicaciones podrán añadirse cuando definamos el formulario y el modelo definitivo." : {
-
-    },
-    "Libras" : {
-
-    },
-    "Los datos actuales son de demostración y todavía no se guardan de forma permanente." : {
-
-    },
-    "Lunes" : {
-
-    },
-    "Marcar %@ como completado" : {
-
-    },
-    "Marcar %@ como pendiente" : {
-
-    },
-    "Más adelante" : {
-
-    },
-    "Material necesario" : {
-
-    },
-    "Media" : {
-
-    },
-    "Medicación actual" : {
-
-    },
-    "Mes" : {
-
-    },
-    "Microchip" : {
-
-    },
-    "Microchip opcional" : {
-
-    },
-    "Millas" : {
-
-    },
-    "Mis trucos" : {
-
-    },
-    "Neo" : {
-
-    },
-    "Neo, teckel, 2 años" : {
-
-    },
-    "No hay datos permanentes que restablecer en esta versión." : {
-
-    },
-    "No hay medicamentos activos" : {
-
-    },
-    "No indicada" : {
-
-    },
-    "No indicado" : {
-
-    },
-    "No registrada" : {
-
-    },
-    "Nombre" : {
-
-    },
-    "Notas" : {
-
-    },
-    "Obediencia básica" : {
-
-    },
-    "Observación reciente" : {
-
-    },
-    "Organiza sus comidas, cantidades y hábitos de alimentación." : {
-
-    },
-    "Pasos" : {
-
-    },
-    "Pendiente" : {
-
-    },
-    "Perfil y configuración de PetPlanify" : {
-
-    },
-    "Personaliza PetPlanify y la información de Neo." : {
-
-    },
-    "Peso" : {
-
-    },
-    "Peso actual" : {
-
-    },
-    "Peso, cuidados e historial veterinario de Neo" : {
-
-    },
-    "PetPlanify" : {
-
-    },
-    "PetPlanify reúne la alimentación, salud y entrenamiento de Neo en un único espacio." : {
-
-    },
-    "PetPlanify utiliza actualmente una apariencia clara. Se estudiarán más opciones en una fase posterior." : {
-
-    },
-    "Pipeta" : {
-
-    },
-    "Plan actual" : {
-
-    },
-    "Plan anterior" : {
-
-    },
-    "Plataformas" : {
-
-    },
-    "Por empezar" : {
-
-    },
-    "Precauciones" : {
-
-    },
-    "Preferencia temporal." : {
-
-    },
-    "Preferencias" : {
-
-    },
-    "Producto" : {
-
-    },
-    "Producto, cantidades y horarios" : {
-
-    },
-    "Producto: %@" : {
-
-    },
-    "Progreso" : {
-
-    },
-    "Progreso de la transición" : {
-
-    },
-    "Próxima" : {
-
-    },
-    "Próxima aplicación" : {
-
-    },
-    "Próxima aplicación: %@" : {
-
-    },
-    "Próxima desparasitación externa" : {
-
-    },
-    "Próxima desparasitación interna" : {
-
-    },
-    "Próximamente" : {
-
-    },
-    "Próximo cuidado" : {
-
-    },
-    "Próximo cuidado, %@, %@, %@" : {
-
-    },
-    "Próximo seguimiento" : {
-
-    },
-    "Rango inferior" : {
-
-    },
-    "Rango orientativo" : {
-
-    },
-    "Rango saludable" : {
-
-    },
-    "Rango saludable opcional" : {
-
-    },
-    "Rango superior" : {
-
-    },
-    "Raza" : {
-
-    },
-    "Recompensa" : {
-
-    },
-    "Recordatorios de alimentación" : {
-
-    },
-    "Recordatorios de entrenamiento" : {
-
-    },
-    "Recordatorios de salud" : {
-
-    },
-    "Registrar peso" : {
-
-    },
-    "Registro personal sin instrucciones de dosis." : {
-
-    },
-    "Requisitos: %@" : {
-
-    },
-    "Restablecer datos" : {
-
-    },
-    "Reúne el seguimiento de salud y las próximas visitas veterinarias." : {
-
-    },
-    "Salud" : {
-
-    },
-    "Seguridad" : {
-
-    },
-    "Sexo" : {
-
-    },
-    "Sin próxima fecha" : {
-
-    },
-    "Sin registro anterior" : {
-
-    },
-    "Sincronización con iCloud" : {
-
-    },
-    "Solo cambia los valores mostrados aquí." : {
-
-    },
-    "Son observaciones personales, no diagnósticos de comportamiento." : {
-
-    },
-    "Teckel · 2 años" : {
-
-    },
-    "Tipo" : {
-
-    },
-    "Todas las categorías" : {
-
-    },
-    "Todas las dificultades" : {
-
-    },
-    "Todavía no hay medicación registrada." : {
-
-    },
-    "Todo lo importante sobre Neo, de un vistazo." : {
-
-    },
-    "Transición de alimento" : {
-
-    },
-    "Tratamiento" : {
-
-    },
-    "Truco personalizado" : {
-
-    },
-    "Trucos elegidos para Neo y guías prudentes para enseñarlos" : {
-
-    },
-    "Última aplicación" : {
-
-    },
-    "Última aplicación: %@" : {
-
-    },
-    "Vacunas" : {
-
-    },
-    "Valoración manual" : {
-
-    },
-    "Valores introducidos manualmente" : {
-
-    },
-    "Vencida" : {
-
-    },
-    "Ver historial" : {
-
-    },
-    "Ver historial completo" : {
-
-    },
-    "Ver todos" : {
-
-    },
-    "Versión" : {
-
-    },
-    "Visitas veterinarias" : {
-
-    },
-    "Vista previa del perfil" : {
-
-    }
+    "%@ → %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ → %2$@"
+          }
+        }
+      }
+    },
+    "%@: %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "%lld años": {},
+    "%lld comidas": {},
+    "%lld meses": {},
+    "%lld pendientes": {},
+    "%lld por ciento": {},
+    "%lld registros · %@ – %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld registros · %2$@ – %3$@"
+          }
+        }
+      }
+    },
+    "%lld.": {},
+    "1 año": {},
+    "1 día antes": {},
+    "1 mes": {},
+    "1 semana antes": {},
+    "3 días antes": {},
+    "A poca distancia y sin distracciones, di su nombre y «ven aquí» una sola vez.": {},
+    "A tu sitio": {},
+    "Abre los detalles y permite editar el registro": {},
+    "Abre un poco y usa «ya» para avanzar juntos. Amplía la apertura progresivamente.": {},
+    "Abre una vista previa del documento": {},
+    "Abriendo PetPlanify…": {},
+    "Aceptar": {},
+    "Acerca de": {},
+    "Acerca un premio a la nariz y muévelo despacio hacia arriba y ligeramente atrás.": {},
+    "Acercarse con confianza cuando lo llamas.": {},
+    "Activa": {},
+    "Actualizar transición": {},
+    "Acude desde una distancia corta en varios entornos tranquilos.": {},
+    "Acudir a una manta o cama y sentirse cómodo allí.": {},
+    "Adjunta informes, resultados o la cartilla de vacunación.": {},
+    "Adjuntar documento": {},
+    "Administrada el": {},
+    "Administrada: %@": {},
+    "Agarrar o mantener levantada la pata.": {},
+    "Ajustes": {},
+    "Alimentación": {},
+    "Alimento": {},
+    "Alimento anterior": {},
+    "Alimento húmedo": {},
+    "Alimento seco": {},
+    "Alimentos": {},
+    "Almacenamiento": {},
+    "Amplía primero el tiempo, luego la distancia y por último las distracciones, de una en una.": {},
+    "Anota cambios de apetito o tolerancia que quieras recordar.": {},
+    "Anota cambios o detalles que quieras comentar en la próxima visita.": {},
+    "Anota lo que observas y qué le ayuda en cada situación.": {},
+    "Ante una puerta interior cerrada, recompensa un instante de calma.": {},
+    "Antes de empezar": {},
+    "Apariencia": {},
+    "Aparta su atención de un objeto sencillo y te mira esperando su premio.": {},
+    "Apartarse voluntariamente de un objeto antes de cogerlo.": {},
+    "Apoyar brevemente una pata en tu mano por iniciativa propia.": {},
+    "Aprendiendo": {},
+    "Aprendizaje": {},
+    "Aprox. %@": {},
+    "Aquí podrás volver a consultar lo que anotes sobre su comportamiento.": {},
+    "Aquí verás los próximos cuidados que hayas añadido.": {},
+    "Arnés cómodo, correa sin tensión y premios pequeños.": {},
+    "Atraerlo hacia una superficie inestable.": {},
+    "Atrás": {},
+    "Aumentar tiempo y distancia a la vez.": {},
+    "Avanzada": {},
+    "Avisar": {},
+    "Ayudar constantemente o apresurar la búsqueda.": {},
+    "Añade el primero con el botón +.": {},
+    "Añade las vacunas para conservar su historial.": {},
+    "Añade «baja» antes del gesto y reduce la ayuda. Permite después descansar o explorar.": {},
+    "Añade «déjalo» antes de presentar la mano. Practica después con un objeto seguro a distancia.": {},
+    "Añade «gira» y reduce el gesto. Haz pocas repeticiones y una pausa.": {},
+    "Añade «junto» y encadena pocos pasos. Alterna con ratos de olfateo libre y seguro.": {},
+    "Añade «mírame» cuando puedas anticipar la mirada. Pide solo un momento al principio.": {},
+    "Añade «quieto» y una señal de terminar, como «ya». Libera antes de que se levante.": {},
+    "Añade «saluda» y retira poco a poco la ayuda sin elevar la pata más de lo cómodo.": {},
+    "Añade «tumba» antes del gesto cuando lo comprenda y retira gradualmente el señuelo.": {},
+    "Añadido el %@": {},
+    "Añadir": {},
+    "Añadir a Mis trucos": {},
+    "Añadir aplicación": {},
+    "Añadir cita veterinaria": {},
+    "Añadir clínica veterinaria": {},
+    "Añadir desparasitación": {},
+    "Añadir desparasitación %@": {},
+    "Añadir medicación": {},
+    "Añadir observación": {},
+    "Añadir recordatorio": {},
+    "Añadir registro": {},
+    "Añadir seguimiento": {},
+    "Añadir transición": {},
+    "Añadir truco": {},
+    "Añadir vacuna": {},
+    "Añadir vacunas": {},
+    "Añadir visita": {},
+    "Añadir visita veterinaria": {},
+    "Baja": {},
+    "Baja de una superficie conocida con la señal y sin apresurarse.": {},
+    "Bajar con calma de una superficie baja al suelo.": {},
+    "Biblioteca de trucos": {},
+    "Busca": {},
+    "Busca la manta con una señal y permanece relajado unos instantes.": {},
+    "Busca la palma vacía con la nariz desde pequeñas distancias.": {},
+    "Buscar pequeños premios con el olfato en una zona segura.": {},
+    "Buscar una postura alta o sostenida.": {},
+    "Cambiar nombre": {},
+    "Cambio de alimento": {},
+    "Camina varios pasos relajado junto a ti con pocas distracciones.": {},
+    "Caminar antes de que se sienta cómodo parado.": {},
+    "Caminar unos pasos a tu lado con la correa floja.": {},
+    "Cancelar": {},
+    "Cantidad diaria": {},
+    "Cantidad diaria (g)": {},
+    "Cantidades y horarios": {},
+    "Cargando foto…": {},
+    "Categoría": {},
+    "Cerrar": {},
+    "Cerrar aviso": {},
+    "Cerrar la puerta sobre el perro para impedirle pasar.": {},
+    "Cerrar las piernas sobre el cuerpo.": {},
+    "Claro": {},
+    "Clínica": {},
+    "Clínica opcional": {},
+    "Clínica veterinaria": {},
+    "Coloca después dos o tres premios fáciles de localizar y oculta alguno solo parcialmente.": {},
+    "Coloca la manta y recompensa que se acerque o la pise voluntariamente.": {},
+    "Colocarse voluntariamente entre tus piernas abiertas.": {},
+    "Comparte una copia entre tus dispositivos. Si las copias son distintas, podrás elegir cuál conservar.": {},
+    "Completa una vuelta lenta con un gesto pequeño sin perder equilibrio.": {},
+    "Completada": {},
+    "Completados": {},
+    "Completar PetPlanify": {},
+    "Completar recordatorio": {},
+    "Comportamiento": {},
+    "Comprueba que puede bajar mediante un paso cómodo, sin saltar.": {},
+    "Con las cuatro patas en el suelo, guía la nariz con un premio en un arco amplio.": {},
+    "Configurar alimentación": {},
+    "Configurar recordatorios": {},
+    "Conozco su fecha de nacimiento": {},
+    "Conservar este dispositivo": {},
+    "Consulta cada registro o abre el historial para ver todas las fechas y pesos": {},
+    "Contexto o qué le ha ayudado": {},
+    "Continuar": {},
+    "Convertir la bajada en un salto alto.": {},
+    "Convivencia": {},
+    "Corregir con tirones al cambiar de dirección.": {},
+    "Crear truco": {},
+    "Crear un truco": {},
+    "Cuando abra la boca, di «bien», entrega el premio y recoge el juguete con calma.": {},
+    "Cuando anticipe el gesto, di «sentado» antes de hacerlo. Reduce la ayuda de la mano.": {},
+    "Cuando se acerque y la toque, marca y recompensa desde la otra mano.": {},
+    "Cuando suba con comodidad, añade «sube». Enseña también una salida fácil.": {},
+    "Cuándo avanzar": {},
+    "Cómo recompensar": {},
+    "Da un paso y recompensa cerca de tu lado si te acompaña con la correa floja.": {},
+    "Da una señal para salir. Añade «entre» antes del gesto y practica una permanencia muy breve.": {},
+    "Dar un giro amplio y suave siguiendo una señal.": {},
+    "Datos básicos": {},
+    "Datos y privacidad": {},
+    "Debe poder alejarse. No encierres ni fuerces la permanencia.": {},
+    "Deja espacio para retirarse y evita acercarte de frente si le incomoda.": {},
+    "Deja un premio a la vista en el suelo y di «busca» mientras señalas la zona.": {},
+    "Dejar el objeto demasiado cerca o inaccesible durante demasiado tiempo.": {},
+    "Desde": {},
+    "Desde %@": {},
+    "Desde detrás de ti, invita a seguir tu mano o un premio hasta el centro y recompensa.": {},
+    "Desde una postura cómoda, baja un premio desde la nariz hacia el suelo.": {},
+    "Deslízalo ligeramente hacia delante. Premia cualquier avance y, después, los codos apoyados.": {},
+    "Desparasitación": {},
+    "Desparasitación externa": {},
+    "Desparasitación interna": {},
+    "Después podrás configurar la alimentación, añadir registros de salud, elegir trucos y crear recordatorios. A tu ritmo.": {},
+    "Detalle de la visita": {},
+    "Detalles opcionales": {},
+    "Devuelve el juguete cuando sea seguro. Añade «suelta» justo antes de ofrecer el intercambio.": {},
+    "Di «a tu sitio» antes de que vaya. Añade una señal para salir y aumenta el tiempo con calma.": {},
+    "Di «espera» y mueve el pomo ligeramente; premia si permanece. Reduce el movimiento si avanza.": {},
+    "Dificultad": {},
+    "Diseñado y desarrollado por Ana Valladares.": {},
+    "Disponible": {},
+    "Distancia": {},
+    "Diversión": {},
+    "Documentos": {},
+    "Dominado": {},
+    "Déjalo": {},
+    "Déjalo muy cerca; al cogerlo, retrocede un paso e invítalo a volver.": {},
+    "Dónde guardarla": {},
+    "Edad aproximada en meses": {},
+    "Edad sin indicar": {},
+    "Editar": {},
+    "Editar clínica, microchip y rango de peso": {},
+    "Editar desparasitación": {},
+    "Editar guía": {},
+    "Editar medicación": {},
+    "Editar observación": {},
+    "Editar perfil": {},
+    "Editar peso": {},
+    "Editar plan": {},
+    "Editar plan de alimentación": {},
+    "Editar progreso": {},
+    "Editar progreso y nota": {},
+    "Editar truco": {},
+    "Editar vacuna": {},
+    "Editar visita": {},
+    "El archivo es demasiado grande. Elige uno de menos de 50 MB.": {},
+    "El archivo seguirá disponible en la lista Documentos de Salud.": {},
+    "El cambio no se ha guardado. Puedes volver a intentarlo.": {},
+    "El documento no está disponible en este dispositivo.": {},
+    "El mismo día": {},
+    "El permiso está desactivado en los ajustes del sistema. Los recordatorios de la aplicación siguen funcionando.": {},
+    "El registro se conservará en el historial.": {},
+    "El seguimiento debe ser posterior a la visita.": {},
+    "El truco sigue guardado. Puedes volver a intentarlo.": {},
+    "Elegir foto": {},
+    "Elegir primeros trucos": {},
+    "Elegir truco": {},
+    "Elegir un truco": {},
+    "Elegir una altura que requiera saltar.": {},
+    "Elevar tanto el premio que tenga que saltar.": {},
+    "Elige entre una y ocho comidas.": {},
+    "Elige un PDF o una imagen compatible.": {},
+    "Elige un truco y adapta el aprendizaje a su ritmo.": {},
+    "Eliminar": {},
+    "Eliminar desparasitación": {},
+    "Eliminar documento": {},
+    "Eliminar medicación": {},
+    "Eliminar observación": {},
+    "Eliminar peso": {},
+    "Eliminar truco": {},
+    "Eliminar truco personalizado": {},
+    "Eliminar vacuna": {},
+    "Eliminar visita": {},
+    "Empezar": {},
+    "Empujar la mano contra el hocico.": {},
+    "Empujar, tirar del collar o levantar al perro para colocarlo.": {},
+    "En cuanto aparte la nariz, marca y premia desde la otra mano. Si se frustra, aumenta la distancia.": {},
+    "En cuanto apoye el trasero, di «bien» y entrega el premio. No empujes la cadera.": {},
+    "En otra repetición, presenta la mano algo más lejos para premiar antes del contacto.": {},
+    "En un entorno tranquilo, espera a que te mire y marca ese instante.": {},
+    "En un lugar tranquilo, premia cuando esté junto a tu pierna por propia iniciativa.": {},
+    "Encadenar giros repetidos.": {},
+    "Entra con una señal y sale con libertad manteniéndose relajado.": {},
+    "Entrar en PetPlanify": {},
+    "Entre": {},
+    "Entrega los premios sobre ella; después premia que permanezca o se tumbe.": {},
+    "Entrega un premio y deja que vuelva a mirar alrededor.": {},
+    "Entrenamiento": {},
+    "Error": {},
+    "Errores que conviene evitar": {},
+    "Esconder los premios en lugares demasiado difíciles.": {},
+    "Escribe el motivo de la visita.": {},
+    "Escribe el nombre de la vacuna.": {},
+    "Escribe el nombre del medicamento.": {},
+    "Escribe la observación.": {},
+    "Escribe un nombre para el documento.": {},
+    "Escribe un título.": {},
+    "Especie": {},
+    "Espera": {},
+    "Esperar mucha duración cuando aún está aprendiendo.": {},
+    "Esta acción eliminará el registro de forma permanente.": {},
+    "Estado": {},
+    "Estado, por ejemplo «En seguimiento»": {},
+    "Estas observaciones no sustituyen la valoración de un educador canino o profesional veterinario.": {},
+    "Este archivo no es una copia válida de PetPlanify.": {},
+    "Este truco ya no está disponible": {},
+    "Estos datos pertenecen a una versión más reciente de PetPlanify. Actualiza la aplicación para abrirlos; tus archivos se han conservado.": {},
+    "Estos registros no sustituyen la valoración de un profesional veterinario.": {},
+    "Evita palos, pelotas pequeñas, saltos y frenadas bruscas. No todos los perros disfrutan de este juego.": {},
+    "Evita suelos resbaladizos. Omite este truco si hay dolor, rigidez o problemas de movilidad.": {},
+    "Evolución del peso": {},
+    "Evítalo si el tamaño o la movilidad dificultan el paso. No lo uses para sujetarlo ni en aglomeraciones.": {},
+    "Exigir atención constante durante todo el paseo.": {},
+    "Explora con calma y encuentra premios parcialmente ocultos cerca.": {},
+    "Explorar trucos": {},
+    "Exportar copia de seguridad": {},
+    "Externa": {},
+    "Fecha": {},
+    "Fecha de finalización": {},
+    "Fecha de inicio": {},
+    "Fecha pasada": {},
+    "Fecha seleccionada": {},
+    "Fecha y hora": {},
+    "Fecha y hora del seguimiento": {},
+    "Fechas pasadas": {},
+    "Filtrar trucos": {},
+    "Fin": {},
+    "Fin de medicación: %@": {},
+    "Final previsto": {},
+    "Finalizada": {},
+    "Finalizar hoy": {},
+    "Finalizar medicación": {},
+    "Fácil": {},
+    "Gato": {},
+    "General": {},
+    "Gestiona el entorno para evitar ingestiones. Si protege objetos, pide ayuda profesional sin confrontarlo.": {},
+    "Gira": {},
+    "Gramos": {},
+    "Gramos de esta comida": {},
+    "Guarda citas, valoraciones y documentos en un mismo lugar.": {},
+    "Guarda el alimento, la cantidad y los horarios que ya sigues.": {},
+    "Guarda una guía propia.": {},
+    "Guardando documento…": {},
+    "Guardar": {},
+    "Guía con la mano hacia ella y recompensa cada apoyo voluntario, sin tirar del cuerpo.": {},
+    "Guía escrita por ti": {},
+    "Guía propia": {},
+    "Guías breves para aprender con calma y premios.": {},
+    "Hace una pausa breve con una puerta interior abierta hasta que lo invitas a pasar.": {},
+    "Hacer una pausa breve antes de avanzar con permiso.": {},
+    "Hasta el %@": {},
+    "Hay documentos con la misma referencia de archivo.": {},
+    "Hay documentos duplicados en una visita.": {},
+    "Hay recordatorios vinculados duplicados.": {},
+    "Hay registros de entrenamiento duplicados.": {},
+    "Hay registros duplicados en los datos.": {},
+    "Hay un truco o un progreso de entrenamiento no válido.": {},
+    "Hay una copia distinta en iCloud": {},
+    "Hembra": {},
+    "Hemos recuperado tus datos desde la última copia local disponible.": {},
+    "Historial de alimentación": {},
+    "Historial de comportamiento": {},
+    "Historial de desparasitación": {},
+    "Historial de medicación": {},
+    "Historial de peso": {},
+    "Historial de vacunas": {},
+    "Hora": {},
+    "Idioma": {},
+    "Imagen": {},
+    "Importar copia de seguridad": {},
+    "Indica ambos alimentos y revisa las fechas.": {},
+    "Indica el alimento.": {},
+    "Indica el nombre de cada vacuna.": {},
+    "Indica el nombre y la especie de tu mascota.": {},
+    "Indica la fecha acordada con tu profesional veterinario.": {},
+    "Indica su nombre para continuar.": {},
+    "Indica un peso positivo.": {},
+    "Indica un rango de peso positivo, con el mínimo menor que el máximo.": {},
+    "Indica un título para cada recordatorio.": {},
+    "Indica una cantidad diaria positiva.": {},
+    "Indicaciones y notas": {},
+    "Información de la consulta": {},
+    "Inicio": {},
+    "Insistir si solo olfatea o pierde interés.": {},
+    "Intentos breves": {},
+    "Intercambia con «suelta» y devuelve el juguete. Añade «trae» y aumenta un poco la distancia.": {},
+    "Interna": {},
+    "Introduce la próxima fecha indicada por tu profesional veterinario.": {},
+    "Introduce un peso válido y positivo en %@.": {},
+    "Introduce únicamente el rango que te haya indicado tu profesional veterinario.": {},
+    "Invita a seguir tu mano hacia el suelo y recompensa cuando las cuatro patas estén apoyadas.": {},
+    "Juguete blando de tamaño adecuado y un premio para intercambiar.": {},
+    "Juguete seguro y un premio o segundo juguete de valor similar o mayor.": {},
+    "Junto": {},
+    "Kilogramos": {},
+    "Kilómetros": {},
+    "La aplicación funciona completamente con los datos de este dispositivo.": {},
+    "La comodidad y el olfateo forman parte del paseo. Aumenta la distancia de lo que lo altere.": {},
+    "La copia contiene una ruta de archivo no permitida.": {},
+    "La copia de seguridad se ha exportado.": {},
+    "La copia está incompleta o alguno de sus archivos ha cambiado. Tus datos actuales se han conservado.": {},
+    "La copia se ha restaurado. Los datos anteriores se han conservado como respaldo.": {},
+    "La fecha de nacimiento no puede estar en el futuro.": {},
+    "La fecha de un peso registrado no puede ser futura.": {},
+    "La fecha final debe ser posterior al inicio.": {},
+    "La observación se eliminará del historial de comportamiento.": {},
+    "La observación sigue guardada. Puedes volver a intentarlo.": {},
+    "La próxima aplicación debe ser posterior a la última.": {},
+    "La próxima desparasitación no puede ser anterior a la aplicación registrada.": {},
+    "La próxima dosis debe ser posterior a la administración.": {},
+    "La próxima vacuna no puede ser anterior a la administración registrada.": {},
+    "Lanzar lejos antes de que quiera traerlo.": {},
+    "Las cantidades de las comidas deben sumar la cantidad diaria.": {},
+    "Las categorías se aplican a los cuidados y recordatorios que tú añadas. No se crean pautas automáticamente.": {},
+    "Las notificaciones están desactivadas en el sistema. Puedes activarlas en los ajustes del dispositivo; los recordatorios siguen disponibles aquí.": {},
+    "Las observaciones de comportamiento necesitan título y contenido.": {},
+    "Las observaciones necesitan título y contenido.": {},
+    "Levanta la pata brevemente con una pequeña señal de la mano.": {},
+    "Levantar una pata brevemente como saludo, sin contacto.": {},
+    "Libras": {},
+    "Llamar para regañar o terminar siempre la diversión.": {},
+    "Los cambios de plan se guardarán aquí.": {},
+    "Los datos se han guardado, pero no se han podido actualizar las notificaciones. Los recordatorios siguen disponibles en la aplicación.": {},
+    "Los trucos personalizados necesitan un nombre.": {},
+    "Macho": {},
+    "Manta o cama estable en una zona tranquila y premios.": {},
+    "Mantener una mirada fija o invadir su espacio.": {},
+    "Mantener una postura cómoda hasta la señal de terminar.": {},
+    "Mantén barreras físicas o correa en salidas al exterior. No confíes solo en una señal.": {},
+    "Mantén la mano baja y suelta enseguida. Detente si pierde equilibrio o muestra incomodidad.": {},
+    "Marca": {},
+    "Marca cualquier pequeño levantamiento y premia; después, el contacto suave con tu mano.": {},
+    "Marca el acierto con una palabra amable y recompensa enseguida con algo que disfrute. Cuenta los premios dentro de su alimentación.": {},
+    "Marcar como completada": {},
+    "Mascota: %@\nCopia del %@\n%lld archivos\nSe sustituirán los datos actuales. Se conservará un respaldo de los datos anteriores.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Mascota: %1$@\nCopia del %2$@\n%3$lld archivos\nSe sustituirán los datos actuales. Se conservará un respaldo de los datos anteriores."
+          }
+        }
+      }
+    },
+    "Media": {},
+    "Medicación": {},
+    "Medicación relacionada": {},
+    "Mi progreso": {},
+    "Microchip": {},
+    "Mientras tiene un juguete sencillo, presenta un intercambio atractivo a su lado.": {},
+    "Millas": {},
+    "Mis trucos": {},
+    "Mixto": {},
+    "Mostrar menos": {},
+    "Motivo": {},
+    "Mover el premio demasiado deprisa.": {},
+    "Mírame": {},
+    "Nacimiento": {},
+    "No configurado": {},
+    "No exijas contacto visual prolongado. Acepta una orientación cómoda de la cabeza.": {},
+    "No hay documentos": {},
+    "No hay medicamentos activos": {},
+    "No hay trucos con estos filtros": {},
+    "No metas la mano en su boca. Si se queda rígido o protege el objeto, detente y consulta.": {},
+    "No practiques sobre muebles altos. Si necesita una rampa, introdúcela gradualmente; evita el ejercicio si hay dolor.": {},
+    "No se ha podido abrir el archivo. Comprueba que sigue disponible e inténtalo de nuevo.": {},
+    "No se ha podido abrir la copia seleccionada.": {},
+    "No se ha podido cargar la foto. Prueba con otra imagen.": {},
+    "No se ha podido completar la operación. Tus datos anteriores siguen disponibles.": {},
+    "No se ha podido completar la transferencia con iCloud. Tus datos locales se conservan.": {},
+    "No se ha podido eliminar": {},
+    "No se ha podido exportar la copia. Los datos de la aplicación siguen disponibles.": {},
+    "No se ha podido guardar": {},
+    "No se ha podido importar la copia. Se han conservado los datos anteriores.": {},
+    "No se han podido abrir los datos locales. Vuelve a intentarlo.": {},
+    "No se han podido guardar los cambios. Comprueba el espacio disponible y vuelve a intentarlo.": {},
+    "No se han podido guardar los cambios. Revisa los datos e inténtalo de nuevo.": {},
+    "No se han podido leer los datos de PetPlanify.": {},
+    "No se han podido recuperar los datos. Los archivos originales se han conservado. Puedes importar una copia o restablecer PetPlanify.": {},
+    "No se han podido restablecer los datos. Vuelve a intentarlo.": {},
+    "No se pudieron guardar los cambios. Vuelve a intentarlo.": {},
+    "No se pudo abrir el documento seleccionado.": {},
+    "No se pudo adjuntar el documento. Comprueba el formato y vuelve a intentarlo.": {},
+    "No se pudo completar la operación": {},
+    "No se pudo eliminar": {},
+    "No se pudo eliminar el documento.": {},
+    "No se pudo finalizar la medicación. Vuelve a intentarlo.": {},
+    "No se pudo guardar el peso. Vuelve a intentarlo.": {},
+    "No se pudo guardar la desparasitación. Vuelve a intentarlo.": {},
+    "No se pudo guardar la medicación. Vuelve a intentarlo.": {},
+    "No se pudo guardar la vacuna. Vuelve a intentarlo.": {},
+    "No se pudo guardar la visita. Vuelve a intentarlo.": {},
+    "No se pudo quitar el documento de la visita.": {},
+    "No sueltes la correa para comprobar si funciona. Evita tirones y no lo persigas.": {},
+    "No tienes recordatorios. Añade uno cuando lo necesites.": {},
+    "Nombre": {},
+    "Nombre de la vacuna": {},
+    "Nombre del documento": {},
+    "Nota opcional": {},
+    "Nota personal": {},
+    "Notas": {},
+    "Notas (opcional)": {},
+    "Notas de la guía": {},
+    "Notas opcionales": {},
+    "Notificaciones del dispositivo": {},
+    "Notificar": {},
+    "Nuevo alimento": {},
+    "Obediencia básica": {},
+    "Objetivo (opcional)": {},
+    "Observaciones": {},
+    "Observaciones de salud": {},
+    "Observación": {},
+    "Ofrece el juguete y recompensa que lo coja voluntariamente.": {},
+    "Ofrece la mano vacía y premia con la otra. Añade «pata» antes del gesto.": {},
+    "Ofrece la palma abierta a pocos centímetros, a un lado de su nariz.": {},
+    "Ofrece una superficie blanda y firme. No insistas si evita apoyar el cuerpo.": {},
+    "Omitir esta sugerencia": {},
+    "Opciones": {},
+    "Opciones de %@": {},
+    "Orientar brevemente la atención hacia ti de manera voluntaria.": {},
+    "Oscuro": {},
+    "Otra": {},
+    "Otro": {},
+    "PDF": {},
+    "PDF e imágenes · hasta 50 MB por archivo": {},
+    "Paso a paso": {},
+    "Pasos (uno por línea, opcional)": {},
+    "Pata": {},
+    "Pedir atención cuando la distracción lo supera.": {},
+    "Pedir la postura muchas veces seguidas sin pausa.": {},
+    "Pedir que siga la mano demasiado lejos al principio.": {},
+    "Perfil": {},
+    "Permanece quieto con las piernas separadas y espacio suficiente para pasar.": {},
+    "Permanece relajado unos segundos mientras das un paso y regresas.": {},
+    "Permite apoyar enseguida y usa una superficie firme. No sujetes ninguna extremidad.": {},
+    "Permite explorar la plataforma y premia que se acerque.": {},
+    "Permite que lo encuentre sin dirigir cada movimiento.": {},
+    "Permite que vuelva a explorar. Aumenta la distancia poco a poco manteniendo la seguridad.": {},
+    "Perro": {},
+    "Perseguir al perro para recuperar el juguete.": {},
+    "Perseguirlo o tirar del objeto para quitárselo.": {},
+    "Peso": {},
+    "Peso (%@)": {},
+    "Peso actual (%@)": {},
+    "Peso actual, %@": {},
+    "Peso máximo (%@)": {},
+    "Peso mínimo (%@)": {},
+    "PetPlanify": {},
+    "PetPlanify guarda la información localmente. No vende tus datos, no incluye publicidad ni servicios de analítica y no envía los registros de tu mascota a servidores externos. Si activas iCloud, se utiliza tu entorno de Apple.": {},
+    "Pide una postura conocida, espera un instante y recompensa sin alejarte.": {},
+    "Pide «pata» con la mano baja y recompensa el levantamiento inicial.": {},
+    "Plan de alimentación": {},
+    "Plataforma ancha, baja, firme y antideslizante; premios.": {},
+    "Plataformas": {},
+    "Por ahora, todo en orden": {},
+    "Por empezar": {},
+    "Practica en un recinto seguro; esta señal nunca sustituye la correa cerca del tráfico.": {},
+    "Precauciones": {},
+    "Preferencias": {},
+    "Premia primero un cuarto de giro y después una vuelta cómoda completa.": {},
+    "Premios apropiados y una superficie limpia sin objetos que pueda ingerir.": {},
+    "Premios pequeños que le gusten y un entorno tranquilo.": {},
+    "Premios valiosos; fuera de casa, arnés y correa larga en una zona segura.": {},
+    "Preparando los datos…": {},
+    "Presenta un premio dentro de una mano cerrada, sin acercarla a su cara.": {},
+    "Presenta una mano cerrada con un premio a baja altura y espera un movimiento de pata.": {},
+    "Producto": {},
+    "Producto opcional": {},
+    "Progreso": {},
+    "Progreso: %lld %%": {},
+    "Prueba durante uno o dos minutos, o menos si pierde interés. Haz una pausa cuando lo necesite.": {},
+    "Prueba otra categoría o dificultad.": {},
+    "Próxima": {},
+    "Próxima aplicación": {},
+    "Próxima dosis": {},
+    "Próxima: %@": {},
+    "Próximamente": {},
+    "Próximo cuidado": {},
+    "Puedes activar las notificaciones del dispositivo en Ajustes. El recordatorio estará disponible en la aplicación.": {},
+    "Puedes adjuntar PDF e imágenes desde los detalles de la visita después de guardarla.": {},
+    "Puedes adjuntarlos desde los detalles de una visita veterinaria.": {},
+    "Puedes cerrar la aplicación y volver a intentarlo, importar una copia válida o restablecer PetPlanify.": {},
+    "Quieto": {},
+    "Quitar de Mis trucos": {},
+    "Quitar de esta visita": {},
+    "Quitar de la visita": {},
+    "Quitar filtros": {},
+    "Quitar foto": {},
+    "Quitar siempre el juguete al terminar.": {},
+    "Quitar truco": {},
+    "Qué has observado": {},
+    "Qué le ayuda, qué quieres practicar…": {},
+    "Qué necesitas": {},
+    "Qué quieres recordar": {},
+    "Raza (opcional)": {},
+    "Reabrir recordatorio": {},
+    "Recoge el juguete a pocos pasos y vuelve para un intercambio tranquilo.": {},
+    "Recoger un juguete cercano y regresar contigo.": {},
+    "Recordatorio": {},
+    "Recordatorios": {},
+    "Referencia inferior": {},
+    "Referencia introducida manualmente: %@ – %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Referencia introducida manualmente: %1$@ – %2$@."
+          }
+        }
+      }
+    },
+    "Referencia superior": {},
+    "Referencia veterinaria opcional": {},
+    "Regañar si se mueve; vuelve a una versión más fácil.": {},
+    "Registra un peso para empezar a ver su evolución.": {},
+    "Registra únicamente las indicaciones recibidas de tu profesional veterinario.": {},
+    "Registrada": {},
+    "Registrar peso": {},
+    "Repartir la cantidad por igual": {},
+    "Repetir la señal si la distracción es demasiado difícil.": {},
+    "Restablecer": {},
+    "Restablecer PetPlanify": {},
+    "Restaurar": {},
+    "Retira y vuelve a presentar la mano. Añade «toca» y cambia ligeramente su posición.": {},
+    "Retirar bruscamente la mano o desequilibrarlo.": {},
+    "Retrocede un par de pasos para invitarlo a acercarse. Recompensa cuando llegue.": {},
+    "Revisa el historial de alimentación y sus fechas.": {},
+    "Revisa el intervalo de peso de referencia.": {},
+    "Revisa el motivo y las fechas de la visita veterinaria.": {},
+    "Revisa el nombre y el tipo del documento.": {},
+    "Revisa el nombre y las fechas de la medicación.": {},
+    "Revisa el nombre, la edad y el peso. Puedes escribir decimales con coma.": {},
+    "Revisa la cantidad diaria.": {},
+    "Revisa la edad aproximada.": {},
+    "Revisa la fecha o edad y escribe un peso válido.": {},
+    "Revisa las cantidades de las comidas.": {},
+    "Revisa las cantidades y los horarios de las comidas.": {},
+    "Revisa los alimentos, las fechas y el progreso de la transición.": {},
+    "Revisa los documentos vinculados a las visitas.": {},
+    "Revisa los pesos registrados: deben ser positivos.": {},
+    "Salud": {},
+    "Saluda": {},
+    "Se eliminará de PetPlanify y de la visita vinculada.": {},
+    "Se eliminará la visita. Sus documentos se conservarán en Documentos, sin vincular.": {},
+    "Se eliminarán de la aplicación el perfil, los registros, las fotos, los documentos y los ajustes. Volverás a la bienvenida. Exporta una copia si quieres conservarlos.": {},
+    "Se eliminarán la guía, el progreso y la nota personal de este truco.": {},
+    "Se eliminarán su progreso y su nota personal. La guía seguirá en la biblioteca.": {},
+    "Se guardará con las observaciones de Salud.": {},
+    "Se retirarán los datos de la aplicación y volverás a la bienvenida.": {},
+    "Se sienta con un gesto pequeño; después prueba la señal en otra habitación.": {},
+    "Se sustituirán los datos actuales y se conservarán los archivos anteriores como respaldo.": {},
+    "Se tumba siguiendo un gesto breve sin necesidad de comida visible.": {},
+    "Seguimiento": {},
+    "Seguimiento: %@": {},
+    "Seguridad": {},
+    "Sentado": {},
+    "Sentado cómodo": {},
+    "Sentado o Tumba": {},
+    "Sentado, si resulta cómodo": {},
+    "Sentarse voluntariamente al oír una señal.": {},
+    "Sexo": {},
+    "Sin especificar": {},
+    "Sin vincular": {},
+    "Sin visita vinculada": {},
+    "Sincronizado": {},
+    "Sincronizando": {},
+    "Sincronizar ahora": {},
+    "Sistema": {},
+    "Soltar un juguete a cambio de algo que valore.": {},
+    "Su alimentación, a su manera": {},
+    "Su cuidado, con calma.": {},
+    "Su identidad": {},
+    "Sube": {},
+    "Sube sin impulso brusco y puede permanecer o salir con tranquilidad.": {},
+    "Subir por iniciativa propia a una superficie baja y segura.": {},
+    "Suelta": {},
+    "Suelta un juguete conocido con la señal y recibe después su recompensa.": {},
+    "Superficie baja y estable, suelo antideslizante y premios.": {},
+    "Supervisa la búsqueda, evita tóxicos y adapta los premios a su alimentación.": {},
+    "Te mira un instante al oír la señal con distracciones leves y a distancia.": {},
+    "Tecnología": {},
+    "Tienes un cuidado pendiente en PetPlanify.": {},
+    "Tipo": {},
+    "Tirar de las patas o presionar el cuerpo.": {},
+    "Toca": {},
+    "Toca suavemente la mano abierta después de una señal.": {},
+    "Tocar tu mano suavemente con la nariz.": {},
+    "Todas": {},
+    "Todavía no hay observaciones": {},
+    "Todavía no hay registros": {},
+    "Todo listo para %@": {},
+    "Trae": {},
+    "Transición": {},
+    "Transición de alimento": {},
+    "Tratamiento e indicaciones": {},
+    "Trazar círculos pequeños o mover el premio con rapidez.": {},
+    "Trucos disponibles": {},
+    "Tu truco": {},
+    "Tumba": {},
+    "Tumbarse de forma relajada al recibir una señal.": {},
+    "Tus archivos se han conservado": {},
+    "Tus datos se conservan. Vuelve a intentarlo.": {},
+    "Título": {},
+    "Un año son 12 meses.": {},
+    "Un lugar para recordar sus cuidados, guardar su historia y acompañar cada aprendizaje.": {},
+    "Un lugar tranquilo para organizar el cuidado y la historia de tu mascota.": {},
+    "Un pequeño paso para empezar": {},
+    "Una medicación está vinculada a una visita que ya no existe.": {},
+    "Una referencia personal, sin objetivos ni plazos.": {},
+    "Usa suelo antideslizante. Si sentarse parece incómodo, detén el ejercicio.": {},
+    "Usar algo peligroso para practicar.": {},
+    "Usar iCloud": {},
+    "Usar la cama como castigo.": {},
+    "Usar la copia de iCloud": {},
+    "Usar una puerta a la calle como primera práctica.": {},
+    "Utiliza rampa si la necesita y evita alturas. La señal no debe obligar a un movimiento doloroso.": {},
+    "Vacunas": {},
+    "Valoración del profesional": {},
+    "Valoración indicada por el profesional": {},
+    "Ven aquí": {},
+    "Ver historial": {},
+    "Ver los %lld medicamentos activos": {},
+    "Ver registros de salud": {},
+    "Ver todas las observaciones": {},
+    "Ver todos": {},
+    "Vincular a una visita": {},
+    "Vincular documento": {},
+    "Visita": {},
+    "Visita relacionada": {},
+    "Visita veterinaria": {},
+    "Visitas veterinarias": {},
+    "iCloud": {},
+    "iCloud está descargando la copia. Vuelve a sincronizar cuando termine.": {},
+    "iCloud no está configurado o no está disponible. Tus datos siguen guardados en este dispositivo.": {},
+    "iCloud: %@, %@.\nEste dispositivo: %@, %@.\nSe conservará un respaldo de la copia que sustituyas.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "new",
+            "value": "iCloud: %1$@, %2$@.\nEste dispositivo: %3$@, %4$@.\nSe conservará un respaldo de la copia que sustituyas."
+          }
+        }
+      }
+    },
+    "¿Eliminar esta observación?": {},
+    "¿Eliminar este documento?": {},
+    "¿Eliminar este recordatorio?": {},
+    "¿Eliminar este registro?": {},
+    "¿Eliminar este truco personalizado?": {},
+    "¿Finalizar esta medicación?": {},
+    "¿Quitar el documento de esta visita?": {},
+    "¿Quitar este truco de Mis trucos?": {},
+    "¿Restablecer PetPlanify?": {},
+    "¿Restaurar esta copia?": {},
+    "¿Restaurar la copia de %@?": {},
+    "Área": {},
+    "Última aplicación": {},
+    "Última aplicación: %@": {}
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

@@ -6,6 +6,7 @@ struct ObservationEditor: View {
     var record: PetObservation?
     @State private var value = PetObservation()
     @State private var error: String?
+    @State private var loaded = false
     var body: some View {
         CareForm(title: "Observación", onSave: save) {
             Section {
@@ -18,7 +19,17 @@ struct ObservationEditor: View {
                 if value.context == .general { Text("Se guardará con las observaciones de Salud.").foregroundStyle(AppTheme.secondaryInk).font(.caption) }
             }
             if let error { Text(error).foregroundStyle(.red) }
-        }.onAppear { value = record ?? PetObservation(context: context) }
+            if let record {
+                Section {
+                    HealthDeleteButton(title: "Eliminar observación") {
+                        await store.update {
+                            if record.context == .nutrition { $0.nutrition.observations.removeAll { $0.id == record.id } }
+                            else { $0.health.observations.removeAll { $0.id == record.id } }
+                        }
+                    }
+                }
+            }
+        }.onAppear { guard !loaded else { return }; loaded = true; value = record ?? PetObservation(context: context) }
     }
     private func save() async -> Bool {
         guard !value.body.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { error = String(localized: "Escribe la observación."); return false }

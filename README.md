@@ -1,33 +1,61 @@
 # PetPlanify
 
-PetPlanify is a native SwiftUI companion for organizing the everyday care of a pet.
+Native, Spanish-language SwiftUI app for a pet's food plan, health history and
+training. Supports **iPhone (iOS 27)** and **native Mac (macOS 27)** with Xcode 27.
+No iPad-specific experience, Catalyst, backend, account, analytics or advertising.
 
-## Requirements
+The five areas are **Inicio, Alimentación, Salud, Entrenamiento and Ajustes**.
+Progressive onboarding creates a real profile with optional photo. Food plans,
+weight, vaccines, deworming, medication, veterinary visits and linked documents
+are editable. Training includes 19 original reward-based guides, custom tricks,
+progress and behavior observations. Global reminders support optional local
+notifications, category preferences and advance notice.
 
-- Xcode 27
-- iOS 27 or macOS 27
+## Local data
 
-Open `PetPlanify.xcodeproj` in Xcode and run the shared `PetPlanify` scheme on
-My Mac. iPhone validation is intentionally reserved for the final
-physical-device testing phase.
+One observable store owns a Codable schema-v1 snapshot. `LocalSnapshotStorage`
+uses the app's Application Support directory, under `PetPlanify/`:
 
-Unsigned command-line builds:
+- `PetPlanify.json`: current state; atomic writes after confirmed mutations.
+- `PetPlanify.backup.json`: previous valid state, used for corruption recovery.
+- `Attachments/`: managed photos and documents; no external path dependencies.
+- `Recovery/`: damaged originals and preserved pre-import state, when applicable.
+
+I/O runs in storage actors. A failed save keeps the previous published state.
+Unknown future schemas remain untouched. Previews use in-memory storage without
+notifications, iCloud or real Application Support access.
+
+Export/import uses a `.petplanify` package containing a manifest, snapshot and
+attachments, with size, path, linkage and SHA-256 validation. Import shows a
+summary and requires confirmation before replacing data; it preserves the old
+local directory. Reset also requires confirmation and returns to onboarding.
+
+## Optional iCloud
+
+The coordinated file provider and conflict-choice interface are implemented.
+Synchronization is user-triggered in Settings and local storage always works.
+The current project has **no configured iCloud capability/container**; cross-device
+sync remains unverified. See [validation and device handoff](VALIDATION.md) for
+the exact Apple configuration. No CloudKit database is used.
+
+## Build and tests
 
 ```sh
 xcodebuild -project PetPlanify.xcodeproj -scheme PetPlanify \
-  -destination "platform=macOS" CODE_SIGNING_ALLOWED=NO build
+  -configuration Debug -destination 'platform=macOS' \
+  CODE_SIGNING_ALLOWED=NO build
+swift test
 ```
 
-The application has five focused areas: `Inicio`, `Alimentación`, `Salud`,
-`Entrenamiento`, and `Ajustes`. Weight history belongs to Health, behavior
-observations belong to Training, and reminders live in a compact global view.
-Health includes internal and external deworming alongside vaccines,
-medication, veterinary visits, and their linked documents. The iPhone
-composition uses native navigation and full-width mobile layouts.
+When the system developer directory points to Command Line Tools, set
+`DEVELOPER_DIR` to the installed Xcode app's `Contents/Developer` directory.
+The native Swift Testing package target covers storage, recovery, import safety,
+domain derivation and a complete disposable store/relaunch flow.
 
-All current application data remains mock data. Progressive onboarding,
-functional forms, persistence, and physical-device iPhone validation are
-planned for future phases.
+A Debug-only launch argument, `--petplanify-validation-directory`, accepts a
+`PetPlanify…` directory under `/tmp` or the system temporary directory. It isolates
+manual development data and disables external services. It is absent in Release.
 
-GitHub is intentionally used as lightweight source control and remote backup:
-normal development happens directly on `main` with small descriptive commits.
+**iOS validation intentionally deferred by Ana until the final physical-device testing phase.**
+No iPhone Simulator was used. See [VALIDATION.md](VALIDATION.md) for the remaining
+hands-on checks. App-icon slots are prepared; final artwork is not supplied.

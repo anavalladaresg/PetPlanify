@@ -6,9 +6,9 @@ enum TrickStatus: String, Codable, CaseIterable, Identifiable, Hashable, Sendabl
 
     var title: String {
         switch self {
-        case .notStarted: "Por empezar"
-        case .learning: "Aprendiendo"
-        case .mastered: "Dominado"
+        case .notStarted: String(localized: "Por empezar")
+        case .learning: String(localized: "Aprendiendo")
+        case .mastered: String(localized: "Dominado")
         }
     }
 }
@@ -19,9 +19,9 @@ enum TrickDifficulty: String, Codable, CaseIterable, Identifiable, Hashable, Sen
 
     var title: String {
         switch self {
-        case .easy: "Fácil"
-        case .medium: "Media"
-        case .advanced: "Avanzada"
+        case .easy: String(localized: "Fácil")
+        case .medium: String(localized: "Media")
+        case .advanced: String(localized: "Avanzada")
         }
     }
 }
@@ -32,10 +32,10 @@ enum TrickCategory: String, Codable, CaseIterable, Identifiable, Hashable, Senda
 
     var title: String {
         switch self {
-        case .basic: "Obediencia básica"
-        case .safety: "Seguridad"
-        case .coexistence: "Convivencia"
-        case .fun: "Diversión"
+        case .basic: String(localized: "Obediencia básica")
+        case .safety: String(localized: "Seguridad")
+        case .coexistence: String(localized: "Convivencia")
+        case .fun: String(localized: "Diversión")
         }
     }
 }
@@ -139,19 +139,19 @@ struct TrainingData: Codable, Equatable, Sendable {
               Set(selectedTricks.map(\.trickID)).count == selectedTricks.count,
               Set(customTricks.map(\.id)).count == customTricks.count,
               Set(observations.map(\.id)).count == observations.count else {
-            return "Hay registros de entrenamiento duplicados."
+            return String(localized: "Hay registros de entrenamiento duplicados.")
         }
         guard selectedTricks.allSatisfy({ (0...100).contains($0.progress) && definition(for: $0.trickID) != nil }) else {
-            return "Hay un truco o un progreso de entrenamiento no válido."
+            return String(localized: "Hay un truco o un progreso de entrenamiento no válido.")
         }
         guard customTricks.allSatisfy({ !$0.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) else {
-            return "Los trucos personalizados necesitan un nombre."
+            return String(localized: "Los trucos personalizados necesitan un nombre.")
         }
         guard observations.allSatisfy({
             !$0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
             !$0.observation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         }) else {
-            return "Las observaciones de comportamiento necesitan título y contenido."
+            return String(localized: "Las observaciones de comportamiento necesitan título y contenido.")
         }
         return nil
     }

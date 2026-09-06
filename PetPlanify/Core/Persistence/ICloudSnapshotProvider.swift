@@ -30,7 +30,7 @@ actor ICloudSnapshotProvider {
         return try await BackupArchive.read(from: temporary)
     }
 
-    func upload(_ archive: ValidatedBackup) throws {
+    func upload(_ archive: ValidatedBackup) throws -> Bool {
         guard isAvailable(), let container else { throw ICloudError.unavailable }
         try archive.validate()
         let documents = container.appendingPathComponent("Documents", isDirectory: true)
@@ -51,6 +51,7 @@ actor ICloudSnapshotProvider {
             } catch { writeError = error }
         }
         if coordinationError != nil || writeError != nil { throw ICloudError.transferFailed }
+        return (try? target.resourceValues(forKeys: [.ubiquitousItemIsUploadedKey]).ubiquitousItemIsUploaded) == true
     }
 }
 

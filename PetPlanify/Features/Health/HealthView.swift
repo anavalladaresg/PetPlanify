@@ -10,6 +10,7 @@ struct HealthView: View {
     private var health: HealthData { store.snapshot.health }
 
     var body: some View {
+        TimelineView(.periodic(from: .now, by: 60)) { _ in
         CarePage {
             if let next = nextCare {
                 CareSection(title: "Próximo cuidado") {
@@ -27,15 +28,16 @@ struct HealthView: View {
             Text("Estos registros no sustituyen la valoración de un profesional veterinario.")
                 .font(.caption).foregroundStyle(AppTheme.secondaryInk)
         }
+        }
         .accessibilityIdentifier("health.screen")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button("Registrar peso", systemImage: "scalemass") { sheet = .weight(nil) }
-                    Button("Añadir vacuna", systemImage: "syringe") { sheet = .vaccine(nil) }
-                    Button("Añadir desparasitación", systemImage: "pills") { sheet = .deworming(nil, .internalDeworming) }
-                    Button("Añadir medicación", systemImage: "pills.fill") { sheet = .medication(nil) }
-                    Button("Añadir cita veterinaria", systemImage: "cross.case") { sheet = .visit(nil) }
+                    Button("Registrar peso", systemImage: "scalemass") { sheet = .weight(nil) }.accessibilityIdentifier("weight.add")
+                    Button("Añadir vacuna", systemImage: "syringe") { sheet = .vaccine(nil) }.accessibilityIdentifier("health.addVaccine")
+                    Button("Añadir desparasitación", systemImage: "pills") { sheet = .deworming(nil, .internalDeworming) }.accessibilityIdentifier("health.addDeworming")
+                    Button("Añadir medicación", systemImage: "pills.fill") { sheet = .medication(nil) }.accessibilityIdentifier("health.addMedication")
+                    Button("Añadir cita veterinaria", systemImage: "cross.case") { sheet = .visit(nil) }.accessibilityIdentifier("health.addVisit")
                     Button("Añadir observación", systemImage: "text.bubble") { observation = nil; showObservation = true }
                 } label: { Label("Añadir registro", systemImage: "plus") }
                 .accessibilityIdentifier("health.addRecord")
@@ -147,7 +149,8 @@ struct HealthView: View {
     private var nextCare: UpcomingCare? {
         let now = Date.now
         var items: [UpcomingCare] = []
-        for record in health.vaccines {
+        let latestVaccines = Dictionary(grouping: health.vaccines, by: { $0.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }).values.compactMap { $0.max { $0.dateAdministered < $1.dateAdministered } }
+        for record in latestVaccines {
             if let date = record.nextDueDate, date > now {
                 items.append(.init(title: record.name, date: date, symbol: "syringe", sheet: .vaccine(record)))
             }
@@ -183,4 +186,12 @@ func dewormingSubtitle(_ record: DewormingRecord) -> String {
     let applied = String(localized: "Última aplicación: \(AppFormat.date(record.applicationDate))")
     guard let next = record.nextDueDate else { return applied }
     return applied + " · " + String(localized: "Próxima: \(AppFormat.date(next))")
+}
+
+#Preview("Salud") {
+    NavigationStack { HealthView() }.environment(PetPlanifyStore.preview())
+}
+
+#Preview("Salud sin registros") {
+    NavigationStack { HealthView() }.environment(PetPlanifyStore.preview(empty: true))
 }

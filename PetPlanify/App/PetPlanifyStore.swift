@@ -39,6 +39,7 @@ final class PetPlanifyStore {
         return PetPlanifyStore(storage: storage, attachments: ManagedAttachmentStorage(directory: storage.directory), notifications: LocalNotificationService())
     }
 
+    var externalServicesEnabled: Bool { notifications != nil }
     var currentWeight: Double? { snapshot.currentWeight }
     var upcomingCare: [CareReminder] { ReminderEngine.upcoming(snapshot.reminders) }
     var pendingReminderCount: Int { snapshot.reminders.filter { !$0.isCompleted }.count }
@@ -64,6 +65,10 @@ final class PetPlanifyStore {
     func update(_ mutation: (inout PetPlanifySnapshot) -> Void) async -> Bool {
         await lock()
         defer { unlock() }
+        return await commitMutation(mutation)
+    }
+
+    private func commitMutation(_ mutation: (inout PetPlanifySnapshot) -> Void) async -> Bool {
         guard !needsRecovery else { return false }
         var value = snapshot
         mutation(&value)
@@ -79,6 +84,9 @@ final class PetPlanifyStore {
     }
 
     func saveProfile(_ profile: PetProfile, photoData: Data?, removePhoto: Bool, onboarding: Bool) async -> Bool {
+        await lock()
+        defer { unlock() }
+        guard !needsRecovery else { return false }
         var value = profile
         var importedPath: String?
         do {
@@ -88,7 +96,7 @@ final class PetPlanifyStore {
             } else if removePhoto { value.photoPath = nil }
         } catch { report(error); return false }
         value.updatedAt = .now
-        let saved = await update {
+        let saved = await commitMutation {
             let oldWeight = $0.currentWeight
             $0.pet = value
             if let weight = value.currentWeight, oldWeight != weight || $0.health.weights.isEmpty {
@@ -105,12 +113,14 @@ final class PetPlanifyStore {
     func documentURL(for document: DocumentAttachment) -> URL? { try? attachments?.url(for: document.relativeStoragePath) }
 
     func importDocument(from url: URL, visitID: UUID) async -> Bool {
-        guard let attachments, snapshot.health.visits.contains(where: { $0.id == visitID }) else { return false }
+        await lock()
+        defer { unlock() }
+        guard !needsRecovery, let attachments, snapshot.health.visits.contains(where: { $0.id == visitID }) else { return false }
         do {
             let imported = try await attachments.importDocument(from: url)
             let document = DocumentAttachment(displayName: imported.displayName, type: imported.type, relativeStoragePath: imported.relativeStoragePath, linkedVisitID: visitID)
             var linked = false
-            let saved = await update {
+            let saved = await commitMutation {
                 guard let index = $0.health.visits.firstIndex(where: { $0.id == visitID }) else { return }
                 $0.health.documents.append(document)
                 linked = true

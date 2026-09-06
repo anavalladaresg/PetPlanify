@@ -6,20 +6,21 @@ struct FoodPlanEditor: View {
     @State private var amount = ""
     @State private var mealAmounts: [UUID: String] = [:]
     @State private var error: String?
+    @State private var loaded = false
     var body: some View {
         CareForm(title: "Plan de alimentación", onSave: save) {
             Section("Alimento") {
                 TextField("Producto", text: $plan.product.name)
                 TextField("Marca", text: $plan.product.brand)
                 Picker("Tipo", selection: $plan.product.type) { ForEach(FoodType.allCases) { Text($0.title).tag($0) } }
-                DatePicker("Fecha de inicio", selection: $plan.startDate, displayedComponents: .date)
+                DatePicker("Fecha de inicio", selection: $plan.startDate, in: ...Date.now, displayedComponents: .date)
             }
             Section("Cantidades y horarios") {
                 TextField("Cantidad diaria (g)", text: $amount).decimalEntry()
                 Stepper("\(plan.meals.count) comidas", value: Binding(get: { plan.meals.count }, set: resizeMeals), in: 1...8)
                 Button("Repartir la cantidad por igual") { distribute() }
                 ForEach($plan.meals) { $meal in
-                    HStack {
+                    VStack(alignment: .leading, spacing: 8) {
                         DatePicker("Hora", selection: $meal.time, displayedComponents: .hourAndMinute)
                         TextField("Gramos", text: Binding(get: { mealAmounts[meal.id] ?? "" }, set: { mealAmounts[meal.id] = $0 }))
                             .decimalEntry().accessibilityLabel("Gramos de esta comida")
@@ -29,6 +30,7 @@ struct FoodPlanEditor: View {
             Section("Notas") { TextField("Notas opcionales", text: $plan.notes, axis: .vertical).lineLimit(3...6) }
             if let error { Section { Text(error).foregroundStyle(.red) } }
         }.onAppear {
+            guard !loaded else { return }; loaded = true
             plan = store.snapshot.nutrition.plan ?? FoodPlan(meals: [MealScheduleEntry(hour: 9), MealScheduleEntry(hour: 20)])
             amount = plan.dailyAmountGrams > 0 ? AppFormat.number(plan.dailyAmountGrams) : ""
             mealAmounts = Dictionary(uniqueKeysWithValues: plan.meals.map { ($0.id, $0.amountGrams > 0 ? AppFormat.number($0.amountGrams) : "") })
@@ -69,6 +71,7 @@ struct FoodTransitionEditor: View {
     var record: FoodTransition?
     @State private var value = FoodTransition()
     @State private var error: String?
+    @State private var loaded = false
     var body: some View {
         CareForm(title: "Transición de alimento", onSave: save) {
             Section("Alimentos") {
@@ -83,7 +86,10 @@ struct FoodTransitionEditor: View {
                 Button("Marcar como completada") { value.progress = 1 }
             }
             if let error { Text(error).foregroundStyle(.red) }
-        }.onAppear { value = record ?? FoodTransition(newFood: store.snapshot.nutrition.plan?.product.name ?? "") }
+        }.onAppear {
+            guard !loaded else { return }; loaded = true
+            value = record ?? FoodTransition(newFood: store.snapshot.nutrition.plan?.product.name ?? "")
+        }
     }
     private func save() async -> Bool {
         guard !value.previousFood.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,

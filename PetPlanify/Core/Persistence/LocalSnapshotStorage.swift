@@ -54,6 +54,7 @@ actor LocalSnapshotStorage: SnapshotStorage {
                 try data.write(to: backupURL, options: .atomic)
             }
             try data.write(to: primaryURL, options: .atomic)
+            removeUnreferencedAttachments(current: snapshot)
         } catch let error as StorageError {
             throw error
         } catch {
@@ -120,6 +121,24 @@ actor LocalSnapshotStorage: SnapshotStorage {
             throw error
         } catch {
             throw StorageError.restoreFailed
+        }
+    }
+
+    /// Keep files used by either recoverable revision; discard only unreferenced managed files.
+    /// The application store serializes imports and snapshot writes under the same mutation gate.
+    private func removeUnreferencedAttachments(current: PetPlanifySnapshot) {
+        guard let previousData = try? Data(contentsOf: backupURL),
+              let previous = try? SnapshotCodec.decode(previousData) else { return }
+        let retained = BackupArchive.referencedPaths(in: current).union(BackupArchive.referencedPaths(in: previous))
+        let folder = directory.appendingPathComponent("Attachments", isDirectory: true)
+        guard let items = try? fileManager.contentsOfDirectory(at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey]) else { return }
+        for item in items {
+            let path = "Attachments/" + item.lastPathComponent
+            guard !retained.contains(path),
+                  let values = try? item.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey]),
+                  values.isRegularFile == true, values.isSymbolicLink != true,
+                  (try? StorageLocations.attachmentURL(for: path, directory: directory)) != nil else { continue }
+            try? fileManager.removeItem(at: item)
         }
     }
 

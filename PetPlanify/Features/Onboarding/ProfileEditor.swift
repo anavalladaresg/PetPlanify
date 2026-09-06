@@ -12,9 +12,11 @@ struct ProfileEditor: View {
     @State private var photoData: Data?
     @State private var removePhoto = false
     @State private var error: String?
+    @State private var photoLoading = false
+    @State private var loaded = false
     var body: some View {
-        CareForm(title: "Editar perfil", onSave: save) {
-            ProfileIdentityFields(draft: $draft, photoData: $photoData, removePhoto: $removePhoto, existingPhotoURL: store.profilePhotoURL())
+        CareForm(title: "Editar perfil", onSave: save, saveDisabled: photoLoading) {
+            ProfileIdentityFields(draft: $draft, photoData: $photoData, removePhoto: $removePhoto, isLoadingPhoto: $photoLoading, existingPhotoURL: store.profilePhotoURL())
             ProfileBasicFields(draft: $draft, exactBirthday: $exactBirthday, approximateAge: $approximateAge, weight: $weight, unit: store.snapshot.preferences.weightUnit)
             Section("Referencia veterinaria opcional") {
                 Text("Introduce únicamente el rango que te haya indicado tu profesional veterinario.").font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
@@ -25,6 +27,7 @@ struct ProfileEditor: View {
             }
             if let error { Section { Text(error).foregroundStyle(.red) } }
         }.onAppear {
+            guard !loaded else { return }; loaded = true
             draft = store.snapshot.pet
             exactBirthday = draft.birthDate != nil
             approximateAge = draft.ageMonths().map(String.init) ?? ""
@@ -55,10 +58,10 @@ struct ProfileIdentityFields: View {
     @Binding var draft: PetProfile
     @Binding var photoData: Data?
     @Binding var removePhoto: Bool
+    @Binding var isLoadingPhoto: Bool
     var existingPhotoURL: URL?
     @State private var selection: PhotosPickerItem?
-    @State private var loading = false
-    @State private var error: String?
+        @State private var error: String?
     var body: some View {
         Section("Su identidad") {
             HStack(spacing: 16) {
@@ -66,11 +69,11 @@ struct ProfileIdentityFields: View {
                 VStack(alignment: .leading, spacing: 10) {
                     PhotosPicker(selection: $selection, matching: .images, photoLibrary: .shared()) {
                         Label("Elegir foto", systemImage: "photo")
-                    }.disabled(loading).accessibilityIdentifier("profile.photo.select")
+                    }.disabled(isLoadingPhoto).accessibilityIdentifier("profile.photo.select")
                     if photoData != nil || (existingPhotoURL != nil && !removePhoto) {
                         Button("Quitar foto", role: .destructive) { photoData = nil; selection = nil; removePhoto = true }
                     }
-                    if loading { ProgressView("Cargando foto…") }
+                    if isLoadingPhoto { ProgressView("Cargando foto…") }
                 }
             }
             if let error { Text(error).foregroundStyle(.red) }
@@ -84,13 +87,13 @@ struct ProfileIdentityFields: View {
         }
         .onChange(of: selection) { _, value in
             guard let value else { return }
-            loading = true
+            isLoadingPhoto = true
             Task {
                 do {
                     guard let data = try await value.loadTransferable(type: Data.self), data.count <= 50 * 1024 * 1024 else { throw StorageError.attachmentTooLarge }
                     photoData = data; removePhoto = false; error = nil
                 } catch { self.error = String(localized: "No se ha podido cargar la foto. Prueba con otra imagen.") }
-                loading = false
+                isLoadingPhoto = false
             }
         }
     }
