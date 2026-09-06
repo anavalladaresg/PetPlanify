@@ -1,106 +1,69 @@
 import Foundation
 
-enum FoodType: Sendable {
-    case dryFood
-
-    var localizedName: String {
+enum FoodType: String, Codable, Sendable, CaseIterable, Identifiable {
+    case dryFood, wetFood, mixed, other
+    var id: Self { self }
+    var title: String {
         switch self {
-        case .dryFood:
-            String(localized: "Alimento seco")
+        case .dryFood: String(localized: "Alimento seco")
+        case .wetFood: String(localized: "Alimento húmedo")
+        case .mixed: String(localized: "Mixto")
+        case .other: String(localized: "Otro")
         }
     }
 }
-struct FoodProduct: Sendable {
-    let name: String
-    let brand: String
-    let type: FoodType
+struct FoodProduct: Codable, Sendable, Equatable {
+    var name = ""
+    var brand = ""
+    var type: FoodType = .dryFood
 }
-
-enum MealKind: Sendable {
-    case breakfast
-    case dinner
-
-    var localizedName: String {
-        switch self {
-        case .breakfast:
-            String(localized: "Desayuno")
-        case .dinner:
-            String(localized: "Cena")
+struct MealScheduleEntry: Identifiable, Codable, Sendable, Equatable {
+    var id = UUID()
+    var hour = 9
+    var minute = 0
+    var amountGrams: Double = 0
+    var time: Date {
+        get { Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: .now) ?? .now }
+        set {
+            hour = Calendar.current.component(.hour, from: newValue)
+            minute = Calendar.current.component(.minute, from: newValue)
         }
     }
 }
-
-struct ScheduledMeal: Identifiable, Sendable {
-    let id: Int
-    let kind: MealKind
-    let time: String
-    let amountGrams: Int
+struct FoodPlan: Identifiable, Codable, Sendable, Equatable {
+    var id = UUID()
+    var product = FoodProduct()
+    var dailyAmountGrams: Double = 0
+    var meals: [MealScheduleEntry] = []
+    var startDate = Date.now
+    var notes = ""
+    var validationError: String? {
+        if product.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return String(localized: "Indica el alimento.") }
+        if !dailyAmountGrams.isFinite || !(0.1...100_000).contains(dailyAmountGrams) { return String(localized: "Indica una cantidad diaria positiva.") }
+        if !(1...8).contains(meals.count) { return String(localized: "Elige entre una y ocho comidas.") }
+        if meals.contains(where: { !$0.amountGrams.isFinite || $0.amountGrams <= 0 || !(0...23).contains($0.hour) || !(0...59).contains($0.minute) }) { return String(localized: "Revisa las cantidades y los horarios de las comidas.") }
+        if abs(meals.reduce(0) { $0 + $1.amountGrams } - dailyAmountGrams) > 0.5 { return String(localized: "Las cantidades de las comidas deben sumar la cantidad diaria.") }
+        return nil
+    }
 }
-
-struct FoodTransition: Sendable {
-    let previousFood: FoodProduct
-    let currentFood: FoodProduct
-    let progress: Double
-    let completionDate: Date
+struct FoodTransition: Identifiable, Codable, Sendable, Equatable {
+    var id = UUID()
+    var previousFood = ""
+    var newFood = ""
+    var startDate = Date.now
+    var endDate = Date.now.addingTimeInterval(7 * 86_400)
+    var progress: Double = 0
+    var isComplete: Bool { progress >= 1 }
 }
-
-struct FoodHistoryEntry: Identifiable, Sendable {
-    let id: Int
-    let food: FoodProduct
-    let startDate: Date
-    let endDate: Date?
+struct FoodHistoryEntry: Identifiable, Codable, Sendable, Equatable {
+    var id = UUID()
+    var plan: FoodPlan
+    var endDate: Date
 }
-
-struct FoodPlan: Sendable {
-    let currentFood: FoodProduct
-    let startDate: Date
-    let dailyAmountGrams: Int
-    let mealsPerDay: Int
-    let meals: [ScheduledMeal]
-    let transition: FoodTransition
-    let foodHistory: [FoodHistoryEntry]
-}
-
-enum NutritionFormatting {
-    static let spanishLocale = Locale(identifier: "es_ES")
-
-    static func grams(_ value: Int) -> String {
-        "\(value.formatted(.number.locale(spanishLocale))) g"
-    }
-
-    static func weight(_ value: Double) -> String {
-        "\(decimal(value)) kg"
-    }
-
-    static func weightRange(_ range: ClosedRange<Double>) -> String {
-        "\(decimal(range.lowerBound))–\(decimal(range.upperBound)) kg"
-    }
-
-    static func date(_ value: Date) -> String {
-        value.formatted(
-            Date.FormatStyle()
-                .day()
-                .month(.wide)
-                .year()
-                .locale(spanishLocale)
-        )
-    }
-
-    static func shortDate(_ value: Date) -> String {
-        value.formatted(
-            Date.FormatStyle()
-                .day()
-                .month(.abbreviated)
-                .year()
-                .locale(spanishLocale)
-        )
-    }
-
-    private static func decimal(_ value: Double) -> String {
-        value.formatted(
-            .number
-                .locale(spanishLocale)
-                .precision(.fractionLength(1))
-        )
-    }
+typealias NutritionObservation = PetObservation
+struct NutritionData: Codable, Sendable, Equatable {
+    var plan: FoodPlan?
+    var transitions: [FoodTransition] = []
+    var observations: [NutritionObservation] = []
+    var history: [FoodHistoryEntry] = []
 }

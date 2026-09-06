@@ -1,14 +1,9 @@
 import SwiftUI
+import Observation
 
-enum AppSection: String, CaseIterable, Identifiable, Hashable {
-    case home
-    case nutrition
-    case health
-    case training
-    case settings
-
+enum AppSection: String, CaseIterable, Identifiable, Hashable, Sendable {
+    case home, nutrition, health, training, settings
     var id: Self { self }
-
     var title: LocalizedStringKey {
         switch self {
         case .home: "Inicio"
@@ -18,24 +13,25 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable {
         case .settings: "Ajustes"
         }
     }
-
     var icon: String {
         switch self {
         case .home: "house"
-        case .nutrition: "takeoutbag.and.cup.and.straw"
+        case .nutrition: "fork.knife"
         case .health: "heart"
-        case .training: "figure.walk"
+        case .training: "pawprint"
         case .settings: "gearshape"
         }
     }
-
-    var explanation: LocalizedStringKey {
-        switch self {
-        case .home: "Todo lo importante sobre Neo, de un vistazo."
-        case .nutrition: "Organiza sus comidas, cantidades y hábitos de alimentación."
-        case .health: "Reúne el seguimiento de salud y las próximas visitas veterinarias."
-        case .training: "Acompaña sus rutinas y celebra cada nuevo aprendizaje."
-        case .settings: "Personaliza PetPlanify y la información de Neo."
+    init(context: ObservationContext) {
+        switch context {
+        case .general: self = .home
+        case .nutrition: self = .nutrition
+        case .health: self = .health
+        case .training: self = .training
         }
     }
+}
+
+@MainActor @Observable final class AppNavigation {
+    var selection: AppSection = .home
 }

@@ -1,54 +1,23 @@
 import SwiftUI
 
 struct MobileAppShell: View {
-    @State private var selectedTab: AppSection = .home
-    @State private var reminders = DailyCarePreviewData.reminders
-
+    @Environment(AppNavigation.self) private var navigation
     var body: some View {
-        TabView(selection: $selectedTab) {
-            mobileTab(.home)
-            mobileTab(.nutrition)
-            mobileTab(.health)
-            mobileTab(.training)
-            mobileTab(.settings)
-        }
-        .tint(AppTheme.green)
-        #if os(iOS)
-        .tabBarMinimizeBehavior(.onScrollDown)
-        #endif
-        .accessibilityIdentifier("navigation.iphone")
-    }
-
-    private func mobileTab(_ section: AppSection) -> some View {
-        NavigationStack {
-            FeatureDestinationView(section: section)
-                .navigationTitle(section.title)
-                .toolbar { reminderToolbar }
-                #if os(iOS)
-                .navigationBarTitleDisplayMode(.large)
-                #endif
-        }
-        .tabItem {
-            Label(section.title, systemImage: section.icon)
-        }
-        .tag(section)
-        .accessibilityIdentifier("tab.\(section.rawValue)")
-    }
-
-    @ToolbarContentBuilder
-    private var reminderToolbar: some ToolbarContent {
-        #if os(iOS)
-        ToolbarItem(placement: .topBarLeading) {
-            AppReminderButton(reminders: $reminders) { section in
-                selectedTab = section
+        @Bindable var navigation = navigation
+        TabView(selection: $navigation.selection) {
+            ForEach(AppSection.allCases) { section in
+                NavigationStack {
+                    FeatureDestinationView(section: section)
+                        .navigationTitle(section.title)
+                        #if os(iOS)
+                        .navigationBarTitleDisplayMode(.large)
+                        #endif
+                        .toolbar { ToolbarItem(placement: .primaryAction) { AppReminderButton() } }
+                }
+                .tabItem { Label(section.title, systemImage: section.icon) }
+                .tag(section)
+                .accessibilityIdentifier("tab.\(section.rawValue)")
             }
-        }
-        #else
-        ToolbarItem(placement: .automatic) {
-            AppReminderButton(reminders: $reminders) { section in
-                selectedTab = section
-            }
-        }
-        #endif
+        }.tint(AppTheme.green).accessibilityIdentifier("navigation.iphone")
     }
 }

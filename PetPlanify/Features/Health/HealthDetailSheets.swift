@@ -1,226 +1,183 @@
 import SwiftUI
 
-struct HealthDetailSheet: View {
-    let detail: HealthDetail
-    let overview: HealthOverview
-    let onDismiss: () -> Void
+struct WeightEditor: View {
+    @Environment(PetPlanifyStore.self) private var store
+    let record: WeightRecord?
+    @State private var date: Date
+    @State private var weight = ""
+    @State private var note: String
+    @State private var error: String?
+    @State private var loaded = false
+    @State private var unit: WeightUnit = .kilograms
+
+    init(record: WeightRecord? = nil) {
+        self.record = record
+        _date = State(initialValue: record?.date ?? .now)
+        _note = State(initialValue: record?.note ?? "")
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                HStack {
-                    Text(title)
-                        .font(.system(.title2, design: .serif, weight: .semibold))
-                    Spacer()
-                    Button("Cerrar", action: onDismiss)
-                        .buttonStyle(.bordered)
-                }
-                content
+        CareForm(title: record == nil ? "Registrar peso" : "Editar peso", onSave: save) {
+            Section {
+                DatePicker("Fecha", selection: $date, in: ...Date.now, displayedComponents: .date)
+                TextField("Peso (\(unit.symbol))", text: $weight)
+                    .decimalEntry()
+                    .accessibilityIdentifier("health.weightInput")
+                TextField("Nota opcional", text: $note, axis: .vertical).lineLimit(3...6)
             }
-            .frame(maxWidth: 580, alignment: .leading)
-            .padding(26)
-        }
-        .appCanvas()
-        .accessibilityIdentifier("health.detail")
-    }
-
-    private var title: String {
-        switch detail {
-        case .addRecord: String(localized: "Añadir registro")
-        case .registerWeight: String(localized: "Registrar peso")
-        case let .vaccination(record): record.title
-        case .vaccinationHistory: String(localized: "Historial de vacunas")
-        case .dewormingHistory: String(localized: "Historial de desparasitación")
-        case .addDeworming: String(localized: "Añadir desparasitación")
-        case .medicationHistory: String(localized: "Historial de medicación")
-        case let .visit(visit): visit.reason
-        }
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        switch detail {
-        case .addRecord:
-            futureState(
-                symbol: "cross.case",
-                message: "Las visitas, vacunas, desparasitaciones y medicaciones podrán añadirse cuando definamos el formulario y el modelo definitivo."
-            )
-        case .registerWeight:
-            futureState(
-                symbol: "scalemass",
-                message: "El registro de peso será uno de los primeros formularios funcionales de PetPlanify."
-            )
-        case let .vaccination(record):
-            detailCard {
-                HealthDetailRow(title: "Fecha", value: HealthFormatting.date(record.date))
-                HealthDetailRow(title: "Estado", value: record.status.title)
-                HealthDetailRow(title: "Clínica", value: record.clinic)
-                HealthDetailRow(title: "Detalle", value: record.details)
-            }
-        case .vaccinationHistory:
-            detailCard {
-                ForEach(overview.vaccinations.sorted { $0.date > $1.date }) { record in
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text(record.title).font(.headline)
-                        Text("\(HealthFormatting.date(record.date)) · \(record.clinic)")
-                            .font(.subheadline)
-                            .foregroundStyle(AppTheme.secondaryInk)
-                        Text("\(record.details) · \(record.status.title)")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.secondaryInk)
-                    }
-                    .padding(.vertical, 8)
-                    .accessibilityElement(children: .combine)
-                }
-            }
-        case .dewormingHistory:
-            dewormingHistory
-        case .addDeworming:
-            futureState(
-                symbol: "shield.lefthalf.filled",
-                message: "El formulario permitirá registrar desparasitación interna o externa sin incluir instrucciones de dosis."
-            )
-        case .medicationHistory:
-            detailCard {
-                if overview.medications.isEmpty {
-                    Text("Todavía no hay medicación registrada.")
-                }
-                ForEach(overview.medications) { medication in
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text(medication.name).font(.headline)
-                        Text(medication.notes)
-                            .font(.subheadline)
-                            .foregroundStyle(AppTheme.secondaryInk)
-                        Text("\(HealthFormatting.shortDate(medication.startDate)) · \(medication.status.title)")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.secondaryInk)
-                    }
-                    .padding(.vertical, 8)
-                }
-            }
-        case let .visit(visit):
-            visitContent(visit)
-        }
-    }
-
-    private var dewormingHistory: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            ForEach(overview.dewormingRecords) { record in
-                detailCard {
-                    HealthDetailRow(title: "Tipo", value: record.kind.title)
-                    HealthDetailRow(
-                        title: "Última aplicación",
-                        value: formattedDate(
-                            record.administeredAt,
-                            fallback: String(localized: "No registrada")
-                        )
-                    )
-                    HealthDetailRow(
-                        title: "Próxima aplicación",
-                        value: formattedDate(
-                            record.nextDueAt,
-                            fallback: String(localized: "No indicada")
-                        )
-                    )
-                    HealthDetailRow(
-                        title: "Producto",
-                        value: record.productName ?? String(localized: "No indicado")
-                    )
-                    HealthDetailRow(title: "Estado", value: record.status().title)
-                    if let notes = record.notes {
-                        HealthDetailRow(title: "Notas", value: notes)
+            if let error { Section { Text(error).foregroundStyle(.red) } }
+            if let record {
+                Section {
+                    HealthDeleteButton(title: "Eliminar peso") {
+                        await store.update {
+                            $0.health.weights.removeAll { $0.id == record.id }
+                            $0.pet.currentWeight = $0.health.weights.max { $0.date < $1.date }?.weight
+                            $0.pet.updatedAt = .now
+                        }
                     }
                 }
             }
-            Text("Estos registros son personales y no contienen instrucciones de dosis ni sustituyen la valoración veterinaria.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
         }
-        .accessibilityIdentifier("health.dewormingHistory")
-    }
-
-    private func formattedDate(_ date: Date?, fallback: String) -> String {
-        guard let date else { return fallback }
-        return HealthFormatting.date(date)
-    }
-
-    private func visitContent(_ visit: VeterinaryVisit) -> some View {
-        let followUp = visit.followUpDate.map { HealthFormatting.date($0) } ?? "No indicado"
-        return VStack(alignment: .leading, spacing: 14) {
-            detailCard {
-                HealthDetailRow(title: "Fecha", value: HealthFormatting.date(visit.date))
-                HealthDetailRow(title: "Clínica", value: visit.clinic)
-                HealthDetailRow(title: "Estado", value: visit.status.title)
-                HealthDetailRow(title: "Valoración manual", value: visit.notes)
-                HealthDetailRow(
-                    title: "Tratamiento",
-                    value: visit.medications.isEmpty ? "No registrado" : visit.medications.joined(separator: ", ")
-                )
-                HealthDetailRow(
-                    title: "Próximo seguimiento",
-                    value: followUp
-                )
-            }
-
-            if !visit.documents.isEmpty {
-                Text("Documentos de esta visita")
-                    .font(.headline)
-                ForEach(visit.documents) { document in
-                    HStack {
-                        Label(document.filename, systemImage: "doc.text")
-                        Spacer()
-                        Text("\(document.fileType) · \(document.fileSize)")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.secondaryInk)
-                    }
-                    .padding(12)
-                    .background(AppTheme.surfaceMuted.opacity(0.55), in: RoundedRectangle(cornerRadius: 12))
-                    .accessibilityLabel("\(document.filename), vinculado a \(visit.reason)")
-                }
-            }
-
-            Text("La información es un registro manual y no sustituye la valoración veterinaria.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
+        .onAppear {
+            guard !loaded else { return }
+            unit = store.snapshot.preferences.weightUnit
+            if let record { weight = AppFormat.number(unit.fromKilograms(record.weight)) }
+            loaded = true
         }
     }
 
-    private func futureState(symbol: String, message: LocalizedStringKey) -> some View {
-        VStack(spacing: 16) {
-            Image(systemName: symbol)
-                .font(.system(size: 34, weight: .light))
-                .foregroundStyle(AppTheme.green)
-                .accessibilityHidden(true)
-            Text(message)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(AppTheme.secondaryInk)
+    private func save() async -> Bool {
+        guard let entered = AppFormat.parseNumber(weight), AppFormat.validWeight(unit.kilograms(from: entered)) else {
+            error = String(localized: "Introduce un peso válido y positivo en \(unit.symbol).")
+            return false
         }
-        .frame(maxWidth: .infinity)
-        .padding(28)
-        .appSurface()
-    }
-
-    private func detailCard<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 10, content: content)
-            .padding(18)
-            .appSurface()
+        guard date <= .now else { error = String(localized: "La fecha de un peso registrado no puede ser futura."); return false }
+        let value = WeightRecord(id: record?.id ?? UUID(), date: date, weight: unit.kilograms(from: entered), note: note.healthOptional)
+        let success = await store.update {
+            $0.health.weights.upsert(value)
+            $0.pet.currentWeight = $0.health.weights.max { $0.date < $1.date }?.weight
+            $0.pet.updatedAt = .now
+        }
+        if !success { error = String(localized: "No se pudo guardar el peso. Vuelve a intentarlo.") }
+        return success
     }
 }
 
-private struct HealthDetailRow: View {
-    let title: LocalizedStringKey
-    let value: String
+struct VaccinationEditor: View {
+    @Environment(PetPlanifyStore.self) private var store
+    let record: VaccinationRecord?
+    @State private var name: String
+    @State private var date: Date
+    @State private var hasNextDate: Bool
+    @State private var nextDate: Date
+    @State private var clinic: String
+    @State private var notes: String
+    @State private var error: String?
+
+    init(record: VaccinationRecord? = nil) {
+        self.record = record
+        _name = State(initialValue: record?.name ?? "")
+        _date = State(initialValue: record?.dateAdministered ?? .now)
+        _hasNextDate = State(initialValue: record?.nextDueDate != nil)
+        _nextDate = State(initialValue: record?.nextDueDate ?? .now)
+        _clinic = State(initialValue: record?.clinic ?? "")
+        _notes = State(initialValue: record?.notes ?? "")
+    }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
-            Text(title)
-                .foregroundStyle(AppTheme.secondaryInk)
-            Spacer()
-            Text(value)
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: 330, alignment: .trailing)
+        CareForm(title: record == nil ? "Añadir vacuna" : "Editar vacuna", onSave: save) {
+            Section {
+                TextField("Nombre de la vacuna", text: $name).accessibilityIdentifier("health.vaccineName")
+                DatePicker("Administrada el", selection: $date, in: ...Date.now, displayedComponents: .date)
+                TextField("Clínica opcional", text: $clinic)
+            }
+            Section {
+                HealthOptionalDate(title: "Próxima dosis", isEnabled: $hasNextDate, date: $nextDate, minimum: date)
+            } footer: {
+                Text("Introduce la próxima fecha indicada por tu profesional veterinario.")
+            }
+            Section { TextField("Notas opcionales", text: $notes, axis: .vertical).lineLimit(3...8) }
+            if let error { Section { Text(error).foregroundStyle(.red) } }
+            if let record {
+                Section {
+                    HealthDeleteButton(title: "Eliminar vacuna") {
+                        await store.update { $0.health.vaccines.removeAll { $0.id == record.id } }
+                    }
+                }
+            }
         }
-        .font(.subheadline)
-        .accessibilityElement(children: .combine)
+    }
+
+    private func save() async -> Bool {
+        guard !name.healthTrimmed.isEmpty else { error = String(localized: "Escribe el nombre de la vacuna."); return false }
+        guard !hasNextDate || nextDate >= date else { error = String(localized: "La próxima dosis debe ser posterior a la administración."); return false }
+        var value = record ?? VaccinationRecord(name: name.healthTrimmed)
+        value.name = name.healthTrimmed
+        value.dateAdministered = date
+        value.nextDueDate = hasNextDate ? nextDate : nil
+        value.clinic = clinic.healthOptional
+        value.notes = notes.healthOptional
+        let success = await store.update { $0.health.vaccines.upsert(value) }
+        if !success { error = String(localized: "No se pudo guardar la vacuna. Vuelve a intentarlo.") }
+        return success
+    }
+}
+
+struct DewormingEditor: View {
+    @Environment(PetPlanifyStore.self) private var store
+    let record: DewormingRecord?
+    @State private var kind: DewormingKind
+    @State private var product: String
+    @State private var date: Date
+    @State private var hasNextDate: Bool
+    @State private var nextDate: Date
+    @State private var notes: String
+    @State private var error: String?
+
+    init(record: DewormingRecord? = nil, kind: DewormingKind = .internalDeworming) {
+        self.record = record
+        _kind = State(initialValue: record?.kind ?? kind)
+        _product = State(initialValue: record?.productName ?? "")
+        _date = State(initialValue: record?.applicationDate ?? .now)
+        _hasNextDate = State(initialValue: record?.nextDueDate != nil)
+        _nextDate = State(initialValue: record?.nextDueDate ?? .now)
+        _notes = State(initialValue: record?.notes ?? "")
+    }
+
+    var body: some View {
+        CareForm(title: record == nil ? "Añadir desparasitación" : "Editar desparasitación", onSave: save) {
+            Section {
+                Picker("Tipo", selection: $kind) {
+                    ForEach(DewormingKind.allCases) { Text($0.shortTitle).tag($0) }
+                }
+                TextField("Producto opcional", text: $product)
+                DatePicker("Última aplicación", selection: $date, in: ...Date.now, displayedComponents: .date)
+            }
+            Section {
+                HealthOptionalDate(title: "Próxima aplicación", isEnabled: $hasNextDate, date: $nextDate, minimum: date)
+            } footer: { Text("Indica la fecha acordada con tu profesional veterinario.") }
+            Section { TextField("Notas opcionales", text: $notes, axis: .vertical).lineLimit(3...8) }
+            if let error { Section { Text(error).foregroundStyle(.red) } }
+            if let record {
+                Section {
+                    HealthDeleteButton(title: "Eliminar desparasitación") {
+                        await store.update { $0.health.dewormings.removeAll { $0.id == record.id } }
+                    }
+                }
+            }
+        }
+    }
+
+    private func save() async -> Bool {
+        guard !hasNextDate || nextDate >= date else { error = String(localized: "La próxima aplicación debe ser posterior a la última."); return false }
+        var value = record ?? DewormingRecord(kind: kind)
+        value.kind = kind
+        value.productName = product.healthOptional
+        value.applicationDate = date
+        value.nextDueDate = hasNextDate ? nextDate : nil
+        value.notes = notes.healthOptional
+        let success = await store.update { $0.health.dewormings.upsert(value) }
+        if !success { error = String(localized: "No se pudo guardar la desparasitación. Vuelve a intentarlo.") }
+        return success
     }
 }

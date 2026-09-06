@@ -1,68 +1,72 @@
 import Foundation
 
-enum HealthRecordStatus: Hashable, Sendable {
-    case completed, upcoming, active, finished
+struct HealthData: Codable, Equatable, Sendable {
+    var weights: [WeightRecord] = []
+    var vaccines: [VaccinationRecord] = []
+    var dewormings: [DewormingRecord] = []
+    var medications: [MedicationRecord] = []
+    var visits: [VeterinaryVisit] = []
+    var documents: [DocumentAttachment] = []
+    var observations: [PetObservation] = []
+}
+
+struct WeightRecord: Identifiable, Codable, Equatable, Sendable {
+    var id: UUID = UUID()
+    var date: Date = .now
+    /// Canonical storage is kilograms, independent of the display unit.
+    var weight: Double
+    var note: String? = nil
+}
+
+enum HealthRecordStatus: Sendable {
+    case completed, upcoming, overdue, active, finished
 
     var title: String {
         switch self {
-        case .completed: String(localized: "Completada")
+        case .completed: String(localized: "Registrada")
         case .upcoming: String(localized: "Próxima")
+        case .overdue: String(localized: "Fecha pasada")
         case .active: String(localized: "Activa")
         case .finished: String(localized: "Finalizada")
         }
     }
 
-    var isUpcoming: Bool { self == .upcoming }
+    static func dueDate(_ date: Date?, relativeTo now: Date) -> Self {
+        guard let date else { return .completed }
+        return date < Calendar.current.startOfDay(for: now) ? .overdue : .upcoming
+    }
 }
 
-struct HealthWeightRecord: Identifiable, Hashable, Sendable {
-    let id: Int
-    let date: Date
-    let kilograms: Double
+struct VaccinationRecord: Identifiable, Codable, Equatable, Sendable {
+    var id: UUID = UUID()
+    var name: String
+    var dateAdministered: Date = .now
+    var nextDueDate: Date? = nil
+    var clinic: String? = nil
+    var notes: String? = nil
+
+    func status(relativeTo now: Date = .now) -> HealthRecordStatus {
+        .dueDate(nextDueDate, relativeTo: now)
+    }
 }
 
-struct VaccinationRecord: Identifiable, Hashable, Sendable {
-    let id: Int
-    let date: Date
-    let title: String
-    let details: String
-    let clinic: String
-    let status: HealthRecordStatus
-}
-
-struct MedicationRecord: Identifiable, Hashable, Sendable {
-    let id: Int
-    let name: String
-    let startDate: Date
-    let endDate: Date?
-    let notes: String
-    let status: HealthRecordStatus
-}
-
-enum DewormingKind: String, CaseIterable, Identifiable, Hashable, Codable, Sendable {
+enum DewormingKind: String, CaseIterable, Identifiable, Codable, Sendable {
     case internalDeworming
     case externalDeworming
 
     var id: Self { self }
-
     var title: String {
         switch self {
-        case .internalDeworming:
-            String(localized: "Desparasitación interna")
-        case .externalDeworming:
-            String(localized: "Desparasitación externa")
+        case .internalDeworming: String(localized: "Desparasitación interna")
+        case .externalDeworming: String(localized: "Desparasitación externa")
         }
     }
-
-    var reminderTitle: String {
+    var shortTitle: String {
         switch self {
-        case .internalDeworming:
-            String(localized: "Próxima desparasitación interna")
-        case .externalDeworming:
-            String(localized: "Próxima desparasitación externa")
+        case .internalDeworming: String(localized: "Interna")
+        case .externalDeworming: String(localized: "Externa")
         }
     }
-
     var symbol: String {
         switch self {
         case .internalDeworming: "pills"
@@ -71,122 +75,66 @@ enum DewormingKind: String, CaseIterable, Identifiable, Hashable, Codable, Senda
     }
 }
 
-enum DewormingStatus: String, Hashable, Codable, Sendable {
-    case upcoming
-    case completed
-    case overdue
+struct DewormingRecord: Identifiable, Codable, Equatable, Sendable {
+    var id: UUID = UUID()
+    var kind: DewormingKind
+    var productName: String? = nil
+    var applicationDate: Date = .now
+    var nextDueDate: Date? = nil
+    var notes: String? = nil
 
-    var title: String {
-        switch self {
-        case .upcoming: String(localized: "Próxima")
-        case .completed: String(localized: "Completada")
-        case .overdue: String(localized: "Vencida")
+    func status(relativeTo now: Date = .now) -> HealthRecordStatus {
+        .dueDate(nextDueDate, relativeTo: now)
+    }
+}
+
+struct MedicationRecord: Identifiable, Codable, Equatable, Sendable {
+    var id: UUID = UUID()
+    var name: String
+    var startDate: Date = .now
+    var endDate: Date? = nil
+    var notes: String = ""
+    var relatedVisitID: UUID? = nil
+
+    func isActive(relativeTo now: Date = .now) -> Bool {
+        startDate <= now && (endDate == nil || endDate! > now)
+    }
+
+    func status(relativeTo now: Date = .now) -> HealthRecordStatus {
+        if startDate > now { return .upcoming }
+        return isActive(relativeTo: now) ? .active : .finished
+    }
+}
+
+struct VeterinaryVisit: Identifiable, Codable, Equatable, Sendable {
+    var id: UUID = UUID()
+    var date: Date = .now
+    var reason: String
+    var clinic: String = ""
+    var notes: String = ""
+    var assessment: String? = nil
+    var treatmentNotes: String? = nil
+    var followUpDate: Date? = nil
+    var documentIDs: [UUID] = []
+    var createdAt: Date = .now
+    var updatedAt: Date = .now
+
+    func status(relativeTo now: Date = .now) -> HealthRecordStatus {
+        date > now ? .upcoming : .completed
+    }
+}
+
+extension Array where Element: Identifiable {
+    mutating func upsert(_ value: Element) {
+        if let index = firstIndex(where: { $0.id == value.id }) {
+            self[index] = value
+        } else {
+            append(value)
         }
     }
 }
 
-struct DewormingRecord: Identifiable, Hashable, Codable, Sendable {
-    let id: UUID
-    let kind: DewormingKind
-    let productName: String?
-    let administeredAt: Date?
-    let nextDueAt: Date?
-    let notes: String?
-
-    func status(relativeTo referenceDate: Date = .now) -> DewormingStatus {
-        guard let nextDueAt else { return .completed }
-        return nextDueAt < referenceDate ? .overdue : .upcoming
-    }
-}
-
-struct HealthDocument: Identifiable, Hashable, Sendable {
-    let id: Int
-    let filename: String
-    let fileType: String
-    let fileSize: String
-    let updatedDate: Date
-}
-
-struct VeterinaryVisit: Identifiable, Hashable, Sendable {
-    let id: Int
-    let date: Date
-    let reason: String
-    let clinic: String
-    let notes: String
-    let medications: [String]
-    let followUpDate: Date?
-    let documents: [HealthDocument]
-    let status: HealthRecordStatus
-}
-
-struct HealthOverview: Hashable, Sendable {
-    let weightRecords: [HealthWeightRecord]
-    let healthyWeightRange: ClosedRange<Double>?
-    let vaccinations: [VaccinationRecord]
-    let dewormingRecords: [DewormingRecord]
-    let medications: [MedicationRecord]
-    let visits: [VeterinaryVisit]
-
-    var currentWeight: Double { weightRecords.last?.kilograms ?? 0 }
-    var upcomingVaccination: VaccinationRecord? {
-        vaccinations
-            .filter { $0.status == .upcoming && $0.date > Date.now }
-            .min { $0.date < $1.date }
-    }
-    var upcomingVisit: VeterinaryVisit? {
-        visits
-            .filter { $0.status == .upcoming && $0.date > Date.now }
-            .min { $0.date < $1.date }
-    }
-    var activeMedications: [MedicationRecord] {
-        medications.filter { $0.status == .active }
-    }
-}
-
-enum HealthDetail: Identifiable, Hashable, Sendable {
-    case addRecord
-    case registerWeight
-    case vaccination(VaccinationRecord)
-    case vaccinationHistory
-    case dewormingHistory
-    case addDeworming
-    case medicationHistory
-    case visit(VeterinaryVisit)
-
-    var id: String {
-        switch self {
-        case .addRecord: "add-record"
-        case .registerWeight: "register-weight"
-        case let .vaccination(record): "vaccination-\(record.id)"
-        case .vaccinationHistory: "vaccination-history"
-        case .dewormingHistory: "deworming-history"
-        case .addDeworming: "add-deworming"
-        case .medicationHistory: "medication-history"
-        case let .visit(record): "visit-\(record.id)"
-        }
-    }
-}
-
-enum HealthFormatting {
-    static let spanishLocale = Locale(identifier: "es_ES")
-
-    static func date(_ value: Date) -> String {
-        value.formatted(
-            Date.FormatStyle().day().month(.wide).year().locale(spanishLocale)
-        )
-    }
-
-    static func shortDate(_ value: Date) -> String {
-        value.formatted(
-            Date.FormatStyle().day().month(.abbreviated).year().locale(spanishLocale)
-        )
-    }
-
-    static func weight(_ value: Double) -> String {
-        "\(value.formatted(.number.locale(spanishLocale).precision(.fractionLength(1)))) kg"
-    }
-
-    static func weightRange(_ range: ClosedRange<Double>) -> String {
-        "\(weight(range.lowerBound).replacingOccurrences(of: " kg", with: ""))–\(weight(range.upperBound))"
-    }
+extension String {
+    var healthTrimmed: String { trimmingCharacters(in: .whitespacesAndNewlines) }
+    var healthOptional: String? { healthTrimmed.isEmpty ? nil : healthTrimmed }
 }

@@ -1,100 +1,159 @@
 import Foundation
 
-enum TrickStatus: String, CaseIterable, Identifiable, Hashable, Sendable {
+enum TrickStatus: String, Codable, CaseIterable, Identifiable, Hashable, Sendable {
     case notStarted, learning, mastered
     var id: Self { self }
 
     var title: String {
         switch self {
-        case .notStarted: String(localized: "Por empezar")
-        case .learning: String(localized: "Aprendiendo")
-        case .mastered: String(localized: "Dominado")
+        case .notStarted: "Por empezar"
+        case .learning: "Aprendiendo"
+        case .mastered: "Dominado"
         }
     }
 }
 
-enum TrickDifficulty: String, CaseIterable, Identifiable, Hashable, Sendable {
+enum TrickDifficulty: String, Codable, CaseIterable, Identifiable, Hashable, Sendable {
     case easy, medium, advanced
     var id: Self { self }
 
     var title: String {
         switch self {
-        case .easy: String(localized: "Fácil")
-        case .medium: String(localized: "Media")
-        case .advanced: String(localized: "Avanzada")
+        case .easy: "Fácil"
+        case .medium: "Media"
+        case .advanced: "Avanzada"
         }
     }
 }
 
-enum TrickCategory: String, CaseIterable, Identifiable, Hashable, Sendable {
+enum TrickCategory: String, Codable, CaseIterable, Identifiable, Hashable, Sendable {
     case basic, safety, coexistence, fun
     var id: Self { self }
 
     var title: String {
         switch self {
-        case .basic: String(localized: "Obediencia básica")
-        case .safety: String(localized: "Seguridad")
-        case .coexistence: String(localized: "Convivencia")
-        case .fun: String(localized: "Diversión")
+        case .basic: "Obediencia básica"
+        case .safety: "Seguridad"
+        case .coexistence: "Convivencia"
+        case .fun: "Diversión"
         }
     }
 }
 
 struct TrickGuide: Hashable, Sendable {
-    let objective: String
-    let materials: String
-    let steps: [String]
-    let commonMistakes: [String]
-    let recommendedAttempt: String
-    let reward: String
-    let advancement: String
-    let precautions: String
+    var objective: String
+    var requiredMaterials: String
+    var steps: [String]
+    var commonMistakes: [String]
+    var recommendedAttemptDuration: String
+    var rewardGuidance: String
+    var progressionCriteria: String
+    var precautions: String
 }
 
+/// Built-in artwork can later replace a symbol without changing persisted records.
 struct TrickDefinition: Identifiable, Hashable, Sendable {
-    let id: String
-    let name: String
-    let symbol: String
-    let difficulty: TrickDifficulty
-    let category: TrickCategory
-    let prerequisites: [String]
-    let guide: TrickGuide
+    var id: String
+    var name: String
+    var iconIdentifier: String
+    var illustrationAssetName: String? = nil
+    var difficulty: TrickDifficulty
+    var category: TrickCategory
+    var prerequisites: [String]
+    var guide: TrickGuide
 }
 
-struct SelectedTrick: Identifiable, Hashable, Sendable {
-    let definition: TrickDefinition
-    var status: TrickStatus
-    var progress: Int
-    var id: String { definition.id }
+struct SelectedTrick: Identifiable, Codable, Hashable, Sendable {
+    var id: UUID = UUID()
+    var trickID: String
+    var status: TrickStatus = .notStarted
+    var progress: Int = 0
+    var addedAt: Date = Date()
+    var customNotes: String = ""
 }
 
-struct BehaviorObservation: Identifiable, Hashable, Sendable {
-    let id: Int
-    let date: Date
-    let title: String
-    let body: String
-    let helpfulContext: String
+struct CustomTrick: Identifiable, Codable, Hashable, Sendable {
+    var id: UUID = UUID()
+    var name: String = ""
+    var category: TrickCategory = .fun
+    var difficulty: TrickDifficulty = .easy
+    var objective: String = ""
+    var steps: [String] = []
+    var notes: String = ""
+
+    var trickID: String { "custom-\(id.uuidString)" }
+
+    var definition: TrickDefinition {
+        TrickDefinition(
+            id: trickID,
+            name: name,
+            iconIdentifier: "pawprint",
+            difficulty: difficulty,
+            category: category,
+            prerequisites: [],
+            guide: TrickGuide(
+                objective: objective, requiredMaterials: "", steps: steps,
+                commonMistakes: [], recommendedAttemptDuration: "",
+                rewardGuidance: "", progressionCriteria: "", precautions: ""
+            )
+        )
+    }
 }
 
-struct TrainingOverview: Hashable, Sendable {
-    var selectedTricks: [SelectedTrick]
-    let library: [TrickDefinition]
-    let behaviorObservations: [BehaviorObservation]
+struct BehaviorObservation: Identifiable, Codable, Hashable, Sendable {
+    var id: UUID = UUID()
+    var date: Date = Date()
+    var title: String = ""
+    var observation: String = ""
+    var context: String = ""
+    var status: String = ""
 }
 
-enum TrainingDetail: Identifiable, Hashable, Sendable {
-    case customTrick
-    case library
-    case trick(TrickDefinition)
-    case behavior(BehaviorObservation)
+struct TrainingData: Codable, Equatable, Sendable {
+    var selectedTricks: [SelectedTrick] = []
+    var customTricks: [CustomTrick] = []
+    var observations: [BehaviorObservation] = []
 
-    var id: String {
-        switch self {
-        case .customTrick: "custom-trick"
-        case .library: "library"
-        case let .trick(trick): "trick-\(trick.id)"
-        case let .behavior(observation): "behavior-\(observation.id)"
+    var library: [TrickDefinition] {
+        BuiltInTrickLibrary.tricks + customTricks.map(\.definition)
+    }
+
+    func definition(for trickID: String) -> TrickDefinition? {
+        library.first { $0.id == trickID }
+    }
+
+    mutating func addTrick(_ trickID: String) {
+        guard definition(for: trickID) != nil,
+              !selectedTricks.contains(where: { $0.trickID == trickID }) else { return }
+        selectedTricks.append(SelectedTrick(trickID: trickID))
+    }
+
+    mutating func removeCustomTrick(_ id: UUID) {
+        guard let trick = customTricks.first(where: { $0.id == id }) else { return }
+        selectedTricks.removeAll { $0.trickID == trick.trickID }
+        customTricks.removeAll { $0.id == id }
+    }
+
+    var validationError: String? {
+        guard Set(selectedTricks.map(\.id)).count == selectedTricks.count,
+              Set(selectedTricks.map(\.trickID)).count == selectedTricks.count,
+              Set(customTricks.map(\.id)).count == customTricks.count,
+              Set(observations.map(\.id)).count == observations.count else {
+            return "Hay registros de entrenamiento duplicados."
         }
+        guard selectedTricks.allSatisfy({ (0...100).contains($0.progress) && definition(for: $0.trickID) != nil }) else {
+            return "Hay un truco o un progreso de entrenamiento no válido."
+        }
+        guard customTricks.allSatisfy({ !$0.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) else {
+            return "Los trucos personalizados necesitan un nombre."
+        }
+        guard observations.allSatisfy({
+            !$0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+            !$0.observation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        }) else {
+            return "Las observaciones de comportamiento necesitan título y contenido."
+        }
+        return nil
     }
 }
 
@@ -102,8 +161,6 @@ enum TrainingFormatting {
     static let spanishLocale = Locale(identifier: "es_ES")
 
     static func date(_ value: Date) -> String {
-        value.formatted(
-            Date.FormatStyle().day().month(.wide).year().locale(spanishLocale)
-        )
+        value.formatted(Date.FormatStyle().day().month(.wide).year().locale(spanishLocale))
     }
 }

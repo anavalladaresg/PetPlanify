@@ -1,155 +1,86 @@
 import SwiftUI
 
 struct NutritionView: View {
-    private enum PresentedSheet: String, Identifiable {
-        case editPlan
-        case foodHistory
-
-        var id: String { rawValue }
-    }
-
-    @State private var presentedSheet: PresentedSheet?
-
-    private let plan = NutritionPreviewData.neoPlan
-
+    @Environment(PetPlanifyStore.self) private var store
+    @State private var editingPlan = false
+    @State private var addingTransition = false
+    @State private var editingTransition: FoodTransition?
+    @State private var addingObservation = false
+    @State private var observationToDelete: PetObservation?
     var body: some View {
-        Group {
-            #if os(macOS)
-            NutritionMacView(
-                plan: plan,
-                onEditPlan: { presentedSheet = .editPlan },
-                onShowHistory: { presentedSheet = .foodHistory }
-            )
-            #else
-            NutritionPhoneView(
-                plan: plan,
-                onEditPlan: { presentedSheet = .editPlan },
-                onShowHistory: { presentedSheet = .foodHistory }
-            )
-            #endif
-        }
-        .environment(\.locale, NutritionFormatting.spanishLocale)
-        #if os(iOS)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    presentedSheet = .editPlan
-                } label: {
-                    Label("Editar plan", systemImage: "pencil")
+        CarePage {
+            CareSection(title: "Plan de alimentación") {
+                if let plan = store.snapshot.nutrition.plan {
+                    Text(plan.product.name).font(.title2.weight(.semibold))
+                    Text("\(plan.product.brand) · \(plan.product.type.title)").foregroundStyle(AppTheme.secondaryInk)
+                    LabeledContent("Cantidad diaria", value: AppFormat.grams(plan.dailyAmountGrams))
+                    LabeledContent("Desde", value: AppFormat.date(plan.startDate))
+                    Divider()
+                    ForEach(plan.meals.sorted { $0.hour * 60 + $0.minute < $1.hour * 60 + $1.minute }) { meal in
+                        LabeledContent(meal.time.formatted(date: .omitted, time: .shortened), value: AppFormat.grams(meal.amountGrams))
+                    }
+                    if !plan.notes.isEmpty { Text(plan.notes).foregroundStyle(AppTheme.secondaryInk) }
+                } else {
+                    EmptyCareState(title: "Su alimentación, a su manera", symbol: "fork.knife", message: "Guarda el alimento, la cantidad y los horarios que ya sigues.")
                 }
-                .accessibilityIdentifier("nutrition.editPlan")
+                Button(store.snapshot.nutrition.plan == nil ? "Configurar alimentación" : "Editar plan") { editingPlan = true }
+                    .buttonStyle(.borderedProminent).accessibilityIdentifier("foodPlan.edit")
             }
-        }
-        #endif
-        .sheet(item: $presentedSheet) { sheet in
-            switch sheet {
-            case .editPlan:
-                EditPlanPreviewSheet {
-                    presentedSheet = nil
-                }
-            case .foodHistory:
-                FoodHistorySheet(plan: plan) {
-                    presentedSheet = nil
+            if let transition = store.snapshot.nutrition.transitions.first(where: { !$0.isComplete }) {
+                CareSection(title: "Cambio de alimento") {
+                    Text("\(transition.previousFood) → \(transition.newFood)").font(.headline)
+                    ProgressView(value: transition.progress).accessibilityValue(transition.progress.formatted(.percent))
+                    Text("Hasta el \(AppFormat.date(transition.endDate))").foregroundStyle(AppTheme.secondaryInk)
+                    Button("Actualizar transición") { editingTransition = transition }
                 }
             }
-        }
-    }
-}
-
-private struct EditPlanPreviewSheet: View {
-    let onDismiss: () -> Void
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "pencil.and.list.clipboard")
-                .font(.system(size: 34, weight: .light))
-                .foregroundStyle(AppTheme.green)
-                .accessibilityHidden(true)
-            Text("Editar plan")
-                .font(.system(.title2, design: .serif, weight: .semibold))
-            Text("La edición se añadirá más adelante. Por ahora, este panel utiliza datos de ejemplo y no guarda cambios.")
-                .foregroundStyle(AppTheme.secondaryInk)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-            Button("Cerrar", action: onDismiss)
-                .buttonStyle(.borderedProminent)
-                .tint(AppTheme.green)
-                .controlSize(.large)
-        }
-        .frame(maxWidth: 420)
-        .padding(32)
-        .appCanvas()
-        .accessibilityIdentifier("nutrition.editPlanSheet")
-    }
-}
-
-private struct FoodHistorySheet: View {
-    let plan: FoodPlan
-    let onDismiss: () -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Historial de alimentos")
-                        .font(.system(.title2, design: .serif, weight: .semibold))
-                    Text("Cambios recientes del plan de Neo")
-                        .foregroundStyle(AppTheme.secondaryInk)
+            CareSection(title: "Observaciones") {
+                if store.snapshot.nutrition.observations.isEmpty {
+                    Text("Anota cambios de apetito o tolerancia que quieras recordar.").foregroundStyle(AppTheme.secondaryInk)
                 }
-                Spacer()
-                Button("Cerrar", action: onDismiss)
-                    .buttonStyle(.bordered)
-            }
-
-            VStack(spacing: 0) {
-                ForEach(plan.foodHistory) { entry in
-                    FoodHistoryRow(entry: entry)
-                    if entry.id != plan.foodHistory.last?.id {
-                        Divider()
-                            .overlay(AppTheme.border)
+                ForEach(store.snapshot.nutrition.observations.sorted { $0.date > $1.date }) { item in
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            if !item.title.isEmpty { Text(item.title).font(.headline) }
+                            Text(item.body)
+                            Text(AppFormat.date(item.date)).font(.caption).foregroundStyle(AppTheme.secondaryInk)
+                        }
+                        Spacer()
+                        Button("Eliminar", systemImage: "trash", role: .destructive) { observationToDelete = item }.labelStyle(.iconOnly)
                     }
                 }
+                Button("Añadir observación", systemImage: "plus") { addingObservation = true }
             }
-            .padding(.horizontal, 18)
-            .appSurface()
+            CareSection(title: "Historial de alimentación") {
+                if store.snapshot.nutrition.history.isEmpty && store.snapshot.nutrition.transitions.isEmpty {
+                    Text("Los cambios de plan se guardarán aquí.").foregroundStyle(AppTheme.secondaryInk)
+                }
+                ForEach(store.snapshot.nutrition.history.sorted { $0.endDate > $1.endDate }) { item in
+                    VStack(alignment: .leading) {
+                        Text(item.plan.product.name).font(.headline)
+                        Text("\(AppFormat.date(item.plan.startDate)) – \(AppFormat.date(item.endDate))").font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+                    }
+                }
+                ForEach(store.snapshot.nutrition.transitions.sorted { $0.startDate > $1.startDate }) { item in
+                    Button { editingTransition = item } label: {
+                        LabeledContent("\(item.previousFood) → \(item.newFood)", value: item.isComplete ? String(localized: "Completada") : item.progress.formatted(.percent))
+                    }.buttonStyle(.plain)
+                }
+                Button("Añadir transición", systemImage: "arrow.triangle.swap") { addingTransition = true }
+            }
         }
-        .frame(minWidth: 320, idealWidth: 520, maxWidth: 620)
-        .padding(28)
-        .appCanvas()
-        .accessibilityIdentifier("nutrition.foodHistorySheet")
+        .accessibilityIdentifier("nutrition.screen")
+        .sheet(isPresented: $editingPlan) { FoodPlanEditor() }
+        .sheet(isPresented: $addingTransition) { FoodTransitionEditor() }
+        .sheet(item: $editingTransition) { FoodTransitionEditor(record: $0) }
+        .sheet(isPresented: $addingObservation) { ObservationEditor(context: .nutrition) }
+        .confirmationDialog("¿Eliminar esta observación?", isPresented: Binding(get: { observationToDelete != nil }, set: { if !$0 { observationToDelete = nil } })) {
+            Button("Eliminar observación", role: .destructive) {
+                guard let item = observationToDelete else { return }
+                Task { _ = await store.update { $0.nutrition.observations.removeAll { $0.id == item.id } } }
+            }
+        }
     }
 }
 
-private struct FoodHistoryRow: View {
-    let entry: FoodHistoryEntry
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 14) {
-            Image(systemName: entry.endDate == nil ? "checkmark.circle.fill" : "clock.arrow.circlepath")
-                .foregroundStyle(entry.endDate == nil ? AppTheme.green : AppTheme.secondaryInk)
-                .accessibilityHidden(true)
-
-            VStack(alignment: .leading, spacing: 5) {
-                Text(entry.endDate == nil ? "Plan actual" : "Plan anterior")
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(AppTheme.secondaryInk)
-                Text(entry.food.name)
-                    .font(.headline)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(dateRange)
-                    .font(.subheadline)
-                    .foregroundStyle(AppTheme.secondaryInk)
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(.vertical, 16)
-        .accessibilityElement(children: .combine)
-    }
-
-    private var dateRange: String {
-        if let endDate = entry.endDate {
-            return "\(NutritionFormatting.shortDate(entry.startDate)) – \(NutritionFormatting.shortDate(endDate))"
-        }
-        return String(localized: "Desde \(NutritionFormatting.date(entry.startDate))")
-    }
-}
+#Preview { NavigationStack { NutritionView() }.environment(PetPlanifyStore.preview()) }

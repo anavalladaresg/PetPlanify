@@ -1,150 +1,136 @@
 import SwiftUI
 
-struct SelectedTricksCard: View {
-    let tricks: [SelectedTrick]
-    let onSelect: (TrickDefinition) -> Void
-
-    var body: some View {
-        TrainingGroupCard("Mis trucos", symbol: "checklist", identifier: "training.myTricks") {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 210), spacing: 12)], spacing: 12) {
-                ForEach(tricks) { trick in
-                    Button {
-                        onSelect(trick.definition)
-                    } label: {
-                        HStack(spacing: 12) {
-                            TrickIllustration(symbol: trick.definition.symbol, size: 48)
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(trick.definition.name)
-                                    .font(.headline)
-                                    .foregroundStyle(AppTheme.ink)
-                                Text(trick.status.title)
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(trick.status == .mastered ? AppTheme.green : AppTheme.orange)
-                                ProgressView(value: Double(trick.progress), total: 100)
-                                    .tint(trick.status == .mastered ? AppTheme.green : AppTheme.orange)
-                                    .accessibilityLabel("Progreso")
-                                    .accessibilityValue("\(trick.progress) por ciento")
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(AppTheme.secondaryInk)
-                                .accessibilityHidden(true)
-                        }
-                        .padding(12)
-                        .background(AppTheme.surfaceMuted.opacity(0.55), in: RoundedRectangle(cornerRadius: 14))
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("\(trick.definition.name), \(trick.status.title), \(trick.progress) por ciento")
-                }
-            }
-        }
-    }
-}
-
-struct TrickLibraryPreviewCard: View {
-    let available: [TrickDefinition]
-    let onExplore: () -> Void
-
-    var body: some View {
-        TrainingGroupCard("Explorar trucos", symbol: "books.vertical", identifier: "training.library") {
-            Text("Guías integradas por dificultad, categoría y requisitos previos.")
-                .font(.subheadline)
-                .foregroundStyle(AppTheme.secondaryInk)
-            HStack(spacing: 9) {
-                ForEach(available.prefix(4)) { trick in
-                    VStack(spacing: 5) {
-                        TrickIllustration(symbol: trick.symbol, size: 42)
-                        Text(trick.name).font(.caption).lineLimit(1)
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-            }
-            .padding(.vertical, 8)
-            Button("Abrir biblioteca", action: onExplore)
-                .buttonStyle(.borderedProminent)
-                .tint(AppTheme.green)
-                .frame(minHeight: 40)
-                .accessibilityIdentifier("training.explore")
-        }
-    }
-}
-
-struct BehaviorObservationsCard: View {
-    let observations: [BehaviorObservation]
-    let onSelect: (BehaviorObservation) -> Void
-
-    var body: some View {
-        TrainingGroupCard("Comportamiento", symbol: "pawprint", identifier: "training.behavior") {
-            ForEach(observations) { observation in
-                Button {
-                    onSelect(observation)
-                } label: {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(observation.title)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(AppTheme.ink)
-                        Text("\(TrainingFormatting.date(observation.date)) · \(observation.body)")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.secondaryInk)
-                            .lineLimit(2)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 9)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                if observation.id != observations.last?.id {
-                    Divider().overlay(AppTheme.border)
-                }
-            }
-            Text("Son observaciones personales, no diagnósticos de comportamiento.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
-                .padding(.top, 5)
-        }
-    }
-}
-
 struct TrickIllustration: View {
-    let symbol: String
-    let size: CGFloat
+    let definition: TrickDefinition
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
-                .fill(AppTheme.greenSoft)
-            Image(systemName: symbol)
-                .font(.system(size: size * 0.42, weight: .medium))
-                .foregroundStyle(AppTheme.green)
+        Group {
+            if let asset = definition.illustrationAssetName {
+                Image(asset).resizable().scaledToFit()
+            } else {
+                Image(systemName: definition.iconIdentifier)
+                    .font(.title3)
+            }
         }
-        .frame(width: size, height: size)
+        .foregroundStyle(AppTheme.green)
+        .frame(width: 44, height: 44)
+        .background(AppTheme.greenSoft, in: RoundedRectangle(cornerRadius: 12))
         .accessibilityHidden(true)
     }
 }
 
-struct TrainingGroupCard<Content: View>: View {
-    let title: LocalizedStringKey
-    let symbol: String
-    let identifier: String
-    @ViewBuilder let content: Content
-
-    init(_ title: LocalizedStringKey, symbol: String, identifier: String, @ViewBuilder content: () -> Content) {
-        self.title = title
-        self.symbol = symbol
-        self.identifier = identifier
-        self.content = content()
-    }
+struct TrainingTrickRow: View {
+    let definition: TrickDefinition
+    var selected: SelectedTrick? = nil
+    var isCustom = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label(title, systemImage: symbol)
-                .font(.system(.title3, design: .serif, weight: .semibold))
-            content
+        HStack(spacing: 12) {
+            TrickIllustration(definition: definition)
+            VStack(alignment: .leading, spacing: 5) {
+                Text(definition.name).font(.headline)
+                if let selected {
+                    Text("\(selected.status.title) · \(selected.progress) %")
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                    ProgressView(value: Double(selected.progress), total: 100)
+                        .tint(AppTheme.green)
+                        .accessibilityHidden(true)
+                } else {
+                    Text("\(definition.difficulty.title) · \(definition.category.title)")
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                    if isCustom {
+                        Text("Guía propia").font(.caption).foregroundStyle(AppTheme.secondaryInk)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(AppTheme.secondaryInk)
+                .accessibilityHidden(true)
         }
-        .padding(18)
-        .appSurface()
-        .accessibilityIdentifier(identifier)
+        .padding(.vertical, 5)
+        .frame(minHeight: 44)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+    }
+}
+
+struct TrainingActionRow: View {
+    let title: LocalizedStringKey
+    let symbol: String
+    let subtitle: LocalizedStringKey
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: symbol)
+                .font(.title3)
+                .foregroundStyle(AppTheme.green)
+                .frame(width: 36)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title).font(.headline)
+                Text(subtitle).font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(AppTheme.secondaryInk)
+                .accessibilityHidden(true)
+        }
+        .padding(.vertical, 6)
+        .frame(minHeight: 44)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+    }
+}
+
+struct BehaviorObservationRow: View {
+    let record: BehaviorObservation
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(record.title).font(.headline)
+            Text(TrainingFormatting.date(record.date))
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.secondaryInk)
+            Text(record.observation)
+                .font(.body)
+                .foregroundStyle(AppTheme.secondaryInk)
+                .lineLimit(2)
+            if !record.status.isEmpty {
+                Text(record.status).font(.subheadline).foregroundStyle(AppTheme.green)
+            }
+        }
+        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("training.observation.\(record.id.uuidString)")
+    }
+}
+
+struct TrainingGuideSection: View {
+    let title: LocalizedStringKey
+    let text: String
+
+    var body: some View {
+        if !text.isEmpty {
+            CareSection(title: title) {
+                Text(text).fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+}
+
+extension View {
+    func trainingSheetSize() -> some View {
+        #if os(macOS)
+        frame(minWidth: 430, idealWidth: 540, minHeight: 450, idealHeight: 650)
+        #else
+        self
+        #endif
     }
 }

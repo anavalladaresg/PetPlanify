@@ -1,38 +1,19 @@
 import Foundation
 
-enum PreviewData {
-    static let referenceDate = Date.now
-    static let spanishTimeZone = TimeZone(identifier: "Europe/Madrid") ?? .gmt
-
-    static func date(
-        daysFromReference days: Int,
-        hour: Int = 12,
-        minute: Int = 0
-    ) -> Date {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = spanishTimeZone
-        let start = calendar.startOfDay(for: referenceDate)
-        let day = calendar.date(byAdding: .day, value: days, to: start) ?? start
-        return calendar.date(
-            bySettingHour: hour,
-            minute: minute,
-            second: 0,
-            of: day
-        ) ?? day
+extension PetPlanifyStore {
+    /// In-memory previews never touch Application Support, notifications, Photos or iCloud.
+    static func preview(empty: Bool = false) -> PetPlanifyStore {
+        var snapshot = PetPlanifySnapshot()
+        if !empty {
+            snapshot.pet = PetProfile(name: "Neo", species: "Perro", breed: "Teckel", birthDate: Calendar.current.date(byAdding: .year, value: -2, to: .now), sex: .male, currentWeight: 6.8, healthyWeightRange: WeightRange(lower: 6.5, upper: 7.5), primaryVeterinaryClinic: "Clínica veterinaria")
+            snapshot.health.weights = [WeightRecord(date: Date.now.addingTimeInterval(-30 * 86_400), weight: 6.6), WeightRecord(weight: 6.8)]
+            snapshot.health.vaccines = [VaccinationRecord(name: "Revisión de vacunas", dateAdministered: .now, nextDueDate: Date.now.addingTimeInterval(30 * 86_400))]
+            snapshot.health.dewormings = [DewormingRecord(kind: .internalDeworming, nextDueDate: Date.now.addingTimeInterval(20 * 86_400))]
+            snapshot.nutrition.plan = FoodPlan(product: FoodProduct(name: "Alimento habitual", brand: "", type: .dryFood), dailyAmountGrams: 140, meals: [MealScheduleEntry(hour: 9, amountGrams: 70), MealScheduleEntry(hour: 20, amountGrams: 70)])
+            if let trick = BuiltInTrickLibrary.tricks.first { snapshot.training.addTrick(trick.id) }
+            snapshot.onboarding.isComplete = true
+            ReminderEngine.reconcile(&snapshot)
+        }
+        return PetPlanifyStore(storage: InMemorySnapshotStorage(snapshot: snapshot), initialSnapshot: snapshot, loaded: true)
     }
-
-    static func monthStart(monthsFromReference months: Int) -> Date {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = spanishTimeZone
-        let components = calendar.dateComponents([.year, .month], from: referenceDate)
-        let currentMonth = calendar.date(from: components) ?? referenceDate
-        return calendar.date(byAdding: .month, value: months, to: currentMonth) ?? currentMonth
-    }
-
-    static let neo = PetProfile(
-        name: "Neo",
-        breed: "Teckel",
-        age: "2 años",
-        currentWeight: "6,8 kg"
-    )
 }
