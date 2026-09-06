@@ -29,15 +29,17 @@ struct VisitEditor: View {
 
     var body: some View {
         CareForm(title: record == nil ? "Añadir visita veterinaria" : "Editar visita", onSave: save) {
-            Section {
+            Section("Visita veterinaria") {
                 TextField("Motivo", text: $reason).accessibilityIdentifier("health.visitReason")
                 DatePicker("Fecha y hora", selection: $date, displayedComponents: [.date, .hourAndMinute])
                 TextField("Clínica", text: $clinic)
-                TextField("Notas", text: $notes, axis: .vertical).lineLimit(3...8)
             }
             Section("Información de la consulta") {
                 TextField("Valoración indicada por el profesional", text: $assessment, axis: .vertical).lineLimit(3...8)
                 TextField("Tratamiento e indicaciones", text: $treatment, axis: .vertical).lineLimit(3...8)
+            }
+            Section("Notas") {
+                TextField("Notas", text: $notes, axis: .vertical).lineLimit(3...8)
             }
             Section {
                 Toggle("Añadir seguimiento", isOn: $hasFollowUp)
@@ -100,27 +102,29 @@ struct VisitDetailView: View {
         NavigationStack {
             CarePage {
                 if let visit {
-                    CareSection(title: "Visita veterinaria") {
-                        Text(visit.reason).font(.title2.weight(.semibold))
+                    CareSection(title: "Visita veterinaria", style: .highlighted, symbol: "cross.case") {
+                        Text(visit.reason).font(.title2.weight(.medium)).fontDesign(.serif)
                         LabeledContent("Fecha", value: AppFormat.dateTime(visit.date))
                         if !visit.clinic.isEmpty { LabeledContent("Clínica", value: visit.clinic) }
-                        LabeledContent("Estado", value: visit.status().title)
+                        LabeledContent("Estado") {
+                            Text(visit.status().title).foregroundStyle(visit.status().displayColor)
+                        }
                         if let followUp = visit.followUpDate { LabeledContent("Seguimiento", value: AppFormat.dateTime(followUp)) }
                     }
                     if !visit.notes.isEmpty { textSection("Notas", visit.notes) }
                     if let assessment = visit.assessment { textSection("Valoración del profesional", assessment) }
                     if let treatment = visit.treatmentNotes { textSection("Tratamiento e indicaciones", treatment) }
                     if !linkedMedications.isEmpty {
-                        CareSection(title: "Medicación relacionada") {
+                        CareSection(title: "Medicación relacionada", style: .compact, symbol: "pills") {
                             ForEach(linkedMedications) { medication in
-                                HealthRecordRow(title: medication.name, subtitle: medication.status().title) { sheet = .medication(medication) }
+                                HealthRecordRow(title: medication.name, subtitle: medication.status().title, symbol: "pills") { sheet = .medication(medication) }
                             }
                         }
                     }
-                    CareSection(title: "Documentos") {
+                    CareSection(title: "Documentos", style: .compact, symbol: "paperclip") {
                         let documents = store.snapshot.health.documents.filter { $0.linkedVisitID == visitID }
                         if documents.isEmpty {
-                            Text("Adjunta informes, resultados o la cartilla de vacunación.").foregroundStyle(AppTheme.secondaryInk)
+                            EmptyCareState(title: "Adjunta informes, resultados o la cartilla de vacunación.", symbol: "doc.text")
                         }
                         ForEach(documents) { document in HealthDocumentRow(document: document) }
                         Button("Adjuntar documento", systemImage: "paperclip") { importing = true }
@@ -169,6 +173,11 @@ struct VisitDetailView: View {
 
     private var linkedMedications: [MedicationRecord] { store.snapshot.health.medications.filter { $0.relatedVisitID == visitID } }
     private func textSection(_ title: LocalizedStringKey, _ text: String) -> some View {
-        CareSection(title: title) { Text(text).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }
+        CareSection(title: title, style: .plain) {
+            Text(text)
+                .textSelection(.enabled)
+                .lineSpacing(3)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }

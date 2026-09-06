@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TrainingView: View {
     @Environment(PetPlanifyStore.self) private var store
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var presentedDetail: TrainingPresentation?
 
     private var training: TrainingData { store.snapshot.training }
@@ -11,29 +12,25 @@ struct TrainingView: View {
 
     var body: some View {
         CarePage {
-            CareSection(title: "Mis trucos") {
+            CareSection(title: "Mis trucos", style: training.selectedTricks.isEmpty ? .highlighted : .plain) {
                 if training.selectedTricks.isEmpty {
-                    EmptyCareState(
-                        title: "Un pequeño paso para empezar", symbol: "pawprint",
-                        message: "Elige un truco y adapta el aprendizaje a su ritmo."
-                    )
-                    Button("Elegir un truco", systemImage: "plus") { presentedDetail = .library }
-                        .accessibilityIdentifier("training.chooseFirst")
+                    firstTrick
                 } else {
-                    ForEach(training.selectedTricks) { selected in
-                        if let definition = training.definition(for: selected.trickID) {
-                            Button { presentedDetail = .trick(definition.id) } label: {
-                                TrainingTrickRow(definition: definition, selected: selected)
+                    TrainingTileLayout(singleColumn: dynamicTypeSize.isAccessibilitySize) {
+                        ForEach(training.selectedTricks) { selected in
+                            if let definition = training.definition(for: selected.trickID) {
+                                Button { presentedDetail = .trick(definition.id) } label: {
+                                    TrainingTrickRow(definition: definition, selected: selected)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityIdentifier("training.selected.\(selected.id.uuidString)")
                             }
-                            .buttonStyle(.plain)
-                            .accessibilityIdentifier("training.selected.\(selected.id.uuidString)")
-                            if selected.id != training.selectedTricks.last?.id { Divider() }
                         }
                     }
                 }
             }
 
-            CareSection(title: "Explorar trucos") {
+            CareSection(title: "Explorar trucos", style: .compact) {
                 Button { presentedDetail = .library } label: {
                     TrainingActionRow(
                         title: "Biblioteca de trucos", symbol: "books.vertical",
@@ -53,7 +50,7 @@ struct TrainingView: View {
                 .accessibilityIdentifier("training.addCustom")
             }
 
-            CareSection(title: "Comportamiento") {
+            CareSection(title: "Comportamiento", style: .compact, symbol: "square.and.pencil") {
                 if observations.isEmpty {
                     Text("Anota lo que observas y qué le ayuda en cada situación.")
                         .foregroundStyle(AppTheme.secondaryInk)
@@ -63,19 +60,13 @@ struct TrainingView: View {
                             BehaviorObservationRow(record: observation)
                         }
                         .buttonStyle(.plain)
-                        Divider()
+                        if observation.id != observations.prefix(3).last?.id { Divider() }
                     }
                 }
-                Button("Añadir observación", systemImage: "plus") { presentedDetail = .newObservation }
-                    .accessibilityIdentifier("training.addObservation")
-                if !observations.isEmpty {
-                    Button("Ver historial", systemImage: "clock") { presentedDetail = .history }
-                        .accessibilityIdentifier("training.behaviorHistory")
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: AppTheme.Space.lg) { observationActions }
+                    VStack(alignment: .leading, spacing: AppTheme.Space.sm) { observationActions }
                 }
-                Text("Estas observaciones no sustituyen la valoración de un educador canino o profesional veterinario.")
-                    .font(.footnote)
-                    .foregroundStyle(AppTheme.secondaryInk)
-                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .toolbar {
@@ -107,6 +98,36 @@ struct TrainingView: View {
             case .history:
                 BehaviorHistoryView()
             }
+        }
+    }
+
+    private var firstTrick: some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: AppTheme.Space.md))
+            : AnyLayout(HStackLayout(alignment: .center, spacing: AppTheme.Space.md))
+        return layout {
+            DogPoseIllustration(pose: .sitting).frame(width: 110, height: 100)
+            VStack(alignment: .leading, spacing: AppTheme.Space.sm) {
+                Text("Un pequeño paso para empezar").font(.headline)
+                Text("Elige un truco y adapta el aprendizaje a su ritmo.")
+                    .font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+                Button("Elegir un truco", systemImage: "plus") { presentedDetail = .library }
+                    .buttonStyle(.bordered)
+                    .accessibilityIdentifier("training.chooseFirst")
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    @ViewBuilder
+    private var observationActions: some View {
+        Button("Añadir observación", systemImage: "plus") { presentedDetail = .newObservation }
+            .frame(minHeight: 44)
+            .accessibilityIdentifier("training.addObservation")
+        if !observations.isEmpty {
+            Button("Ver historial", systemImage: "clock") { presentedDetail = .history }
+                .frame(minHeight: 44)
+                .accessibilityIdentifier("training.behaviorHistory")
         }
     }
 }

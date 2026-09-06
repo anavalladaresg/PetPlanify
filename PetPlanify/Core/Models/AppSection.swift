@@ -15,11 +15,11 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable, Sendable {
     }
     var icon: String {
         switch self {
-        case .home: "house"
+        case .home: "house.fill"
         case .nutrition: "fork.knife"
-        case .health: "heart"
-        case .training: "pawprint"
-        case .settings: "gearshape"
+        case .health: "heart.fill"
+        case .training: "pawprint.fill"
+        case .settings: "gearshape.fill"
         }
     }
     init(context: ObservationContext) {

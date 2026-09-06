@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Environment(PetPlanifyStore.self) private var store
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var step = 0
     @State private var draft = PetProfile()
     @State private var photoData: Data?
@@ -17,12 +18,17 @@ struct OnboardingView: View {
             if step == 0 {
                 ScrollView {
                     VStack(spacing: 22) {
-                        PetAvatarView(size: 112).padding(.top, 44)
+                        DogPoseIllustration(pose: .sitting)
+                            .frame(width: 120, height: 100).padding(.top, 28)
                         Text("PetPlanify").font(.largeTitle.weight(.semibold)).fontDesign(.serif)
+                            .accessibilityAddTraits(.isHeader)
                         Text("Su cuidado, con calma.").font(.title2).fontDesign(.serif)
                         Text("Un lugar para recordar sus cuidados, guardar su historia y acompañar cada aprendizaje.")
                             .multilineTextAlignment(.center).foregroundStyle(AppTheme.secondaryInk)
-                    }.padding(30).frame(maxWidth: 500).frame(maxWidth: .infinity)
+                    }
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(30).frame(maxWidth: 500).frame(maxWidth: .infinity)
                 }
             } else if step < 3 {
                 Form {
@@ -33,31 +39,63 @@ struct OnboardingView: View {
                     }
                     if let error { Text(error).foregroundStyle(.red) }
                 }.formStyle(.grouped).scrollContentBackground(.hidden)
+                    #if os(iOS)
+                    .scrollDismissesKeyboard(.interactively)
+                    #endif
             } else {
                 ScrollView {
                     VStack(spacing: 18) {
-                        PetAvatarView(size: 104, imageData: photoData)
+                        if photoData != nil {
+                            PetAvatarView(size: 104, imageData: photoData)
+                        } else {
+                            DogPoseIllustration(pose: .sitting).frame(width: 120, height: 100)
+                        }
                         Text("Todo listo para \(draft.name)").font(.title).fontDesign(.serif).multilineTextAlignment(.center)
+                            .accessibilityAddTraits(.isHeader)
                         Text("\(draft.breed) · \(draft.ageDescription())").foregroundStyle(AppTheme.secondaryInk)
                         Text("Después podrás configurar la alimentación, añadir registros de salud, elegir trucos y crear recordatorios. A tu ritmo.")
                             .multilineTextAlignment(.center)
                         if let error { Text(error).foregroundStyle(.red) }
-                    }.padding(30).frame(maxWidth: 500).frame(maxWidth: .infinity)
+                    }
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(30).frame(maxWidth: 500).frame(maxWidth: .infinity)
                 }
             }
-            HStack {
-                if step > 0 { Button("Atrás") { error = nil; step -= 1 }.disabled(saving) }
-                Spacer()
-                Button(step == 0 ? "Empezar" : step == 3 ? "Entrar en PetPlanify" : "Continuar") {
-                    next()
-                }.buttonStyle(.borderedProminent).controlSize(.large).disabled(saving || photoLoading).accessibilityIdentifier("onboarding.next")
-            }.padding(22)
+            footerLayout {
+                if step > 0 {
+                    Button { error = nil; step -= 1 } label: {
+                        Text("Atrás").frame(minHeight: 44)
+                    }.disabled(saving)
+                }
+                if !dynamicTypeSize.isAccessibilitySize { Spacer() }
+                Button { next() } label: {
+                    HStack(spacing: 8) {
+                        if saving { ProgressView().controlSize(.small).accessibilityHidden(true) }
+                        Text(saving ? "Guardando…" : step == 0 ? "Empezar" : step == 3 ? "Entrar en PetPlanify" : "Continuar")
+                            .fontWeight(.semibold)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : nil)
+                }
+                .buttonStyle(.borderedProminent).controlSize(.large)
+                .disabled(saving || photoLoading).accessibilityIdentifier("onboarding.next")
+            }
+            .padding(.horizontal, 22).padding(.vertical, 16)
+            .background(AppTheme.surface)
+            .overlay(alignment: .top) { Divider() }
         }
         .appCanvas()
         .accessibilityIdentifier("onboarding.screen")
         #if os(macOS)
         .frame(minWidth: 460, minHeight: 560)
         #endif
+    }
+    private var footerLayout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(spacing: 10))
+            : AnyLayout(HStackLayout(spacing: 16))
     }
     private func next() {
         error = nil

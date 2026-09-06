@@ -11,6 +11,7 @@ struct HealthDocumentsView: View {
             List {
                 ForEach(store.snapshot.health.documents.sorted { $0.createdAt > $1.createdAt }) { document in
                     HealthDocumentRow(document: document, showsVisit: true)
+                        .listRowBackground(AppTheme.surface)
                 }
             }
             .overlay {
@@ -53,13 +54,14 @@ struct HealthDocumentRow: View {
                 if let url = store.documentURL(for: document) { previewURL = url }
                 else { error = String(localized: "El documento no está disponible en este dispositivo.") }
             } label: {
-                HStack(alignment: .top, spacing: 10) {
-                    Image(systemName: "doc").foregroundStyle(AppTheme.green).accessibilityHidden(true)
+                HStack(alignment: .center, spacing: AppTheme.Space.md) {
+                    CareSymbol(systemName: UTType(document.type)?.conforms(to: .pdf) == true ? "doc.text" : "photo")
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(document.displayName).foregroundStyle(AppTheme.ink).multilineTextAlignment(.leading)
+                        Text(document.displayName).font(.body.weight(.medium)).foregroundStyle(AppTheme.ink).multilineTextAlignment(.leading)
                         Text("\(typeLabel) · \(AppFormat.date(document.createdAt))").font(.caption).foregroundStyle(AppTheme.secondaryInk)
                         if showsVisit {
-                            Text(visit?.reason ?? String(localized: "Sin visita vinculada")).font(.caption).foregroundStyle(AppTheme.secondaryInk)
+                            Label(visit?.reason ?? String(localized: "Sin visita vinculada"), systemImage: "link")
+                                .font(.caption).foregroundStyle(AppTheme.secondaryInk)
                         }
                     }
                 }
@@ -77,12 +79,16 @@ struct HealthDocumentRow: View {
                 }
                 Button("Eliminar documento", systemImage: "trash", role: .destructive) { confirmsDelete = true }
             } label: {
-                Image(systemName: "ellipsis.circle").frame(minWidth: 44, minHeight: 44)
+                Image(systemName: "ellipsis")
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(AppTheme.secondaryInk)
+                    .frame(minWidth: 44, minHeight: 44)
             }
             .menuStyle(.borderlessButton)
             .fixedSize()
             .accessibilityLabel("Opciones de \(document.displayName)")
         }
+        .padding(.vertical, AppTheme.Space.sm)
         .disabled(busy)
         .quickLookPreview($previewURL)
         .sheet(isPresented: $renaming) { DocumentMetadataEditor(document: document) }

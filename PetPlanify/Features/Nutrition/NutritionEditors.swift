@@ -20,11 +20,19 @@ struct FoodPlanEditor: View {
                 Stepper("\(plan.meals.count) comidas", value: Binding(get: { plan.meals.count }, set: resizeMeals), in: 1...8)
                 Button("Repartir la cantidad por igual") { distribute() }
                 ForEach($plan.meals) { $meal in
-                    VStack(alignment: .leading, spacing: 8) {
+                    let mealNumber = (plan.meals.firstIndex { $0.id == meal.id } ?? 0) + 1
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Comida \(mealNumber)")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.green)
+                            .accessibilityAddTraits(.isHeader)
                         DatePicker("Hora", selection: $meal.time, displayedComponents: .hourAndMinute)
+                            .accessibilityLabel("Hora de la comida \(mealNumber)")
                         TextField("Gramos", text: Binding(get: { mealAmounts[meal.id] ?? "" }, set: { mealAmounts[meal.id] = $0 }))
-                            .decimalEntry().accessibilityLabel("Gramos de esta comida")
+                            .decimalEntry().accessibilityLabel("Gramos de la comida \(mealNumber)")
                     }
+                    .padding(.vertical, 4)
+                    .accessibilityElement(children: .contain)
                 }
             }
             Section("Notas") { TextField("Notas opcionales", text: $plan.notes, axis: .vertical).lineLimit(3...6) }

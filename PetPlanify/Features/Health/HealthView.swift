@@ -13,8 +13,8 @@ struct HealthView: View {
         TimelineView(.periodic(from: .now, by: 60)) { _ in
         CarePage {
             if let next = nextCare {
-                CareSection(title: "Próximo cuidado") {
-                    HealthRecordRow(title: next.title, subtitle: AppFormat.date(next.date), symbol: next.symbol) {
+                CareSection(title: "Próximo cuidado", style: .highlighted) {
+                    HealthRecordRow(title: next.title, subtitle: AppFormat.date(next.date), symbol: next.symbol, statusColor: AppTheme.green) {
                         sheet = next.sheet
                     }
                 }
@@ -48,13 +48,23 @@ struct HealthView: View {
     }
 
     private var vaccines: some View {
-        CareSection(title: "Vacunas") {
+        CareSection(title: "Vacunas", style: .compact, symbol: "syringe") {
             if health.vaccines.isEmpty {
-                Text("Añade las vacunas para conservar su historial.").foregroundStyle(AppTheme.secondaryInk)
+                EmptyCareState(title: "Añade las vacunas para conservar su historial.", symbol: "syringe")
             } else {
-                ForEach(health.vaccines.sorted { $0.dateAdministered > $1.dateAdministered }.prefix(2)) { record in
-                    HealthRecordRow(title: record.name, subtitle: vaccineSubtitle(record), status: record.status().title) {
-                        sheet = .vaccine(record)
+                VStack(spacing: 0) {
+                    let records = Array(health.vaccines.sorted { $0.dateAdministered > $1.dateAdministered }.prefix(3))
+                    ForEach(records) { record in
+                        let isHistorical = isHistoricalVaccine(record)
+                        HealthRecordRow(
+                            title: record.name,
+                            subtitle: isHistorical ? AppFormat.date(record.dateAdministered) : vaccineSubtitle(record),
+                            symbol: isHistorical ? "checkmark" : "syringe",
+                            status: isHistorical ? nil : record.status().title,
+                            statusColor: record.status().displayColor,
+                            isHistorical: isHistorical
+                        ) { sheet = .vaccine(record) }
+                        if record.id != records.last?.id { Divider().overlay(AppTheme.border.opacity(0.5)) }
                     }
                 }
             }
@@ -63,19 +73,30 @@ struct HealthView: View {
     }
 
     private var dewormings: some View {
-        CareSection(title: "Desparasitación") {
-            ForEach(DewormingKind.allCases) { kind in
-                if let record = health.dewormings.filter({ $0.kind == kind }).max(by: { $0.applicationDate < $1.applicationDate }) {
-                    HealthRecordRow(title: kind.title, subtitle: dewormingSubtitle(record), status: record.status().title) {
-                        sheet = .deworming(record, kind)
-                    }
-                } else {
-                    Button { sheet = .deworming(nil, kind) } label: {
-                        Label("Añadir desparasitación \(kind.shortTitle.lowercased())", systemImage: kind.symbol)
+        CareSection(title: "Desparasitación", style: .compact) {
+            VStack(spacing: 0) {
+                ForEach(DewormingKind.allCases) { kind in
+                    if let record = health.dewormings.filter({ $0.kind == kind }).max(by: { $0.applicationDate < $1.applicationDate }) {
+                        HealthRecordRow(title: kind.shortTitle, subtitle: dewormingSubtitle(record), symbol: kind.symbol, status: record.status().title, statusColor: record.status().displayColor) {
+                            sheet = .deworming(record, kind)
+                        }
+                    } else {
+                        Button { sheet = .deworming(nil, kind) } label: {
+                            HStack(spacing: AppTheme.Space.md) {
+                                CareSymbol(systemName: kind.symbol)
+                                Text(kind.shortTitle).font(.body.weight(.medium)).foregroundStyle(AppTheme.ink)
+                                Spacer(minLength: AppTheme.Space.sm)
+                                Image(systemName: "plus").font(.subheadline.weight(.medium))
+                            }
+                            .padding(.vertical, AppTheme.Space.sm)
                             .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(AppTheme.green)
+                        .accessibilityLabel("Añadir desparasitación \(kind.shortTitle.lowercased())")
                     }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(AppTheme.green)
+                    if kind != DewormingKind.allCases.last { Divider().overlay(AppTheme.border.opacity(0.5)) }
                 }
             }
             HealthSectionActions(addTitle: "Añadir aplicación", onAdd: { sheet = .deworming(nil, .internalDeworming) }, onHistory: { sheet = .history(.dewormings) })
@@ -83,13 +104,13 @@ struct HealthView: View {
     }
 
     private var medications: some View {
-        CareSection(title: "Medicación") {
+        CareSection(title: "Medicación", style: .compact, symbol: "pills") {
             let active = health.medications.filter { $0.isActive() }.sorted { $0.startDate > $1.startDate }
             if active.isEmpty {
-                Text("No hay medicamentos activos").foregroundStyle(AppTheme.secondaryInk)
+                EmptyCareState(title: "No hay medicamentos activos", symbol: "pills")
             } else {
                 ForEach(active.prefix(3)) { record in
-                    HealthRecordRow(title: record.name, subtitle: String(localized: "Desde \(AppFormat.date(record.startDate))"), status: record.status().title) {
+                    HealthRecordRow(title: record.name, subtitle: String(localized: "Desde \(AppFormat.date(record.startDate))"), symbol: "pills", status: record.status().title, statusColor: record.status().displayColor) {
                         sheet = .medication(record)
                     }
                 }
@@ -102,25 +123,33 @@ struct HealthView: View {
     }
 
     private var visits: some View {
-        CareSection(title: "Visitas veterinarias") {
+        CareSection(title: "Visitas veterinarias", style: .compact, symbol: "cross.case") {
             if health.visits.isEmpty {
-                Text("Guarda citas, valoraciones y documentos en un mismo lugar.").foregroundStyle(AppTheme.secondaryInk)
+                EmptyCareState(title: "Guarda citas, valoraciones y documentos en un mismo lugar.", symbol: "cross.case")
             } else {
-                ForEach(health.visits.sorted { $0.date > $1.date }.prefix(3)) { visit in
-                    HealthRecordRow(title: visit.reason, subtitle: "\(AppFormat.date(visit.date))\(visit.clinic.isEmpty ? "" : " · \(visit.clinic)")", status: visit.status().title) {
-                        sheet = .visitDetail(visit.id)
+                VStack(spacing: 0) {
+                    let records = Array(health.visits.sorted { $0.date > $1.date }.prefix(3))
+                    ForEach(records) { visit in
+                        HealthVisitRow(visit: visit) { sheet = .visitDetail(visit.id) }
+                        if visit.id != records.last?.id { Divider().overlay(AppTheme.border.opacity(0.5)) }
                     }
                 }
             }
             HealthSectionActions(addTitle: "Añadir visita", onAdd: { sheet = .visit(nil) }, onHistory: { sheet = .history(.visits) })
             if !health.documents.isEmpty {
-                Button("Documentos", systemImage: "doc") { sheet = .documents }
+                Button { sheet = .documents } label: {
+                    Label("Documentos", systemImage: "paperclip")
+                        .font(.subheadline.weight(.medium))
+                        .frame(minHeight: 44)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(AppTheme.secondaryInk)
             }
         }
     }
 
     private var observations: some View {
-        CareSection(title: "Observaciones de salud") {
+        CareSection(title: "Observaciones de salud", style: .plain, symbol: "text.bubble") {
             let records = health.observations.filter { $0.context == .health || $0.context == .general }.sorted { $0.date > $1.date }
             if records.isEmpty {
                 Text("Anota cambios o detalles que quieras comentar en la próxima visita.").foregroundStyle(AppTheme.secondaryInk)
@@ -137,6 +166,14 @@ struct HealthView: View {
             Button("Añadir observación", systemImage: "plus") { observation = nil; showObservation = true }
                 .buttonStyle(.bordered)
         }
+    }
+
+    private func isHistoricalVaccine(_ record: VaccinationRecord) -> Bool {
+        let name = record.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let hasNewerRecord = health.vaccines.contains {
+            $0.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == name && $0.dateAdministered > record.dateAdministered
+        }
+        return hasNewerRecord || record.nextDueDate == nil
     }
 
     private struct UpcomingCare {

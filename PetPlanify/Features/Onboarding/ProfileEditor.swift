@@ -55,23 +55,32 @@ struct ProfileEditor: View {
 }
 
 struct ProfileIdentityFields: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding var draft: PetProfile
     @Binding var photoData: Data?
     @Binding var removePhoto: Bool
     @Binding var isLoadingPhoto: Bool
     var existingPhotoURL: URL?
     @State private var selection: PhotosPickerItem?
-        @State private var error: String?
+    @State private var error: String?
     var body: some View {
         Section("Su identidad") {
-            HStack(spacing: 16) {
+            identityLayout {
                 PetAvatarView(size: 68, photoURL: removePhoto ? nil : existingPhotoURL, imageData: photoData)
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 2) {
                     PhotosPicker(selection: $selection, matching: .images, photoLibrary: .shared()) {
                         Label("Elegir foto", systemImage: "photo")
-                    }.disabled(isLoadingPhoto).accessibilityIdentifier("profile.photo.select")
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(minHeight: 44)
+                    }
+                    .buttonStyle(.borderless)
+                    .disabled(isLoadingPhoto).accessibilityIdentifier("profile.photo.select")
                     if photoData != nil || (existingPhotoURL != nil && !removePhoto) {
-                        Button("Quitar foto", role: .destructive) { photoData = nil; selection = nil; removePhoto = true }
+                        Button(role: .destructive) { photoData = nil; selection = nil; removePhoto = true } label: {
+                            Text("Quitar foto")
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(minHeight: 44)
+                        }.buttonStyle(.borderless)
                     }
                     if isLoadingPhoto { ProgressView("Cargando foto…") }
                 }
@@ -96,6 +105,11 @@ struct ProfileIdentityFields: View {
                 isLoadingPhoto = false
             }
         }
+    }
+    private var identityLayout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+            : AnyLayout(HStackLayout(spacing: 16))
     }
 }
 

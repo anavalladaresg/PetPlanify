@@ -25,34 +25,65 @@ struct HealthWeightCard: View {
     }
 
     var body: some View {
-        CareSection(title: "Evolución del peso") {
-            if let weight = store.currentWeight {
-                Text(AppFormat.weight(weight, unit: unit))
-                    .font(.title2.weight(.semibold))
-                    .accessibilityLabel("Peso actual, \(AppFormat.weight(weight, unit: unit))")
-            }
+        CareSection(title: "Peso", style: .compact, symbol: "scalemass") {
+            weightSummary
             if records.isEmpty {
-                Text("Registra un peso para empezar a ver su evolución.")
-                    .foregroundStyle(AppTheme.secondaryInk)
+                EmptyCareState(title: "Registra un peso para empezar a ver su evolución.", symbol: "scalemass")
             } else {
                 chart
-                if let selectedRecord {
-                    Text("\(AppFormat.date(selectedRecord.date)): \(AppFormat.weight(selectedRecord.weight, unit: unit))")
-                        .font(.subheadline.weight(.medium))
-                        .accessibilityAddTraits(.updatesFrequently)
-                }
                 if let first = records.first, let last = records.last {
                     Text("\(records.count) registros · \(AppFormat.date(first.date)) – \(AppFormat.date(last.date))")
                         .font(.caption).foregroundStyle(AppTheme.secondaryInk)
                 }
             }
             if let range = store.snapshot.pet.healthyWeightRange {
-                Text("Referencia introducida manualmente: \(AppFormat.weight(range.lower, unit: unit)) – \(AppFormat.weight(range.upper, unit: unit)).")
-                    .font(.caption).foregroundStyle(AppTheme.secondaryInk)
+                HStack(alignment: .firstTextBaseline, spacing: AppTheme.Space.sm) {
+                    Image(systemName: "line.3.horizontal")
+                        .foregroundStyle(AppTheme.green)
+                        .accessibilityHidden(true)
+                    Text("Referencia introducida manualmente: \(AppFormat.weight(range.lower, unit: unit)) – \(AppFormat.weight(range.upper, unit: unit)).")
+                }
+                .font(.caption).foregroundStyle(AppTheme.secondaryInk)
             }
             HealthSectionActions(addTitle: "Registrar peso", onAdd: onRegister, onHistory: onHistory)
         }
         .accessibilityIdentifier("health.weightChart")
+    }
+
+    @ViewBuilder private var weightSummary: some View {
+        if let weight = selectedRecord?.weight ?? store.currentWeight {
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: AppTheme.Space.md) {
+                    weightValue(weight)
+                    Spacer(minLength: 0)
+                    weightDate
+                }
+                VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
+                    weightValue(weight)
+                    weightDate
+                }
+            }
+        }
+    }
+
+    private func weightValue(_ weight: Double) -> some View {
+        Text(AppFormat.weight(weight, unit: unit))
+            .font(.system(.largeTitle, design: .rounded, weight: .medium))
+            .monospacedDigit()
+            .foregroundStyle(AppTheme.ink)
+            .contentTransition(.numericText())
+            .accessibilityLabel(selectedRecord == nil
+                ? String(localized: "Peso actual, \(AppFormat.weight(weight, unit: unit))")
+                : AppFormat.weight(weight, unit: unit))
+    }
+
+    @ViewBuilder private var weightDate: some View {
+        if let date = selectedRecord?.date ?? records.last?.date {
+            Text(AppFormat.date(date))
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.secondaryInk)
+                .accessibilityAddTraits(.updatesFrequently)
+        }
     }
 
     private var chart: some View {
@@ -71,38 +102,67 @@ struct HealthWeightCard: View {
             ForEach(records) { record in
                 LineMark(x: .value("Fecha", record.date), y: .value("Peso", unit.fromKilograms(record.weight)))
                     .foregroundStyle(AppTheme.green)
-                    .lineStyle(StrokeStyle(lineWidth: 2))
+                    .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
+                    .interpolationMethod(.monotone)
                 PointMark(x: .value("Fecha", record.date), y: .value("Peso", unit.fromKilograms(record.weight)))
                     .foregroundStyle(AppTheme.green)
+                    .symbolSize(records.count <= 12 || record.id == records.last?.id ? 24 : 8)
                     .accessibilityLabel(AppFormat.date(record.date))
                     .accessibilityValue(AppFormat.weight(record.weight, unit: unit))
             }
             if let selectedRecord {
                 RuleMark(x: .value("Fecha seleccionada", selectedRecord.date))
-                    .foregroundStyle(AppTheme.secondaryInk.opacity(0.5))
-                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
+                    .foregroundStyle(AppTheme.green.opacity(0.35))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 4]))
                     .accessibilityHidden(true)
                 PointMark(x: .value("Fecha", selectedRecord.date), y: .value("Peso", unit.fromKilograms(selectedRecord.weight)))
-                    .symbolSize(90)
+                    .symbolSize(120)
+                    .foregroundStyle(AppTheme.surface)
+                    .accessibilityHidden(true)
+                PointMark(x: .value("Fecha", selectedRecord.date), y: .value("Peso", unit.fromKilograms(selectedRecord.weight)))
+                    .symbolSize(56)
                     .foregroundStyle(AppTheme.green)
                     .accessibilityHidden(true)
             }
         }
         .chartXSelection(value: $selectedDate)
+        .chartXScale(range: .plotDimension(padding: 8))
         .chartYScale(domain: yDomain)
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 3)) { _ in
-                AxisGridLine().foregroundStyle(AppTheme.border)
                 AxisValueLabel(format: .dateTime.day().month(.abbreviated))
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.secondaryInk)
             }
         }
         .chartYAxis {
-            AxisMarks(position: .leading, values: .automatic(desiredCount: 4)) { _ in
-                AxisGridLine().foregroundStyle(AppTheme.border)
-                AxisValueLabel()
+            AxisMarks(position: .leading, values: .automatic(desiredCount: 3)) { _ in
+                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [2, 4]))
+                    .foregroundStyle(AppTheme.border.opacity(0.55))
+                AxisValueLabel().font(.caption2).foregroundStyle(AppTheme.secondaryInk)
             }
         }
+        #if os(macOS)
+        .chartOverlay { proxy in
+            GeometryReader { geometry in
+                Color.clear
+                    .onContinuousHover { phase in
+                        switch phase {
+                        case let .active(location):
+                            guard let plotFrame = proxy.plotFrame else { return }
+                            let frame = geometry[plotFrame]
+                            selectedDate = frame.contains(location)
+                                ? proxy.value(atX: location.x - frame.minX, as: Date.self)
+                                : nil
+                        case .ended:
+                            selectedDate = nil
+                        }
+                    }
+            }
+        }
+        #endif
         .frame(height: 180)
+        .padding(.top, AppTheme.Space.xs)
         .accessibilityLabel("Evolución del peso")
         .accessibilityHint("Consulta cada registro o abre el historial para ver todas las fechas y pesos")
     }

@@ -14,6 +14,8 @@ struct MacAppShell: View {
                 }
             }
             .listStyle(.sidebar)
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.sidebar)
             .safeAreaInset(edge: .bottom) {
                 HStack(spacing: 10) {
                     PetAvatarView(size: 40, photoURL: store.profilePhotoURL())
@@ -22,7 +24,11 @@ struct MacAppShell: View {
                         Text(store.snapshot.pet.breed).font(.caption).foregroundStyle(AppTheme.secondaryInk)
                     }
                     Spacer(minLength: 0)
-                }.padding(16).accessibilityElement(children: .combine)
+                }.padding(AppTheme.Space.lg)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(AppTheme.sidebar)
+                    .overlay(alignment: .top) { Divider().opacity(0.5) }
+                    .accessibilityElement(children: .combine)
             }
             .navigationTitle("PetPlanify")
             .navigationSplitViewColumnWidth(min: 180, ideal: 210, max: 250)

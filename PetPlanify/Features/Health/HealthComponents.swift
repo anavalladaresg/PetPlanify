@@ -68,20 +68,35 @@ struct HealthRecordRow: View {
     let subtitle: String
     var symbol: String = "chevron.right"
     var status: String? = nil
+    var statusColor: Color = AppTheme.secondaryInk
+    var isHistorical = false
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             HStack(alignment: .center, spacing: 12) {
+                if symbol != "chevron.right" {
+                    CareSymbol(systemName: symbol, accent: isHistorical ? AppTheme.secondaryInk : AppTheme.green)
+                }
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(title).font(.body.weight(.medium)).foregroundStyle(AppTheme.ink)
-                    Text(subtitle).font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+                    Text(title)
+                        .font(.body.weight(isHistorical ? .regular : .medium))
+                        .foregroundStyle(AppTheme.ink)
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                        .fixedSize(horizontal: false, vertical: true)
                     if let status {
-                        Text(status).font(.caption).foregroundStyle(AppTheme.green)
+                        Text(status)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(statusColor)
                     }
                 }
+                .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                Image(systemName: symbol).foregroundStyle(AppTheme.secondaryInk)
+                Image(systemName: "chevron.right")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(AppTheme.secondaryInk.opacity(0.65))
                     .accessibilityHidden(true)
             }
             .padding(.vertical, 8)
@@ -94,23 +109,119 @@ struct HealthRecordRow: View {
     }
 }
 
+/// A visit keeps its date and attachments together, like an entry in a care journal.
+struct HealthVisitRow: View {
+    @Environment(PetPlanifyStore.self) private var store
+    let visit: VeterinaryVisit
+    let action: () -> Void
+
+    private var attachmentCount: Int {
+        store.snapshot.health.documents.filter { $0.linkedVisitID == visit.id }.count
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: AppTheme.Space.md) {
+                VStack(spacing: 2) {
+                    Text(visit.date, format: .dateTime.day())
+                        .font(.title3.weight(.medium)).monospacedDigit()
+                    Text(visit.date, format: .dateTime.month(.abbreviated))
+                        .font(.caption2.weight(.medium))
+                }
+                .foregroundStyle(visit.date > .now ? AppTheme.green : AppTheme.secondaryInk)
+                .frame(width: 48)
+                .frame(minHeight: 52)
+                .background(AppTheme.surfaceMuted.opacity(0.55), in: RoundedRectangle(cornerRadius: 12))
+                .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
+                    Text(visit.reason).font(.body.weight(.medium)).foregroundStyle(AppTheme.ink)
+                    if !visit.clinic.isEmpty {
+                        Text(visit.clinic).font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+                    }
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: AppTheme.Space.sm) { metadata }
+                        VStack(alignment: .leading, spacing: AppTheme.Space.xs) { metadata }
+                    }
+                }
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "chevron.right")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(AppTheme.secondaryInk.opacity(0.65))
+                    .accessibilityHidden(true)
+            }
+            .padding(.vertical, AppTheme.Space.sm)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Abre los detalles y permite editar el registro")
+    }
+
+    @ViewBuilder private var metadata: some View {
+        Text(AppFormat.date(visit.date)).font(.caption).foregroundStyle(AppTheme.secondaryInk)
+        if visit.date > .now {
+            Text(visit.status().title).font(.caption.weight(.medium)).foregroundStyle(AppTheme.green)
+        }
+        if attachmentCount > 0 {
+            Label("\(attachmentCount)", systemImage: "paperclip")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(AppTheme.secondaryInk)
+                .accessibilityLabel("\(attachmentCount) documentos adjuntos")
+        }
+    }
+}
+
+extension HealthRecordStatus {
+    var displayColor: Color {
+        switch self {
+        case .upcoming, .active: AppTheme.green
+        case .overdue: AppTheme.orange
+        case .completed, .finished: AppTheme.secondaryInk
+        }
+    }
+}
+
 struct HealthSectionActions: View {
     let addTitle: LocalizedStringKey
     let onAdd: () -> Void
     let onHistory: () -> Void
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack {
-                Button(addTitle, systemImage: "plus", action: onAdd)
-                Spacer()
-                Button("Ver historial", action: onHistory)
-            }
-            VStack(alignment: .leading, spacing: 12) {
-                Button(addTitle, systemImage: "plus", action: onAdd)
-                Button("Ver historial", action: onHistory)
+        VStack(spacing: AppTheme.Space.xs) {
+            Divider().overlay(AppTheme.border.opacity(0.5))
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: AppTheme.Space.lg) {
+                    addButton
+                    Spacer(minLength: AppTheme.Space.sm)
+                    historyButton
+                }
+                VStack(alignment: .leading, spacing: 0) {
+                    addButton
+                    historyButton
+                }
             }
         }
-        .buttonStyle(.bordered)
+        .font(.subheadline.weight(.medium))
+        .buttonStyle(.plain)
+    }
+
+    private var addButton: some View {
+        Button(action: onAdd) {
+            Label(addTitle, systemImage: "plus")
+                .frame(minHeight: 44, alignment: .leading)
+                .contentShape(Rectangle())
+        }
+        .foregroundStyle(AppTheme.green)
+    }
+
+    private var historyButton: some View {
+        Button(action: onHistory) {
+            Text("Ver historial")
+                .frame(minHeight: 44, alignment: .leading)
+                .contentShape(Rectangle())
+        }
+        .foregroundStyle(AppTheme.secondaryInk)
     }
 }
 

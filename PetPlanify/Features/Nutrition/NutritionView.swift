@@ -9,15 +9,35 @@ struct NutritionView: View {
     @State private var observationToDelete: PetObservation?
     var body: some View {
         CarePage {
-            CareSection(title: "Plan de alimentación") {
+            CareSection(title: "Plan de alimentación", style: .highlighted, symbol: "fork.knife") {
                 if let plan = store.snapshot.nutrition.plan {
-                    Text(plan.product.name).font(.title2.weight(.semibold))
-                    Text("\(plan.product.brand) · \(plan.product.type.title)").foregroundStyle(AppTheme.secondaryInk)
-                    LabeledContent("Cantidad diaria", value: AppFormat.grams(plan.dailyAmountGrams))
-                    LabeledContent("Desde", value: AppFormat.date(plan.startDate))
-                    Divider()
-                    ForEach(plan.meals.sorted { $0.hour * 60 + $0.minute < $1.hour * 60 + $1.minute }) { meal in
-                        LabeledContent(meal.time.formatted(date: .omitted, time: .shortened), value: AppFormat.grams(meal.amountGrams))
+                    VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
+                        Text(plan.product.name).font(.title2.weight(.semibold)).fontDesign(.serif)
+                        if !plan.product.brand.isEmpty {
+                            Text(plan.product.brand).font(.subheadline.weight(.medium)).foregroundStyle(AppTheme.green)
+                                .padding(.horizontal, 10).padding(.vertical, 5)
+                                .background(AppTheme.greenSoft, in: Capsule())
+                        }
+                        Text(plan.product.type.title).font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+                    }
+                    HStack(spacing: AppTheme.Space.sm) {
+                        nutritionMetric("Cantidad diaria", AppFormat.grams(plan.dailyAmountGrams))
+                        nutritionMetric("Comidas", "\(plan.meals.count)")
+                        Spacer(minLength: 0)
+                    }
+                    .padding(.top, AppTheme.Space.sm)
+                    Text("Desde \(AppFormat.date(plan.startDate))").font(.caption).foregroundStyle(AppTheme.secondaryInk)
+                    Divider().padding(.vertical, AppTheme.Space.xs)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Horario").font(.subheadline.weight(.medium)).padding(.bottom, AppTheme.Space.xs)
+                        ForEach(plan.meals.sorted { $0.hour * 60 + $0.minute < $1.hour * 60 + $1.minute }) { meal in
+                            HStack {
+                                Image(systemName: "clock").foregroundStyle(AppTheme.green).accessibilityHidden(true)
+                                Text(meal.time.formatted(date: .omitted, time: .shortened))
+                                Spacer()
+                                Text(AppFormat.grams(meal.amountGrams)).foregroundStyle(AppTheme.secondaryInk)
+                            }.padding(.vertical, AppTheme.Space.sm)
+                        }
                     }
                     if !plan.notes.isEmpty { Text(plan.notes).foregroundStyle(AppTheme.secondaryInk) }
                 } else {
@@ -27,16 +47,16 @@ struct NutritionView: View {
                     .buttonStyle(.borderedProminent).accessibilityIdentifier("foodPlan.edit")
             }
             if let transition = store.snapshot.nutrition.transitions.first(where: { !$0.isComplete }) {
-                CareSection(title: "Cambio de alimento") {
+                CareSection(title: "Cambio de alimento", style: .compact, symbol: "arrow.triangle.swap") {
                     Text("\(transition.previousFood) → \(transition.newFood)").font(.headline)
-                    ProgressView(value: transition.progress).accessibilityValue(transition.progress.formatted(.percent))
+                    ProgressView(value: transition.progress).tint(AppTheme.orange).accessibilityValue(transition.progress.formatted(.percent))
                     Text("Hasta el \(AppFormat.date(transition.endDate))").foregroundStyle(AppTheme.secondaryInk)
                     Button("Actualizar transición") { editingTransition = transition }
                 }
             }
-            CareSection(title: "Observaciones") {
+            CareSection(title: "Observaciones", style: .plain, symbol: "square.and.pencil") {
                 if store.snapshot.nutrition.observations.isEmpty {
-                    Text("Anota cambios de apetito o tolerancia que quieras recordar.").foregroundStyle(AppTheme.secondaryInk)
+                    Text("Anota cambios de apetito o tolerancia que quieras recordar.").font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
                 }
                 ForEach(store.snapshot.nutrition.observations.sorted { $0.date > $1.date }) { item in
                     HStack(alignment: .top) {
@@ -51,7 +71,7 @@ struct NutritionView: View {
                 }
                 Button("Añadir observación", systemImage: "plus") { addingObservation = true }
             }
-            CareSection(title: "Historial de alimentación") {
+            CareSection(title: "Historial de alimentación", style: .plain, symbol: "clock.arrow.circlepath") {
                 if store.snapshot.nutrition.history.isEmpty && store.snapshot.nutrition.transitions.isEmpty {
                     Text("Los cambios de plan se guardarán aquí.").foregroundStyle(AppTheme.secondaryInk)
                 }
@@ -80,6 +100,14 @@ struct NutritionView: View {
                 Task { _ = await store.update { $0.nutrition.observations.removeAll { $0.id == item.id } } }
             }
         }
+    }
+
+    private func nutritionMetric(_ title: LocalizedStringKey, _ value: String) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(value).font(.headline).monospacedDigit()
+            Text(title).font(.caption).foregroundStyle(AppTheme.secondaryInk)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

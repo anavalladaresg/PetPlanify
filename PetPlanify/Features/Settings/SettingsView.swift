@@ -24,7 +24,10 @@ struct SettingsView: View {
                         Text(store.snapshot.pet.ageDescription()).foregroundStyle(AppTheme.secondaryInk)
                     }
                 }
-                Button("Editar perfil") { profile = true }.accessibilityIdentifier("profile.edit")
+                Button { profile = true } label: {
+                    Label("Editar perfil", systemImage: "pencil")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }.accessibilityIdentifier("profile.edit")
             }
             Section("Alimentación") {
                 Button("Editar plan de alimentación") { food = true }
@@ -36,8 +39,14 @@ struct SettingsView: View {
             Section("Preferencias") {
                 Picker("Peso", selection: preference(\.weightUnit)) { ForEach(WeightUnit.allCases) { Text($0.title).tag($0) } }
                 Picker("Distancia", selection: preference(\.distanceUnit)) { ForEach(DistanceUnit.allCases) { Text($0.title).tag($0) } }
-                Picker("Apariencia", selection: preference(\.appearance)) { ForEach(AppAppearance.allCases) { Text($0.title).tag($0) } }
                 LabeledContent("Idioma", value: "Español")
+            }
+            Section("Apariencia") {
+                Picker("Tema", selection: preference(\.appearance)) {
+                    ForEach(AppAppearance.allCases) { Text($0.title).tag($0) }
+                }
+                Text("PetPlanify adapta colores y contraste al tema elegido.")
+                    .font(.caption).foregroundStyle(AppTheme.secondaryInk)
             }
             Section("Recordatorios") {
                 Toggle("Notificaciones del dispositivo", isOn: Binding(get: { store.snapshot.preferences.reminders.notificationsEnabled }, set: { value in Task { await store.setNotificationsEnabled(value) } }))
