@@ -5,6 +5,11 @@ training. Supports **iPhone (iOS 27)** and **native Mac (macOS 27)** with Xcode 
 No iPad-specific experience, Catalyst, backend, account, analytics or advertising.
 
 The five areas are **Inicio, Alimentación, Salud, Entrenamiento and Ajustes**.
+Inicio also includes a read-only **Evolución** view with a care score, weight history,
+milestones and a timeline assembled from the pet's existing records.
+PetPlanify also supports multiple local pet profiles, each with its own care history,
+and local family profiles with caregiver/viewer roles. Cross-device sharing still
+requires iCloud configuration and an agreed Apple account.
 Progressive onboarding creates a real profile with optional photo. Food plans,
 weight, vaccines, deworming, medication, veterinary visits and linked documents
 are editable. Training includes 19 original reward-based guides, custom tricks,
@@ -34,9 +39,15 @@ local directory. Reset also requires confirmation and returns to onboarding.
 
 The coordinated file provider and conflict-choice interface are implemented.
 Synchronization is user-triggered in Settings and local storage always works.
-The current project has **no configured iCloud capability/container**; cross-device
-sync remains unverified. See [validation and device handoff](VALIDATION.md) for
-the exact Apple configuration. No CloudKit database is used.
+The project is configured for **iCloud Documents** with the container
+`iCloud.com.anavalladares.PetPlanify`; cross-device sync remains unverified until
+the container is registered for the development team and tested on signed devices.
+No CloudKit database is used.
+
+For testing on a physical iPhone with a Personal Team, the Debug iPhone
+configuration uses `PetPlanify/PetPlanify.Development.entitlements`, which has
+no iCloud capabilities. Local storage and all care features remain available;
+iCloud is enabled only by the signed Release configuration.
 
 ## Build and tests
 

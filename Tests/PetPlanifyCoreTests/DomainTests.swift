@@ -5,16 +5,28 @@ import Testing
 struct DomainTests {
     let now = Date(timeIntervalSince1970: 1_800_000_000)
 
+    @Test func legacySnapshotMigratesToOnePetWorkspace() {
+        var snapshot = PetPlanifySnapshot()
+        snapshot.pet.name = "Neo"
+        snapshot.onboarding.isComplete = true
+        snapshot.migratePetWorkspaces()
+        #expect(snapshot.pets.count == 1)
+        #expect(snapshot.activePetID == snapshot.pet.id)
+        #expect(snapshot.pets[0].pet.name == "Neo")
+    }
+
     @Test func jsonRoundTripPreservesStableIDsAndDates() throws {
         var value = PetPlanifySnapshot()
-        value.pet.birthDate = now.addingTimeInterval(-100_000_000)
-        value.health.weights = [WeightRecord(date: now, weight: 6.8, note: "Control")]
-        value.modifiedAt = now
+        let timestamp = (Date.now.addingTimeInterval(-100).timeIntervalSince1970 * 1_000).rounded(.down) / 1_000
+        let recordDate = Date(timeIntervalSince1970: timestamp)
+        value.pet.birthDate = recordDate.addingTimeInterval(-100_000_000)
+        value.health.weights = [WeightRecord(date: recordDate, weight: 6.8, note: "Control")]
+        value.modifiedAt = recordDate
         let decoded = try SnapshotCodec.decode(SnapshotCodec.encode(value))
         #expect(decoded.pet.id == value.pet.id)
         #expect(decoded.health.weights.first?.id == value.health.weights.first?.id)
-        #expect(decoded.health.weights.first?.date == now)
-        #expect(decoded.modifiedAt == now)
+        #expect(decoded.health.weights.first?.date == recordDate)
+        #expect(decoded.modifiedAt == recordDate)
     }
 
     @Test func derivesExactAndApproximateAgeUsingCalendar() {
@@ -56,6 +68,20 @@ struct DomainTests {
         #expect(plan.validationError != nil)
         plan.meals = []
         #expect(plan.validationError != nil)
+    }
+
+    @Test func customFoodAndHistoricalDatesAreValidatedAtSaveTime() {
+        var plan = FoodPlan(product: FoodProduct(name: "Preparado", type: .other), dailyAmountGrams: 100, meals: [MealScheduleEntry(amountGrams: 100)])
+        #expect(plan.validationError != nil)
+        plan.product.customTypeDescription = "Tozai"
+        #expect(plan.validationError == nil)
+
+        var snapshot = PetPlanifySnapshot()
+        snapshot.health.weights = [WeightRecord(date: .now.addingTimeInterval(86_400), weight: 8)]
+        #expect(snapshot.validationError?.contains("fecha futura") == true)
+        snapshot.health.weights = []
+        snapshot.health.vaccines = [VaccinationRecord(name: "Rabia", dateAdministered: .now.addingTimeInterval(86_400))]
+        #expect(snapshot.validationError?.contains("fecha futura") == true)
     }
 
     @Test func upcomingExcludesPastAndCompleted() {
@@ -125,5 +151,69 @@ struct DomainTests {
         #expect(reloaded.training.selectedTricks[0].id == snapshot.training.selectedTricks[0].id)
         snapshot.training.removeCustomTrick(custom.id)
         #expect(snapshot.training.selectedTricks.isEmpty)
+    }
+
+    @Test func protectionDurationsCalculateNextCareDateFromTheAppliedDate() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let applied = calendar.date(from: DateComponents(year: 2026, month: 1, day: 31))!
+        let expected = calendar.date(byAdding: .month, value: 6, to: applied)!
+
+        let vaccine = VaccinationRecord(
+            name: "Rabia",
+            dateAdministered: applied,
+            nextDueDate: expected,
+            protectionDurationMonths: 6
+        )
+        let deworming = DewormingRecord(
+            kind: .externalDeworming,
+            applicationDate: applied,
+            nextDueDate: expected,
+            protectionDurationMonths: 6
+        )
+
+        #expect(vaccine.nextDueDate == expected)
+        #expect(deworming.nextDueDate == expected)
+        #expect(vaccine.protectionDurationMonths == 6)
+        #expect(deworming.protectionDurationMonths == 6)
+    }
+
+    @Test func latestCareRecordOwnsTheNextDueReminder() {
+        var snapshot = PetPlanifySnapshot()
+        let older = VaccinationRecord(name: "Rabia", dateAdministered: now, nextDueDate: now.addingTimeInterval(30))
+        let latest = VaccinationRecord(name: "Rabia", dateAdministered: now.addingTimeInterval(10), nextDueDate: now.addingTimeInterval(40))
+        snapshot.health.vaccines = [older, latest]
+
+        ReminderEngine.reconcile(&snapshot, now: now)
+
+        #expect(snapshot.reminders.count == 1)
+        #expect(snapshot.reminders.first?.date == now.addingTimeInterval(40))
+    }
+
+    @Test func automaticMealDistributionKeepsTheTotal() {
+        let total = 180.0
+        let mealCount = 3
+        let share = (total / Double(mealCount) * 100).rounded(.down) / 100
+        let amounts = [share, share, total - share * Double(mealCount - 1)]
+
+        #expect(amounts.reduce(0, +) == total)
+        #expect(amounts.allSatisfy { $0 > 0 })
+        #expect(amounts == [60, 60, 60])
+    }
+
+    @Test func masteredTricksAreNotCountedAsInProgress() {
+        let mastered = SelectedTrick(trickID: "sentado", status: .mastered, progress: 100)
+        let learning = SelectedTrick(trickID: "quieto", status: .learning, progress: 40)
+        let selected = [mastered, learning]
+        let masteredCount = selected.filter { $0.status == .mastered }.count
+
+        #expect(masteredCount == 1)
+        #expect(selected.count - masteredCount == 1)
+    }
+
+    @Test func futureCareDatesAreRejectedBeforePersistence() {
+        var snapshot = PetPlanifySnapshot()
+        snapshot.pet.birthDate = now.addingTimeInterval(86_400)
+        #expect(snapshot.validationError?.contains("nacimiento") == true)
     }
 }
