@@ -1,13 +1,13 @@
 import Foundation
 
 extension PetPlanifySnapshot {
-    /// Enforce the same invariants for local mutations and imported snapshots.
+    /// Enforce the same invariants for app mutations and CloudKit snapshots.
     var validationError: String? {
         if schemaVersion != SnapshotCodec.currentSchemaVersion { return StorageError.unsupportedSchema(schemaVersion).errorDescription }
         if onboarding.isComplete && (pet.name.isBlank || pet.species.isBlank) {
             return String(localized: "Indica el nombre y la especie de tu mascota.")
         }
-        if let date = pet.birthDate, date > Date.now {
+        if let date = pet.birthDate, AppInputValidation.isFutureDay(date) {
             return String(localized: "La fecha de nacimiento no puede estar en el futuro.")
         }
         if let age = pet.approximateAgeMonths, !(0...2_400).contains(age) {
@@ -37,15 +37,24 @@ extension PetPlanifySnapshot {
         if health.weights.contains(where: { !Self.validWeight($0.weight) }) {
             return String(localized: "Revisa los pesos registrados: deben ser positivos.")
         }
+        if health.weights.contains(where: { AppInputValidation.isFutureDay($0.date) }) {
+            return String(localized: "No se puede registrar un peso en una fecha futura.")
+        }
         if health.vaccines.contains(where: { $0.name.isBlank }) {
             return String(localized: "Indica el nombre de cada vacuna.")
         }
         for vaccine in health.vaccines {
+            if AppInputValidation.isFutureDay(vaccine.dateAdministered) {
+                return String(localized: "No se puede registrar una vacuna en una fecha futura.")
+            }
             if let next = vaccine.nextDueDate, next < vaccine.dateAdministered {
                 return String(localized: "La próxima vacuna no puede ser anterior a la administración registrada.")
             }
         }
         for deworming in health.dewormings {
+            if AppInputValidation.isFutureDay(deworming.applicationDate) {
+                return String(localized: "No se puede registrar una desparasitación en una fecha futura.")
+            }
             if let next = deworming.nextDueDate, next < deworming.applicationDate {
                 return String(localized: "La próxima desparasitación no puede ser anterior a la aplicación registrada.")
             }
@@ -83,24 +92,33 @@ extension PetPlanifySnapshot {
                 }
             }
         }
-        for path in BackupArchive.referencedPaths(in: self) {
-            if (try? StorageLocations.attachmentURL(for: path, directory: URL(fileURLWithPath: "/PetPlanifyValidation"))) == nil {
-                return StorageError.unsafeAttachmentPath.errorDescription
-            }
-        }
         if health.observations.contains(where: { $0.title.isBlank || $0.body.isBlank }) || nutrition.observations.contains(where: { $0.title.isBlank || $0.body.isBlank }) {
             return String(localized: "Las observaciones necesitan título y contenido.")
+        }
+        if health.observations.contains(where: { AppInputValidation.isFutureDay($0.date) }) || nutrition.observations.contains(where: { AppInputValidation.isFutureDay($0.date) }) {
+            return String(localized: "Una observación no puede tener una fecha futura.")
         }
         if reminders.contains(where: { $0.title.isBlank }) {
             return String(localized: "Indica un título para cada recordatorio.")
         }
         let sourceKeys = reminders.compactMap(\.sourceKey)
         if Set(sourceKeys).count != sourceKeys.count { return String(localized: "Hay recordatorios vinculados duplicados.") }
+        if training.observations.contains(where: { AppInputValidation.isFutureDay($0.date) }) {
+            return String(localized: "Una observación de comportamiento no puede tener una fecha futura.")
+        }
         return training.validationError
     }
 
     private static func validWeight(_ value: Double) -> Bool { AppFormat.validWeight(value) }
     private static func unique<T: Identifiable>(_ values: [T]) -> Bool { Set(values.map(\.id)).count == values.count }
+}
+
+/// Date pickers deliberately allow editing any day. These checks run at save
+/// time so people can type or navigate freely and receive an actionable error.
+enum AppInputValidation {
+    static func isFutureDay(_ date: Date, relativeTo now: Date = .now, calendar: Calendar = .current) -> Bool {
+        calendar.startOfDay(for: date) > calendar.startOfDay(for: now)
+    }
 }
 
 private extension String {

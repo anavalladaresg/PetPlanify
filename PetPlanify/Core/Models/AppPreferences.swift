@@ -40,6 +40,26 @@ enum ReminderAdvanceTime: Int, Codable, CaseIterable, Identifiable, Sendable {
     }
 }
 
+enum AppleCalendarAlertAdvance: Int, Codable, CaseIterable, Identifiable, Sendable {
+    case none = 0, fiveMinutes = 5, tenMinutes = 10, fifteenMinutes = 15, thirtyMinutes = 30
+    case oneHour = 60, twoHours = 120, oneDay = 1440, twoDays = 2880, oneWeek = 10080
+    var id: Self { self }
+    var title: String {
+        switch self {
+        case .none: String(localized: "Sin aviso")
+        case .fiveMinutes: String(localized: "5 minutos antes")
+        case .tenMinutes: String(localized: "10 minutos antes")
+        case .fifteenMinutes: String(localized: "15 minutos antes")
+        case .thirtyMinutes: String(localized: "30 minutos antes")
+        case .oneHour: String(localized: "1 hora antes")
+        case .twoHours: String(localized: "2 horas antes")
+        case .oneDay: String(localized: "1 día antes")
+        case .twoDays: String(localized: "2 días antes")
+        case .oneWeek: String(localized: "1 semana antes")
+        }
+    }
+}
+
 struct ReminderPreferences: Codable, Sendable, Equatable {
     var notificationsEnabled = false
     var healthEnabled = true
@@ -53,7 +73,8 @@ struct AppPreferences: Codable, Sendable, Equatable {
     var distanceUnit: DistanceUnit = .kilometers
     var appearance: AppAppearance = .system
     var reminders = ReminderPreferences()
-    var iCloudEnabled = false
+    var appleCalendarLinked = false
+    var appleCalendarAlertAdvance: AppleCalendarAlertAdvance = .none
 }
 
 struct OnboardingState: Codable, Sendable, Equatable {

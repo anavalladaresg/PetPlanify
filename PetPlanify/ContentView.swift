@@ -1,12 +1,16 @@
 import SwiftUI
-import UniformTypeIdentifiers
+import AuthenticationServices
 
 struct ContentView: View {
     @Environment(PetPlanifyStore.self) private var store
+    @Environment(AppNavigation.self) private var navigation
+    @AppStorage("petplanify.apple.signedIn") private var signedIn = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
         Group {
-            if !store.isLoaded { ProgressView("Abriendo PetPlanify…").frame(maxWidth: .infinity, maxHeight: .infinity).appCanvas() }
-            else if store.needsRecovery { RecoveryView() }
+            if !signedIn { AppleSignInView { signedIn = true } }
+            else if !store.isLoaded { ProgressView("Abriendo PetPlanify…").frame(maxWidth: .infinity, maxHeight: .infinity).appCanvas() }
+            else if store.cloudKitUnavailable { CloudKitRetryView() }
             else if !store.snapshot.onboarding.isComplete { OnboardingView() }
             else {
                 #if os(macOS)
@@ -16,49 +20,135 @@ struct ContentView: View {
                 #endif
             }
         }
-        .safeAreaInset(edge: .top, spacing: 0) {
+        .overlay(alignment: .top) {
             if let message = store.message {
-                HStack(alignment: .top) {
-                    Text(message).font(.subheadline).fixedSize(horizontal: false, vertical: true)
-                    Spacer(minLength: 10)
-                    Button("Cerrar aviso", systemImage: "xmark") { store.message = nil }.labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
-                }.padding(.horizontal, 16).padding(.vertical, 8).background(AppTheme.surfaceMuted)
-                    .foregroundStyle(AppTheme.ink).accessibilityElement(children: .contain)
+                Text(message)
+                    .font(.subheadline.weight(.medium))
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: 520)
+                    .background(.regularMaterial, in: Capsule())
+                    .overlay(Capsule().stroke(AppTheme.border, lineWidth: 1))
+                    .foregroundStyle(AppTheme.ink)
+                    .shadow(color: .black.opacity(0.12), radius: 12, y: 5)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
+                    .onTapGesture { store.message = nil }
+                    .accessibilityAddTraits(.isStaticText)
             }
         }
         .preferredColorScheme(store.snapshot.preferences.appearance == .system ? nil : store.snapshot.preferences.appearance == .dark ? .dark : .light)
-        .task { await store.load() }
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.45), value: store.snapshot.preferences.appearance)
+        .task { if signedIn { await store.load() } }
+        .onChange(of: signedIn) { _, value in
+            if value { Task { await store.load() } }
+        }
+        .task(id: store.message) {
+            guard let message = store.message else { return }
+            try? await Task.sleep(nanoseconds: 4_000_000_000)
+            if !Task.isCancelled, store.message == message { store.message = nil }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .petPlanifyOpenReminder)) { notification in
+            if let rawFeature = notification.userInfo?["feature"] as? String,
+               let context = ObservationContext(rawValue: rawFeature) {
+                navigation.selection = AppSection(context: context)
+            }
+            if let rawID = notification.userInfo?["reminderID"] as? String {
+                navigation.presentedReminderID = UUID(uuidString: rawID)
+            }
+        }
+        .sheet(isPresented: Binding(
+            get: { navigation.presentedReminderID != nil },
+            set: { if !$0 { navigation.presentedReminderID = nil } }
+        )) {
+            CompactRemindersView(focusedReminderID: navigation.presentedReminderID)
+        }
     }
 }
 
-private struct RecoveryView: View {
+private struct CloudKitRetryView: View {
     @Environment(PetPlanifyStore.self) private var store
-    @State private var importer = false
-    @State private var backup: ValidatedBackup?
-    @State private var confirmation = false
-    @State private var resetConfirmation = false
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "externaldrive.badge.exclamationmark").font(.largeTitle).foregroundStyle(AppTheme.orange)
-            Text("Tus archivos se han conservado").font(.title2).fontDesign(.serif)
-            Text("Puedes cerrar la aplicación y volver a intentarlo, importar una copia válida o restablecer PetPlanify.").multilineTextAlignment(.center)
-            Button("Importar copia de seguridad") { importer = true }.buttonStyle(.borderedProminent)
-            Button("Restablecer PetPlanify", role: .destructive) { resetConfirmation = true }
-        }.padding(30).frame(maxWidth: .infinity, maxHeight: .infinity).appCanvas()
-        .fileImporter(isPresented: $importer, allowedContentTypes: [.petPlanifyBackup, .package]) { result in
-            if case let .success(url) = result {
-                Task { do { backup = try await BackupArchive.read(from: url); confirmation = true } catch { store.report(error) } }
-            }
+        VStack(spacing: 16) {
+            Image(systemName: "icloud.and.arrow.down").font(.largeTitle).foregroundStyle(AppTheme.green)
+            Text("No hemos podido cargar tus datos todavía.").font(.title3.weight(.semibold))
+            Text("Tus datos de iCloud no se han borrado. Comprueba la conexión y vuelve a intentarlo.")
+                .multilineTextAlignment(.center).foregroundStyle(AppTheme.secondaryInk)
+            Button("Volver a intentar", systemImage: "arrow.clockwise") { Task { await store.retryCloudKitLoad() } }
+                .buttonStyle(.borderedProminent).tint(AppTheme.green)
         }
-        .alert("¿Restaurar la copia de \(backup?.snapshot.pet.name ?? "")?", isPresented: $confirmation) {
-            Button("Cancelar", role: .cancel) { }
-            Button("Restaurar", role: .destructive) { if let backup { Task { _ = await store.restoreBackup(backup) } } }
-        } message: { Text("Se sustituirán los datos actuales y se conservarán los archivos anteriores como respaldo.") }
-        .alert("¿Restablecer PetPlanify?", isPresented: $resetConfirmation) {
-            Button("Cancelar", role: .cancel) { }
-            Button("Restablecer", role: .destructive) { Task { _ = await store.reset() } }
-        } message: { Text("Se retirarán los datos de la aplicación y volverás a la bienvenida.") }
+        .padding(32).frame(maxWidth: 420).appCanvas()
     }
+}
+
+private struct AppleSignInView: View {
+    var onSignedIn: () -> Void
+    @AppStorage("petplanify.apple.displayName") private var displayName = ""
+    @State private var errorMessage: String?
+
+    var body: some View {
+        ZStack {
+            AppTheme.canvas.ignoresSafeArea()
+            VStack(spacing: AppTheme.Space.xl) {
+                Image("AppIcon-Horizontal")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 300, maxHeight: 100)
+                    .accessibilityLabel("PetPlanify")
+                Text("Tu cuidado, con calma.")
+                    .font(.title3.weight(.semibold))
+                Text("Inicia sesión para mantener tus mascotas y cuidados vinculados a tu identidad.")
+                    .font(.body)
+                    .foregroundStyle(AppTheme.secondaryInk)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 430)
+                SignInWithAppleButton(.signIn) { request in
+                    request.requestedScopes = [.fullName, .email]
+                } onCompletion: { result in
+                    switch result {
+                    case .success(let authorization):
+                        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+                            errorMessage = String(localized: "No se ha podido validar tu cuenta de Apple.")
+                            return
+                        }
+                        UserDefaults.standard.set(credential.user, forKey: "petplanify.apple.userID")
+                        if let name = credential.fullName,
+                           let formatted = PersonNameComponentsFormatter().string(from: name).nilIfEmpty {
+                            displayName = formatted
+                        }
+                        onSignedIn()
+                    case .failure:
+                        errorMessage = String(localized: "No se ha podido iniciar sesión con Apple. Vuelve a intentarlo.")
+                    }
+                }
+                .signInWithAppleButtonStyle(.black)
+                .frame(width: 280, height: 52)
+                .accessibilityIdentifier("auth.signInWithApple")
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.orange)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: 360)
+                }
+                Text("Usaremos tu cuenta de Apple para identificar tu espacio. No necesitas crear otra contraseña.")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.secondaryInk)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 420)
+            }
+            .padding(AppTheme.Space.xxl)
+            .appSurface(cornerRadius: AppTheme.heroRadius, elevated: true)
+            .frame(maxWidth: 560)
+            .padding(AppTheme.Space.xl)
+        }
+    }
+}
+
+private extension String {
+    var nilIfEmpty: String? { isEmpty ? nil : self }
 }
 
 #Preview { ContentView().environment(PetPlanifyStore.preview()).environment(AppNavigation()) }

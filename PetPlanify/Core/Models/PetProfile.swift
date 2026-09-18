@@ -45,11 +45,15 @@ struct PetProfile: Codable, Sendable, Equatable, Identifiable {
     func ageDescription(at date: Date = .now) -> String {
         guard let months = ageMonths(at: date) else { return String(localized: "Edad sin indicar") }
         let years = months / 12
-        let value: String
-        if years == 1 { value = String(localized: "1 año") }
-        else if years > 1 { value = String(localized: "\(years) años") }
-        else if months == 1 { value = String(localized: "1 mes") }
-        else { value = String(localized: "\(months) meses") }
+        let remainingMonths = months % 12
+        var parts: [String] = []
+        if years > 0 {
+            parts.append(years == 1 ? String(localized: "1 año") : String(localized: "\(years) años"))
+        }
+        if remainingMonths > 0 || parts.isEmpty {
+            parts.append(remainingMonths == 1 ? String(localized: "1 mes") : String(localized: "\(remainingMonths) meses"))
+        }
+        let value = parts.joined(separator: String(localized: " y "))
         return birthDate == nil ? String(localized: "Aprox. \(value)") : value
     }
 }

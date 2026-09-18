@@ -8,7 +8,7 @@ struct HomeView: View {
     @State private var setupExpanded = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private enum HomeSheet: String, Identifiable {
-        case weight, visit, observation, trick, reminders, profile, food
+        case weight, visit, observation, trick, reminders, profile, food, evolution
         var id: Self { self }
     }
     var body: some View {
@@ -62,6 +62,7 @@ struct HomeView: View {
             case .reminders: CompactRemindersView()
             case .profile: ProfileEditor()
             case .food: FoodPlanEditor()
+            case .evolution: EvolutionView()
             }
         }
         .accessibilityIdentifier("home.screen")
@@ -160,6 +161,11 @@ struct HomeView: View {
                     .foregroundStyle(AppTheme.ink)
                 Spacer(minLength: 0)
             }
+            Button("Ver evolución", systemImage: "chart.xyaxis.line") { sheet = .evolution }
+                .buttonStyle(.borderless)
+                .foregroundStyle(AppTheme.green)
+                .frame(minHeight: 44, alignment: .leading)
+                .accessibilityIdentifier("home.evolution")
             HStack(spacing: AppTheme.Space.lg) {
                 scoreRing(score: score)
                 VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
@@ -182,8 +188,7 @@ struct HomeView: View {
         )
         .overlay(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous).stroke(AppTheme.green.opacity(0.15), lineWidth: 0.75))
         .shadow(color: AppTheme.shadow.opacity(0.05), radius: 8, y: 3)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Pet Care Score: \(score) por ciento. \(scoreLabel(for: score)). \(scoreDetail(for: score))")
+        .accessibilityIdentifier("home.careScore")
     }
 
     private func scoreRing(score: Int) -> some View {
@@ -201,7 +206,8 @@ struct HomeView: View {
                 .foregroundStyle(AppTheme.green)
         }
         .frame(width: 76, height: 76)
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(score) por ciento")
     }
 
     private func todayCard(now: Date) -> some View {

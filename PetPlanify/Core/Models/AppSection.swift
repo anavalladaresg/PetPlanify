@@ -17,7 +17,7 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable, Sendable {
         switch self {
         case .home: "house.fill"
         case .nutrition: "fork.knife"
-        case .health: "heart.fill"
+        case .health: "cross.case.fill"
         case .training: "pawprint.fill"
         case .settings: "gearshape.fill"
         }
@@ -34,4 +34,5 @@ enum AppSection: String, CaseIterable, Identifiable, Hashable, Sendable {
 
 @MainActor @Observable final class AppNavigation {
     var selection: AppSection = .home
+    var presentedReminderID: UUID?
 }
