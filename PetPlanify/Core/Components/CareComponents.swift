@@ -49,13 +49,14 @@ struct CareSection<Content: View>: View {
             if style != .plain {
                 RoundedRectangle(cornerRadius: style == .compact ? AppTheme.compactRadius : AppTheme.cornerRadius)
                     .fill(style == .highlighted ? AppTheme.orangeSoft : AppTheme.surface)
-                    .shadow(color: AppTheme.shadow.opacity(style == .highlighted ? 0.07 : 0.025), radius: style == .highlighted ? 12 : 4, y: style == .highlighted ? 4 : 1)
+                    .shadow(color: AppTheme.highlight.opacity(0.82), radius: 8, x: -4, y: -4)
+                    .shadow(color: AppTheme.shadow.opacity(style == .highlighted ? 0.30 : 0.22), radius: 9, x: 4, y: 5)
             }
         }
         .overlay {
             if style != .plain {
                 RoundedRectangle(cornerRadius: style == .compact ? AppTheme.compactRadius : AppTheme.cornerRadius)
-                    .stroke(style == .highlighted ? AppTheme.orange.opacity(0.15) : AppTheme.border.opacity(0.7), lineWidth: 0.75)
+                    .stroke(style == .highlighted ? AppTheme.orange.opacity(0.25) : AppTheme.border.opacity(0.35), lineWidth: 0.65)
             }
         }
     }
@@ -71,7 +72,10 @@ struct CareSymbol: View {
             .symbolRenderingMode(.hierarchical)
             .foregroundStyle(accent)
             .frame(width: size, height: size)
-            .background(accent.opacity(0.085), in: RoundedRectangle(cornerRadius: size * 0.32))
+            .background(AppTheme.surface, in: RoundedRectangle(cornerRadius: size * 0.32))
+            .overlay(RoundedRectangle(cornerRadius: size * 0.32).fill(accent.opacity(0.10)))
+            .shadow(color: AppTheme.highlight.opacity(0.78), radius: 4, x: -2, y: -2)
+            .shadow(color: AppTheme.shadow.opacity(0.18), radius: 4, x: 2, y: 2)
             .accessibilityHidden(true)
     }
 }
@@ -103,21 +107,40 @@ struct CareForm<Content: View>: View {
     @Environment(\.dismiss) private var dismiss
     let title: LocalizedStringKey
     let onSave: () async -> Bool
+    var saveTitle: LocalizedStringKey = "Guardar"
     var saveDisabled = false
+    var error: Binding<String?> = .constant(nil)
+    var symbol: String = "square.and.pencil"
     @ViewBuilder var content: Content
     @State private var saving = false
-    @State private var saveFailed = false
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    VStack(spacing: AppTheme.Space.sm) {
+                        Image(systemName: symbol)
+                            .font(.system(size: 28, weight: .semibold))
+                            .foregroundStyle(AppTheme.green)
+                            .frame(width: 64, height: 64)
+                            .background(AppTheme.greenSoft.opacity(0.72), in: Circle())
+                        Text(title)
+                            .font(.title2.weight(.bold))
+                            .foregroundStyle(AppTheme.ink)
+                            .multilineTextAlignment(.center)
+                            .accessibilityAddTraits(.isHeader)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 12, trailing: 0))
                 content
-                if saveFailed { Text("No se han podido guardar los cambios. Revisa los datos e inténtalo de nuevo.").foregroundStyle(.red) }
             }.disabled(saving)
                 .formStyle(.grouped)
                 .scrollContentBackground(.hidden)
                 .scrollDismissesKeyboard(.interactively)
                 .appCanvas()
-                .navigationTitle(title)
+                .navigationTitle("")
                 #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
                 #endif
@@ -129,11 +152,10 @@ struct CareForm<Content: View>: View {
                         if saving {
                             ProgressView().controlSize(.small).accessibilityLabel("Guardando…")
                         } else {
-                            Button("Guardar") {
+                            Button(saveTitle) {
                                 saving = true
                                 Task {
-                                    saveFailed = false
-                                    if await onSave() { dismiss() } else { saveFailed = true }
+                                    if await onSave() { dismiss() }
                                     saving = false
                                 }
                             }.disabled(saveDisabled).accessibilityIdentifier("form.save")
@@ -141,6 +163,49 @@ struct CareForm<Content: View>: View {
                     }
                 }
                 .interactiveDismissDisabled(saving)
+        }
+        .overlay {
+            if let message = error.wrappedValue, !message.isEmpty {
+                ZStack {
+                    Color.black.opacity(0.16)
+                        .ignoresSafeArea()
+                        .contentShape(Rectangle())
+                        .onTapGesture { error.wrappedValue = nil }
+                        .accessibilityLabel("Cerrar mensaje de error")
+
+                    ZStack(alignment: .topTrailing) {
+                        VStack(alignment: .center, spacing: AppTheme.Space.md) {
+                            Image(systemName: "exclamationmark.circle.fill")
+                                .font(.system(size: 38, weight: .medium))
+                                .foregroundStyle(AppTheme.orange)
+                                .accessibilityHidden(true)
+                            Text(message)
+                                .font(.body.weight(.semibold))
+                                .foregroundStyle(AppTheme.ink)
+                                .multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: .infinity)
+                        }
+
+                        Button("Cerrar", systemImage: "xmark") {
+                            error.wrappedValue = nil
+                        }
+                        .labelStyle(.iconOnly)
+                        .buttonStyle(.plain)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                        .frame(width: 44, height: 44)
+                        .accessibilityLabel("Cerrar mensaje de error")
+                    }
+                    .padding(AppTheme.Space.lg)
+                    .frame(maxWidth: 360)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous).stroke(AppTheme.orange.opacity(0.28), lineWidth: 1))
+                    .shadow(color: AppTheme.shadow.opacity(0.28), radius: 22, y: 10)
+                    .accessibilityElement(children: .contain)
+                    .transition(.scale(scale: 0.96).combined(with: .opacity))
+                }
+                .animation(.easeOut(duration: 0.2), value: message)
+            }
         }
         .careSheet()
     }

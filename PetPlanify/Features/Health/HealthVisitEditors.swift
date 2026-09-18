@@ -11,9 +11,9 @@ struct VisitEditor: View {
     @State private var notes: String
     @State private var assessment: String
     @State private var treatment: String
-    @State private var hasFollowUp: Bool
-    @State private var followUp: Date
     @State private var error: String?
+    @State private var importing = false
+    @State private var pendingPDF: URL?
 
     init(record: VeterinaryVisit? = nil) {
         self.record = record
@@ -23,16 +23,25 @@ struct VisitEditor: View {
         _notes = State(initialValue: record?.notes ?? "")
         _assessment = State(initialValue: record?.assessment ?? "")
         _treatment = State(initialValue: record?.treatmentNotes ?? "")
-        _hasFollowUp = State(initialValue: record?.followUpDate != nil)
-        _followUp = State(initialValue: record?.followUpDate ?? record?.date ?? .now)
     }
 
     var body: some View {
-        CareForm(title: record == nil ? "Añadir visita veterinaria" : "Editar visita", onSave: save) {
+        CareForm(title: record == nil ? "Añadir visita veterinaria" : "Editar visita", onSave: save, symbol: "cross.case.fill") {
             Section("Visita veterinaria") {
                 TextField("Motivo", text: $reason).accessibilityIdentifier("health.visitReason")
                 DatePicker("Fecha y hora", selection: $date, displayedComponents: [.date, .hourAndMinute])
                 TextField("Clínica", text: $clinic)
+                let suggestions = clinicSuggestions
+                if !suggestions.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Clínicas anteriores").font(.caption.weight(.semibold)).foregroundStyle(AppTheme.secondaryInk)
+                        ForEach(suggestions, id: \.self) { suggestion in
+                            Button(suggestion) { clinic = suggestion }
+                                .buttonStyle(.borderless)
+                                .frame(minHeight: 36, alignment: .leading)
+                        }
+                    }
+                }
             }
             Section("Información de la consulta") {
                 TextField("Valoración indicada por el profesional", text: $assessment, axis: .vertical).lineLimit(3...8)
@@ -41,34 +50,32 @@ struct VisitEditor: View {
             Section("Notas") {
                 TextField("Notas", text: $notes, axis: .vertical).lineLimit(3...8)
             }
-            Section {
-                Toggle("Añadir seguimiento", isOn: $hasFollowUp)
-                if hasFollowUp {
-                    DatePicker("Fecha y hora del seguimiento", selection: $followUp, in: date..., displayedComponents: [.date, .hourAndMinute])
+            Section("Documento") {
+                Button("Adjuntar PDF", systemImage: "doc.badge.plus") { importing = true }
+                if let pendingPDF {
+                    Label(pendingPDF.lastPathComponent, systemImage: "doc.text.fill")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                        .lineLimit(1)
                 }
-            } footer: { Text("Puedes adjuntar PDF e imágenes desde los detalles de la visita después de guardarla.") }
+            }
             if let error { Section { Text(error).foregroundStyle(.red) } }
             if let record {
                 Section {
-                    HealthDeleteButton(title: "Eliminar visita", message: "Se eliminará la visita. Sus documentos se conservarán en Documentos, sin vincular.") {
-                        await store.update {
-                            $0.health.visits.removeAll { $0.id == record.id }
-                            for index in $0.health.documents.indices where $0.health.documents[index].linkedVisitID == record.id {
-                                $0.health.documents[index].linkedVisitID = nil
-                            }
-                            for index in $0.health.medications.indices where $0.health.medications[index].relatedVisitID == record.id {
-                                $0.health.medications[index].relatedVisitID = nil
-                            }
-                        }
+                    HealthDeleteButton(title: "Eliminar visita", message: "La visita se moverá a la papelera. Sus documentos y vínculos se conservarán para poder restaurarla.") {
+                        await store.softDeleteVisit(record.id)
                     }
                 }
             }
+        }
+        .fileImporter(isPresented: $importing, allowedContentTypes: [.pdf], allowsMultipleSelection: false) { result in
+            if case let .success(urls) = result { pendingPDF = urls.first }
+            if case .failure = result { error = String(localized: "No se pudo abrir el PDF seleccionado.") }
         }
     }
 
     private func save() async -> Bool {
         guard !reason.healthTrimmed.isEmpty else { error = String(localized: "Escribe el motivo de la visita."); return false }
-        guard !hasFollowUp || followUp >= date else { error = String(localized: "El seguimiento debe ser posterior a la visita."); return false }
         var value = record ?? VeterinaryVisit(reason: reason.healthTrimmed)
         value.date = date
         value.reason = reason.healthTrimmed
@@ -76,14 +83,35 @@ struct VisitEditor: View {
         value.notes = notes.healthTrimmed
         value.assessment = assessment.healthOptional
         value.treatmentNotes = treatment.healthOptional
-        value.followUpDate = hasFollowUp ? followUp : nil
         value.updatedAt = .now
         let success = await store.update {
             if let current = $0.health.visits.first(where: { $0.id == value.id }) { value.documentIDs = current.documentIDs }
             $0.health.visits.upsert(value)
         }
         if !success { error = String(localized: "No se pudo guardar la visita. Vuelve a intentarlo.") }
+        else {
+            if let pendingPDF {
+                _ = await store.importDocument(from: pendingPDF, visitID: value.id)
+            }
+            if store.snapshot.preferences.appleCalendarLinked { await exportCareToAppleCalendarIfNeeded(
+                true,
+                petName: store.snapshot.pet.name,
+                title: "Visita veterinaria: \(value.reason)",
+                date: value.date,
+                notes: [value.clinic, value.notes, value.treatmentNotes].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n"),
+                alertAdvance: store.snapshot.preferences.appleCalendarAlertAdvance,
+                store: store
+            ) }
+        }
         return success
+    }
+
+    private var clinicSuggestions: [String] {
+        let query = clinic.healthTrimmed
+        guard !query.isEmpty else { return [] }
+        return Array(Set(store.snapshot.health.visits.map(\.clinic).filter {
+            !$0.isEmpty && $0.localizedCaseInsensitiveContains(query) && $0.caseInsensitiveCompare(query) != .orderedSame
+        })).sorted().prefix(3).map { $0 }
     }
 }
 
@@ -106,9 +134,6 @@ struct VisitDetailView: View {
                         Text(visit.reason).font(.title2.weight(.medium)).fontDesign(.serif)
                         LabeledContent("Fecha", value: AppFormat.dateTime(visit.date))
                         if !visit.clinic.isEmpty { LabeledContent("Clínica", value: visit.clinic) }
-                        LabeledContent("Estado") {
-                            Text(visit.status().title).foregroundStyle(visit.status().displayColor)
-                        }
                         if let followUp = visit.followUpDate { LabeledContent("Seguimiento", value: AppFormat.dateTime(followUp)) }
                     }
                     if !visit.notes.isEmpty { textSection("Notas", visit.notes) }

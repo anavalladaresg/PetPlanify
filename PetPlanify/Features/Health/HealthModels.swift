@@ -42,7 +42,7 @@ struct VaccinationRecord: Identifiable, Codable, Equatable, Sendable {
     var name: String
     var dateAdministered: Date = .now
     var nextDueDate: Date? = nil
-    var clinic: String? = nil
+    var protectionDurationMonths: Int? = nil
     var notes: String? = nil
 
     func status(relativeTo now: Date = .now) -> HealthRecordStatus {
@@ -75,12 +75,26 @@ enum DewormingKind: String, CaseIterable, Identifiable, Codable, Sendable {
     }
 }
 
+enum DewormingCategory: String, CaseIterable, Identifiable, Codable, Sendable {
+    case pipette, collar, tablet
+    var id: Self { self }
+    var title: String {
+        switch self {
+        case .pipette: String(localized: "Pipeta")
+        case .collar: String(localized: "Collar")
+        case .tablet: String(localized: "Pastilla")
+        }
+    }
+}
+
 struct DewormingRecord: Identifiable, Codable, Equatable, Sendable {
     var id: UUID = UUID()
     var kind: DewormingKind
+    var category: DewormingCategory? = nil
     var productName: String? = nil
     var applicationDate: Date = .now
     var nextDueDate: Date? = nil
+    var protectionDurationMonths: Int? = nil
     var notes: String? = nil
 
     func status(relativeTo now: Date = .now) -> HealthRecordStatus {

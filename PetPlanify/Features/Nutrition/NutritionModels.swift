@@ -1,14 +1,17 @@
 import Foundation
 
 enum FoodType: String, Codable, Sendable, CaseIterable, Identifiable {
-    case dryFood, wetFood, mixed, other
+    case dryFood, wetFood, cooked, rawBARF, mixed, supplement, other
     var id: Self { self }
     var title: String {
         switch self {
         case .dryFood: String(localized: "Alimento seco")
         case .wetFood: String(localized: "Alimento húmedo")
+        case .cooked: String(localized: "Comida cocinada")
+        case .rawBARF: String(localized: "Crudo / BARF")
         case .mixed: String(localized: "Mixto")
-        case .other: String(localized: "Otro")
+        case .supplement: String(localized: "Suplemento")
+        case .other: String(localized: "Otro / personalizado")
         }
     }
 }
@@ -16,6 +19,13 @@ struct FoodProduct: Codable, Sendable, Equatable {
     var name = ""
     var brand = ""
     var type: FoodType = .dryFood
+    var customTypeDescription: String? = nil
+
+    var typeDescription: String {
+        guard type == .other, let customTypeDescription,
+              !customTypeDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return type.title }
+        return customTypeDescription
+    }
 }
 struct MealScheduleEntry: Identifiable, Codable, Sendable, Equatable {
     var id = UUID()
@@ -39,6 +49,9 @@ struct FoodPlan: Identifiable, Codable, Sendable, Equatable {
     var notes = ""
     var validationError: String? {
         if product.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return String(localized: "Indica el alimento.") }
+        if product.type == .other && (product.customTypeDescription?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true) {
+            return String(localized: "Describe el tipo de alimento personalizado.")
+        }
         if !dailyAmountGrams.isFinite || !(0.1...100_000).contains(dailyAmountGrams) { return String(localized: "Indica una cantidad diaria positiva.") }
         if !(1...8).contains(meals.count) { return String(localized: "Elige entre una y ocho comidas.") }
         if meals.contains(where: { !$0.amountGrams.isFinite || $0.amountGrams <= 0 || !(0...23).contains($0.hour) || !(0...59).contains($0.minute) }) { return String(localized: "Revisa las cantidades y los horarios de las comidas.") }

@@ -24,11 +24,11 @@ struct MedicationEditor: View {
     }
 
     var body: some View {
-        CareForm(title: record == nil ? "Añadir medicación" : "Editar medicación", onSave: save) {
+        CareForm(title: record == nil ? "Añadir medicación" : "Editar medicación", onSave: save, symbol: "pills.fill") {
             Section {
                 TextField("Nombre", text: $name).accessibilityIdentifier("health.medicationName")
                 DatePicker("Inicio", selection: $startDate, displayedComponents: .date)
-                HealthOptionalDate(title: "Fecha de finalización", isEnabled: $hasEndDate, date: $endDate, minimum: startDate)
+                HealthOptionalDate(title: "Fecha de finalización", isEnabled: $hasEndDate, date: $endDate)
             }
             Section {
                 TextField("Indicaciones y notas", text: $notes, axis: .vertical).lineLimit(3...8)
@@ -46,7 +46,7 @@ struct MedicationEditor: View {
                         Button("Finalizar medicación") { confirmsFinish = true }
                     }
                     HealthDeleteButton(title: "Eliminar medicación") {
-                        await store.update { $0.health.medications.removeAll { $0.id == record.id } }
+                        await store.softDeleteMedication(record.id)
                     }
                 }
             }
@@ -77,6 +77,18 @@ struct MedicationEditor: View {
         value.relatedVisitID = visitID
         let success = await store.update { $0.health.medications.upsert(value) }
         if !success { error = String(localized: "No se pudo guardar la medicación. Vuelve a intentarlo.") }
+        else {
+            let scheduledDate = value.endDate ?? value.startDate
+            await exportCareToAppleCalendarIfNeeded(
+                store.snapshot.preferences.appleCalendarLinked,
+                petName: store.snapshot.pet.name,
+                title: value.endDate == nil ? "Medicación: \(value.name)" : "Finalizar medicación: \(value.name)",
+                date: scheduledDate,
+                notes: value.notes,
+                alertAdvance: store.snapshot.preferences.appleCalendarAlertAdvance,
+                store: store
+            )
+        }
         return success
     }
 }

@@ -12,8 +12,8 @@ enum AppFormat {
         return "\(number(value)) \(unit == .kilometers ? "km" : "mi")"
     }
     static func grams(_ value: Double) -> String { "\(number(value)) g" }
-    static func date(_ date: Date) -> String { date.formatted(date: .abbreviated, time: .omitted) }
-    static func dateTime(_ date: Date) -> String { date.formatted(date: .abbreviated, time: .shortened) }
+    static func date(_ date: Date) -> String { date.formatted(.dateTime.day(.twoDigits).month(.twoDigits).year()) }
+    static func dateTime(_ date: Date) -> String { date.formatted(.dateTime.day(.twoDigits).month(.twoDigits).year().hour().minute()) }
     static func parseNumber(_ input: String) -> Double? {
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, text.range(of: #"^[0-9]+([.,][0-9]+)?$"#, options: .regularExpression) != nil,

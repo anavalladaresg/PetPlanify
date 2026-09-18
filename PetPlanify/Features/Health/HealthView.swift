@@ -2,16 +2,23 @@ import SwiftUI
 
 struct HealthView: View {
     @Environment(PetPlanifyStore.self) private var store
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
     @State private var sheet: HealthSheet?
     @State private var showObservation = false
     @State private var observation: PetObservation?
     @State private var showsAllObservations = false
+    @State private var expandedHistory: Set<HealthHistorySection> = []
+
+    private enum HealthHistorySection: Hashable { case vaccines, dewormings, medications, visits }
 
     private var health: HealthData { store.snapshot.health }
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { _ in
         CarePage {
+            healthSummary
             if let next = nextCare {
                 CareSection(title: "Próximo cuidado", style: .highlighted) {
                     HealthRecordRow(title: next.title, subtitle: AppFormat.date(next.date), symbol: next.symbol, statusColor: AppTheme.green) {
@@ -19,6 +26,8 @@ struct HealthView: View {
                     }
                 }
             }
+            HealthCalendarView()
+            healthQuickActions
             HealthWeightCard(onRegister: { sheet = .weight(nil) }, onHistory: { sheet = .history(.weights) })
             vaccines
             dewormings
@@ -47,8 +56,97 @@ struct HealthView: View {
         .sheet(isPresented: $showObservation) { ObservationEditor(context: .health, record: observation) }
     }
 
+    private var healthSummary: some View {
+        CareSection(title: "Resumen de salud", style: .highlighted, symbol: "heart.text.square.fill") {
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: AppTheme.Space.lg) { healthMetrics }
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: AppTheme.Space.md) { healthMetrics }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var healthMetrics: some View {
+        healthMetric(
+            value: store.currentWeight.map { AppFormat.weight($0, unit: store.snapshot.preferences.weightUnit) } ?? "—",
+            label: "Peso actual",
+            symbol: "scalemass",
+            accent: AppTheme.health
+        )
+        healthMetric(value: "\(health.vaccines.count)", label: "Vacunas", symbol: "syringe", accent: AppTheme.health)
+        healthMetric(value: "\(health.dewormings.count)", label: "Desparasitaciones", symbol: "pills", accent: AppTheme.orange)
+        healthMetric(value: "\(health.visits.count)", label: "Visitas", symbol: "cross.case.fill", accent: AppTheme.blue)
+    }
+
+    private func healthMetric(value: String, label: LocalizedStringKey, symbol: String, accent: Color) -> some View {
+        HStack(spacing: AppTheme.Space.sm) {
+            CareSymbol(systemName: symbol, accent: accent, size: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(value).font(.headline.monospacedDigit()).foregroundStyle(AppTheme.ink)
+                Text(label).font(.caption).foregroundStyle(AppTheme.secondaryInk)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var healthQuickActions: some View {
+        Group {
+            #if os(iOS)
+            if horizontalSizeClass == .compact {
+                // 3 + 2 keeps the second row balanced. An adaptive grid would
+                // otherwise leave Peso alone on a third row on iPhone.
+                VStack(spacing: AppTheme.Space.sm) {
+                    HStack(spacing: AppTheme.Space.sm) {
+                        healthAction(title: "Vacuna", symbol: "syringe", accent: AppTheme.vaccine) { sheet = .vaccine(nil) }
+                        healthAction(title: "Desparasitación", symbol: "pills", accent: AppTheme.deworming) { sheet = .deworming(nil, .internalDeworming) }
+                        healthAction(title: "Medicación", symbol: "pills.fill", accent: AppTheme.medication) { sheet = .medication(nil) }
+                    }
+                    HStack(spacing: AppTheme.Space.sm) {
+                        healthAction(title: "Visita", symbol: "cross.case.fill", accent: AppTheme.visit) { sheet = .visit(nil) }
+                        healthAction(title: "Peso", symbol: "scalemass", accent: AppTheme.weight) { sheet = .weight(nil) }
+                    }
+                }
+            } else {
+                wideHealthQuickActions
+            }
+            #else
+            wideHealthQuickActions
+            #endif
+        }
+    }
+
+    private var wideHealthQuickActions: some View {
+        HStack(spacing: AppTheme.Space.sm) {
+            healthAction(title: "Vacuna", symbol: "syringe", accent: AppTheme.vaccine) { sheet = .vaccine(nil) }
+            healthAction(title: "Desparasitación", symbol: "pills", accent: AppTheme.deworming) { sheet = .deworming(nil, .internalDeworming) }
+            healthAction(title: "Medicación", symbol: "pills.fill", accent: AppTheme.medication) { sheet = .medication(nil) }
+            healthAction(title: "Visita", symbol: "cross.case.fill", accent: AppTheme.visit) { sheet = .visit(nil) }
+            healthAction(title: "Peso", symbol: "scalemass", accent: AppTheme.weight) { sheet = .weight(nil) }
+        }
+    }
+
+    private func healthAction(title: String, symbol: String, accent: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: AppTheme.Space.xs) {
+                Image(systemName: symbol)
+                    .font(.body.weight(.bold))
+                    .foregroundStyle(accent)
+                    .frame(width: 38, height: 38)
+                    .background(accent.opacity(0.16), in: Circle())
+                Text(title).font(.caption.weight(.semibold)).foregroundStyle(AppTheme.ink).lineLimit(2).multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity, minHeight: 72)
+            .padding(.vertical, AppTheme.Space.xs)
+            .background(AppTheme.quickSurface, in: RoundedRectangle(cornerRadius: AppTheme.compactRadius, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: AppTheme.compactRadius, style: .continuous).stroke(accent.opacity(0.28), lineWidth: 0.75))
+        }
+        .buttonStyle(QuickActionPressStyle())
+        .accessibilityLabel("Añadir \(title.lowercased())")
+    }
+
     private var vaccines: some View {
-        CareSection(title: "Vacunas", style: .compact, symbol: "syringe") {
+        collapsibleHealthSection(title: "Vacunas", symbol: "syringe", section: .vaccines, count: health.vaccines.count) {
             if health.vaccines.isEmpty {
                 EmptyCareState(title: "Añade las vacunas para conservar su historial.", symbol: "syringe")
             } else {
@@ -73,7 +171,7 @@ struct HealthView: View {
     }
 
     private var dewormings: some View {
-        CareSection(title: "Desparasitación", style: .compact) {
+        collapsibleHealthSection(title: "Desparasitación", symbol: "pills", section: .dewormings, count: health.dewormings.count) {
             VStack(spacing: 0) {
                 ForEach(DewormingKind.allCases) { kind in
                     let accent = kind == .externalDeworming ? AppTheme.orange : AppTheme.green
@@ -105,7 +203,7 @@ struct HealthView: View {
     }
 
     private var medications: some View {
-        CareSection(title: "Medicación", style: .compact, symbol: "pills") {
+        collapsibleHealthSection(title: "Medicación", symbol: "pills", section: .medications, count: health.medications.count) {
             let active = health.medications.filter { $0.isActive() }.sorted { $0.startDate > $1.startDate }
             if active.isEmpty {
                 EmptyCareState(title: "No hay medicamentos activos", symbol: "pills", message: "Las medicaciones finalizadas quedan disponibles en el historial.")
@@ -124,7 +222,7 @@ struct HealthView: View {
     }
 
     private var visits: some View {
-        CareSection(title: "Visitas veterinarias", style: .compact, symbol: "cross.case") {
+        collapsibleHealthSection(title: "Visitas veterinarias", symbol: "cross.case", section: .visits, count: health.visits.count) {
             if health.visits.isEmpty {
                 EmptyCareState(title: "Guarda citas, valoraciones y documentos en un mismo lugar.", symbol: "cross.case")
             } else {
@@ -153,10 +251,17 @@ struct HealthView: View {
         CareSection(title: "Observaciones de salud", style: .plain, symbol: "text.bubble") {
             let records = health.observations.filter { $0.context == .health || $0.context == .general }.sorted { $0.date > $1.date }
             if records.isEmpty {
-                EmptyCareState(title: "Aún no hay observaciones", symbol: "text.bubble", message: "Anota cambios o detalles para comentarlos en la próxima visita.")
+                HStack(spacing: AppTheme.Space.sm) {
+                    CareSymbol(systemName: "text.bubble", accent: AppTheme.blue, size: 32)
+                    Text("Sin observaciones").font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+                    Spacer(minLength: 0)
+                    Button("Añadir", systemImage: "plus") { observation = nil; showObservation = true }
+                        .buttonStyle(.bordered)
+                }
+                .frame(minHeight: 44)
             }
             ForEach(Array(records.prefix(showsAllObservations ? records.count : 2))) { record in
-                HealthRecordRow(title: record.title, subtitle: "\(AppFormat.date(record.date)) · \(record.body)") {
+                HealthRecordRow(title: record.title, subtitle: observationSubtitle(record)) {
                     observation = record
                     showObservation = true
                 }
@@ -164,8 +269,44 @@ struct HealthView: View {
             if records.count > 2 {
                 Button(showsAllObservations ? "Mostrar menos" : "Ver todas las observaciones") { showsAllObservations.toggle() }
             }
-            Button("Añadir observación", systemImage: "plus") { observation = nil; showObservation = true }
-                .buttonStyle(.bordered)
+            if !records.isEmpty {
+                Button("Añadir observación", systemImage: "plus") { observation = nil; showObservation = true }
+                    .buttonStyle(.bordered)
+            }
+        }
+    }
+
+    private func observationSubtitle(_ record: PetObservation) -> String {
+        let compact = record.body
+            .replacingOccurrences(of: "\n", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let limit = 96
+        let preview = compact.count > limit ? String(compact.prefix(limit)) + "…" : compact
+        return "\(AppFormat.date(record.date)) · \(preview)"
+    }
+
+    private func collapsibleHealthSection<Content: View>(
+        title: LocalizedStringKey,
+        symbol: String,
+        section: HealthHistorySection,
+        count: Int,
+        @ViewBuilder content: @escaping () -> Content
+    ) -> some View {
+        CareSection(title: title, style: .compact, symbol: symbol) {
+            DisclosureGroup(isExpanded: Binding(
+                get: { expandedHistory.contains(section) },
+                set: { expanded in
+                    if expanded { expandedHistory.insert(section) }
+                    else { expandedHistory.remove(section) }
+                }
+            )) {
+                VStack(alignment: .leading, spacing: AppTheme.Space.md) { content() }
+                    .padding(.top, AppTheme.Space.md)
+            } label: {
+                Text(count == 0 ? "Sin registros" : count == 1 ? "1 registro" : "\(count) registros")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(AppTheme.secondaryInk)
+            }
         }
     }
 

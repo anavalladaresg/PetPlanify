@@ -12,12 +12,21 @@ struct MobileAppShell: View {
                         #if os(iOS)
                         .navigationBarTitleDisplayMode(.large)
                         #endif
-                        .toolbar { ToolbarItem(placement: .primaryAction) { AppReminderButton() } }
+                        .toolbar {
+                            ToolbarItem(placement: .navigation) { PetSwitcher() }
+                            ToolbarItem(placement: .primaryAction) { AppReminderButton() }
+                        }
                 }
                 .tabItem { Label(section.title, systemImage: section.icon) }
                 .tag(section)
                 .accessibilityIdentifier("tab.\(section.rawValue)")
             }
-        }.tint(AppTheme.green).accessibilityIdentifier("navigation.iphone")
+        }
+        .tint(AppTheme.green)
+        #if os(iOS)
+        .toolbarBackground(AppTheme.canvas, for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
+        #endif
+        .accessibilityIdentifier("navigation.iphone")
     }
 }

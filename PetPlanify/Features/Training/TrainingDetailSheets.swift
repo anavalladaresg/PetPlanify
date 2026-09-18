@@ -8,11 +8,16 @@ struct TrickLibraryView: View {
     @State private var difficulty: TrickDifficulty?
     @State private var category: TrickCategory?
     @State private var isCreatingCustom = false
+    @State private var searchText = ""
 
     private var filteredLibrary: [TrickDefinition] {
         store.snapshot.training.library.filter {
             (difficulty == nil || $0.difficulty == difficulty) &&
-            (category == nil || $0.category == category)
+            (category == nil || $0.category == category) &&
+            (searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+             $0.name.localizedCaseInsensitiveContains(searchText) ||
+             $0.category.title.localizedCaseInsensitiveContains(searchText) ||
+             $0.guide.objective.localizedCaseInsensitiveContains(searchText))
         }
     }
 
@@ -51,6 +56,7 @@ struct TrickLibraryView: View {
                 }
             }
             .navigationTitle("Explorar trucos")
+            .searchable(text: $searchText, prompt: "Buscar trucos")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -113,12 +119,6 @@ struct TrickDetailView: View {
             if let definition {
                 CarePage {
                     intro(definition)
-                    if !definition.guide.objective.isEmpty {
-                        CareSection(title: "Objetivo", style: .highlighted) {
-                            Text(definition.guide.objective)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                    }
                     if let selected {
                         CareSection(title: "Mi progreso", style: .compact) {
                             ViewThatFits(in: .horizontal) {
@@ -163,9 +163,13 @@ struct TrickDetailView: View {
                         TrainingGuideSection(title: "Notas de la guía", text: customTrick.notes)
                     }
                     if selected != nil {
-                        Button("Quitar de Mis trucos", role: .destructive) { confirmRemoval = true }
-                            .disabled(isSaving)
-                            .accessibilityIdentifier("training.removeSelected")
+                        Button(role: .destructive) { confirmRemoval = true } label: {
+                            Label("Quitar de Mis trucos", systemImage: "trash")
+                                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                        }
+                        .foregroundStyle(.red)
+                        .disabled(isSaving)
+                        .accessibilityIdentifier("training.removeSelected")
                     }
                 }
             } else {
@@ -251,14 +255,17 @@ struct TrickDetailView: View {
         }
         .padding(AppTheme.Space.xl)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background {
+        .background(
             LinearGradient(
                 colors: [AppTheme.greenSoft.opacity(0.76), AppTheme.surface],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
-            )
-        }
-        .appSurface(cornerRadius: AppTheme.heroRadius, elevated: true)
+            ),
+            in: RoundedRectangle(cornerRadius: AppTheme.heroRadius, style: .continuous)
+        )
+        .overlay(RoundedRectangle(cornerRadius: AppTheme.heroRadius, style: .continuous).stroke(AppTheme.border.opacity(0.55), lineWidth: 0.8))
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.heroRadius, style: .continuous))
+        .shadow(color: AppTheme.shadow.opacity(0.18), radius: 12, y: 6)
         .accessibilityElement(children: .contain)
     }
 
@@ -277,11 +284,16 @@ struct TrickDetailView: View {
 
     @ViewBuilder
     private func guide(_ definition: TrickDefinition) -> some View {
-        if !definition.prerequisites.isEmpty || !definition.guide.requiredMaterials.isEmpty {
-            CareSection(title: "Antes de empezar", style: .compact, symbol: "leaf") {
+        if !definition.guide.objective.isEmpty || !definition.prerequisites.isEmpty || !definition.guide.requiredMaterials.isEmpty {
+            CareSection(title: "Preparación", style: .compact, symbol: "leaf") {
+                if !definition.guide.objective.isEmpty {
+                    Text(definition.guide.objective)
+                        .font(.subheadline.weight(.medium))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 if !definition.prerequisites.isEmpty {
                     Text(definition.prerequisites.joined(separator: " · "))
-                        .font(.subheadline.weight(.medium))
+                        .font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
                 }
                 if !definition.guide.requiredMaterials.isEmpty {
                     Text(definition.guide.requiredMaterials)
@@ -291,42 +303,22 @@ struct TrickDetailView: View {
             }
         }
         if !definition.guide.steps.isEmpty {
-            CareSection(title: "Paso a paso", style: .plain) {
+            CareSection(title: "Cómo hacerlo", style: .plain) {
+                let steps = Array(definition.guide.steps.prefix(5))
                 VStack(alignment: .leading, spacing: 0) {
-                    ForEach(Array(definition.guide.steps.enumerated()), id: \.offset) { index, step in
-                        TrainingGuideStep(number: index + 1, text: step, isLast: index == definition.guide.steps.count - 1)
+                    ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
+                        TrainingGuideStep(number: index + 1, text: step, isLast: index == steps.count - 1)
                     }
                 }
             }
         }
-        if !definition.guide.commonMistakes.isEmpty {
-            CareSection(title: "Errores que conviene evitar", style: .compact) {
-                ForEach(definition.guide.commonMistakes, id: \.self) { mistake in
-                    HStack(alignment: .top, spacing: AppTheme.Space.sm) {
-                        Circle().fill(AppTheme.secondaryInk.opacity(0.5))
-                            .frame(width: 4, height: 4).padding(.top, AppTheme.Space.sm)
-                            .accessibilityHidden(true)
-                        Text(mistake).font(.subheadline).fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-            }
-        }
-        if !definition.guide.recommendedAttemptDuration.isEmpty || !definition.guide.rewardGuidance.isEmpty || !definition.guide.progressionCriteria.isEmpty {
-            CareSection(title: "A su ritmo", style: .compact, symbol: "heart") {
-                advice(title: "Intentos breves", text: definition.guide.recommendedAttemptDuration)
-                advice(title: "Cómo recompensar", text: definition.guide.rewardGuidance)
-                advice(title: "Cuándo avanzar", text: definition.guide.progressionCriteria)
-            }
-        }
-        TrainingGuideSection(title: "Precauciones", text: definition.guide.precautions)
-    }
-
-    @ViewBuilder
-    private func advice(title: LocalizedStringKey, text: String) -> some View {
-        if !text.isEmpty {
-            VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
-                Text(title).font(.subheadline.weight(.semibold))
-                Text(text).font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+        let tip = [definition.guide.rewardGuidance, definition.guide.recommendedAttemptDuration, definition.guide.precautions]
+            .first { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        if let tip {
+            CareSection(title: "Consejo", style: .compact, symbol: "lightbulb.fill") {
+                Text(tip)
+                    .font(.subheadline)
+                    .foregroundStyle(AppTheme.secondaryInk)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }

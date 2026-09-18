@@ -19,14 +19,17 @@ struct TrainingOverview: View {
         }
         .padding(AppTheme.Space.xl)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background {
+        .background(
             LinearGradient(
                 colors: [AppTheme.greenSoft.opacity(0.9), AppTheme.surface],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
-            )
-        }
-        .appSurface(cornerRadius: AppTheme.heroRadius, elevated: true)
+            ),
+            in: RoundedRectangle(cornerRadius: AppTheme.heroRadius, style: .continuous)
+        )
+        .overlay(RoundedRectangle(cornerRadius: AppTheme.heroRadius, style: .continuous).stroke(AppTheme.border.opacity(0.55), lineWidth: 0.8))
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.heroRadius, style: .continuous))
+        .shadow(color: AppTheme.shadow.opacity(0.18), radius: 12, y: 6)
         .scaleEffect(hasAppeared || reduceMotion ? 1 : 0.985)
         .opacity(hasAppeared || reduceMotion ? 1 : 0)
         .onAppear {
@@ -54,8 +57,10 @@ struct TrainingOverview: View {
                     .frame(width: 110, height: 88)
                 copy
             }
-            HStack(spacing: AppTheme.Space.lg) {
-                TrainingStat(value: selectedCount, label: "En progreso")
+            TrainingProgressRing(value: completion, label: "Dominados")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 112), alignment: .leading)], alignment: .leading, spacing: AppTheme.Space.md) {
+                TrainingStat(value: max(0, selectedCount - masteredCount), label: "En progreso")
                 TrainingStat(value: masteredCount, label: "Dominados")
                 TrainingStat(value: averageProgress, suffix: "%", label: "Avance medio")
             }
@@ -106,24 +111,29 @@ struct TrainingProgressRing: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        ZStack {
-            Circle()
-                .stroke(AppTheme.greenSoft, lineWidth: 8)
-            Circle()
-                .trim(from: 0, to: max(0, min(value, 1)))
-                .stroke(AppTheme.green, style: StrokeStyle(lineWidth: 8, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-                .animation(reduceMotion ? nil : .easeOut(duration: 0.45), value: value)
-            VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
+            HStack(alignment: .firstTextBaseline) {
                 Text("\(Int((value * 100).rounded()))%")
                     .font(.headline.monospacedDigit())
                     .foregroundStyle(AppTheme.ink)
+                Spacer(minLength: AppTheme.Space.sm)
                 Text(label)
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundStyle(AppTheme.secondaryInk)
             }
+            GeometryReader { geometry in
+                Capsule()
+                    .fill(AppTheme.greenSoft)
+                    .overlay(alignment: .leading) {
+                        Capsule()
+                            .fill(AppTheme.green)
+                            .frame(width: geometry.size.width * max(0, min(value, 1)))
+                            .animation(reduceMotion ? nil : .easeOut(duration: 0.45), value: value)
+                    }
+            }
+            .frame(height: 10)
         }
-        .frame(width: 82, height: 82)
+        .frame(minWidth: 150, idealWidth: 190, maxWidth: .infinity)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
         .accessibilityValue("\(Int((value * 100).rounded())) por ciento")
@@ -222,6 +232,14 @@ struct TrainingTrickRow: View {
     var selected: SelectedTrick? = nil
     var isCustom = false
 
+    private var difficultyColor: Color {
+        switch definition.difficulty {
+        case .easy: AppTheme.green
+        case .medium: AppTheme.blue
+        case .advanced: AppTheme.training
+        }
+    }
+
     private var layout: AnyLayout {
         dynamicTypeSize.isAccessibilitySize
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: AppTheme.Space.sm))
@@ -257,13 +275,20 @@ struct TrainingTrickRow: View {
                 } else {
                     Text(definition.difficulty.title)
                         .font(.caption.weight(.medium))
-                        .foregroundStyle(AppTheme.green)
+                        .foregroundStyle(difficultyColor)
                         .padding(.horizontal, AppTheme.Space.sm)
                         .padding(.vertical, AppTheme.Space.xs)
-                        .background(AppTheme.greenSoft.opacity(0.65), in: Capsule())
+                        .background(difficultyColor.opacity(0.14), in: Capsule())
                     Text(isCustom ? String(localized: "Guía propia") : definition.category.title)
                         .font(.caption)
                         .foregroundStyle(AppTheme.secondaryInk)
+                    if !definition.guide.objective.isEmpty {
+                        Text(definition.guide.objective)
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.secondaryInk)
+                            .lineLimit(2)
+                            .truncationMode(.tail)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

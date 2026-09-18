@@ -14,6 +14,6 @@ extension PetPlanifyStore {
             snapshot.onboarding.isComplete = true
             ReminderEngine.reconcile(&snapshot)
         }
-        return PetPlanifyStore(storage: InMemorySnapshotStorage(snapshot: snapshot), initialSnapshot: snapshot, loaded: true)
+        return PetPlanifyStore(storage: CloudKitPersistenceService(), initialSnapshot: snapshot, loaded: true)
     }
 }

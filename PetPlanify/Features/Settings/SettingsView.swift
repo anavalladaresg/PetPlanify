@@ -1,148 +1,273 @@
 import SwiftUI
 import UserNotifications
-import UniformTypeIdentifiers
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
 
 struct SettingsView: View {
     @Environment(PetPlanifyStore.self) private var store
-    @Environment(AppNavigation.self) private var navigation
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var profile = false
-    @State private var food = false
-    @State private var exporter = false
-    @State private var importer = false
-    @State private var backupDocument: PetPlanifyBackupDocument?
-    @State private var pendingBackup: ValidatedBackup?
-    @State private var confirmImport = false
-    @State private var confirmReset = false
-    @State private var busy = false
+    @State private var profiles = false
+    @State private var confirmsSignOut = false
+    @State private var confirmsCalendarUnlink = false
+    @AppStorage("petplanify.apple.signedIn") private var signedIn = true
     var body: some View {
-        Form {
-            Section("Perfil") {
-                HStack(spacing: 12) {
-                    ZStack {
-                        Circle().fill(AppTheme.greenSoft)
-                        PetAvatarView(size: 48, photoURL: store.profilePhotoURL())
+        CarePage {
+            VStack(alignment: .leading, spacing: settingsSectionSpacing) {
+                PetProfileHeroCard(
+                    name: store.snapshot.pet.name,
+                    subtitle: profileSubtitle,
+                    photoURL: store.profilePhotoURL()
+                ) { profile = true } manageAction: { profiles = true }
+                    .accessibilityIdentifier("profile.edit")
+
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .top, spacing: AppTheme.Space.lg) {
+                        preferencesCard
+                        appearanceCard
                     }
-                    .frame(width: 56, height: 56)
-                    VStack(alignment: .leading) {
-                        Text(store.snapshot.pet.name).font(.headline)
-                        Text(store.snapshot.pet.ageDescription()).foregroundStyle(AppTheme.secondaryInk)
+                    VStack(spacing: settingsCardSpacing) {
+                        preferencesCard
+                        appearanceCard
                     }
                 }
-                Button { profile = true } label: {
-                    Label("Editar perfil", systemImage: "pencil")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }.accessibilityIdentifier("profile.edit")
-            }
-            Section("Alimentación") {
-                Button { food = true } label: {
-                    Label("Editar plan de alimentación", systemImage: "fork.knife")
-                }
-            }
-            Section("Salud") {
-                Button { navigation.selection = .health } label: {
-                    Label("Ver registros de salud", systemImage: "heart.fill")
-                }
-                Button { profile = true } label: {
-                    Label("Editar clínica, microchip y rango de peso", systemImage: "cross.case")
-                }
-            }
-            Section("Preferencias") {
-                Picker("Peso", selection: preference(\.weightUnit)) { ForEach(WeightUnit.allCases) { Text($0.title).tag($0) } }
-                Picker("Distancia", selection: preference(\.distanceUnit)) { ForEach(DistanceUnit.allCases) { Text($0.title).tag($0) } }
-                LabeledContent("Idioma", value: "Español")
-            }
-            Section("Apariencia") {
-                Picker("Tema", selection: preference(\.appearance)) {
-                    ForEach(AppAppearance.allCases) { Text($0.title).tag($0) }
-                }
-                Text("PetPlanify adapta colores y contraste al tema elegido.")
-                    .font(.caption).foregroundStyle(AppTheme.secondaryInk)
-            }
-            Section("Recordatorios") {
-                Toggle("Notificaciones del dispositivo", isOn: Binding(get: { store.snapshot.preferences.reminders.notificationsEnabled }, set: { value in Task { await store.setNotificationsEnabled(value) } }))
-                    .accessibilityIdentifier("notifications.enable")
-                if store.notificationStatus == .denied {
-                    Text("El permiso está desactivado en los ajustes del sistema. Los recordatorios de la aplicación siguen funcionando.").font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
-                }
-                if store.snapshot.preferences.reminders.notificationsEnabled {
-                    Toggle("Salud", isOn: reminderPreference(\.healthEnabled))
-                    Toggle("Alimentación", isOn: reminderPreference(\.nutritionEnabled))
-                    Toggle("Entrenamiento", isOn: reminderPreference(\.trainingEnabled))
-                }
-                Picker("Avisar", selection: reminderPreference(\.advanceTime)) { ForEach(ReminderAdvanceTime.allCases) { Text($0.title).tag($0) } }
-                Text("Las categorías se aplican a los cuidados y recordatorios que tú añadas. No se crean pautas automáticamente.").font(.caption).foregroundStyle(AppTheme.secondaryInk)
-            }
-            Section("Datos y privacidad") {
-                LabeledContent("Almacenamiento", value: "En este dispositivo")
-                ICloudSettingsRow()
-                Button("Exportar copia de seguridad", systemImage: "square.and.arrow.up") {
-                    busy = true
-                    Task {
-                        do { backupDocument = try await store.exportBackup(); exporter = true }
-                        catch { store.report(error) }
-                        busy = false
+
+                remindersCard
+
+                calendarCard
+
+                SettingsSectionCard(title: "Sesión", symbol: "rectangle.portrait.and.arrow.right", accent: AppTheme.health) {
+                    Text("Cerrar sesión volverá a la bienvenida. Tus mascotas y cuidados seguirán guardados en tu cuenta.")
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button("Cerrar sesión", systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) {
+                        confirmsSignOut = true
                     }
-                }.accessibilityIdentifier("data.export").disabled(busy)
-                Button("Importar copia de seguridad", systemImage: "square.and.arrow.down") { importer = true }.accessibilityIdentifier("data.import").disabled(busy)
-                Button("Restablecer PetPlanify", systemImage: "arrow.counterclockwise", role: .destructive) { confirmReset = true }.accessibilityIdentifier("data.reset").disabled(busy)
-                if busy { ProgressView("Preparando los datos…") }
-                Text("PetPlanify guarda la información localmente. No vende tus datos, no incluye publicidad ni servicios de analítica y no envía los registros de tu mascota a servidores externos. Si activas iCloud, se utiliza tu entorno de Apple.")
-                    .font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
-            }
-            Section("Acerca de") {
-                LabeledContent("PetPlanify", value: "\(version) (\(build))")
-                LabeledContent("Plataformas", value: "iPhone + Mac")
-                LabeledContent("Tecnología", value: "SwiftUI")
-                Text("Un lugar tranquilo para organizar el cuidado y la historia de tu mascota.")
-                Text("Diseñado y desarrollado por Ana Valladares.").foregroundStyle(AppTheme.secondaryInk)
+                    .buttonStyle(.bordered)
+                    .accessibilityIdentifier("settings.signOut")
+                }
+
+                HStack(spacing: AppTheme.Space.sm) {
+                    Image(systemName: "pawprint.fill").foregroundStyle(AppTheme.green)
+                    Text("PetPlanify · versión \(version)")
+                        .font(.subheadline.weight(.medium)).foregroundStyle(AppTheme.secondaryInk)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
             }
         }
-        .formStyle(.grouped).scrollContentBackground(.hidden).appCanvas()
         .accessibilityIdentifier("settings.screen")
         .sheet(isPresented: $profile) { ProfileEditor() }
-        .sheet(isPresented: $food) { FoodPlanEditor() }
-        .fileExporter(isPresented: $exporter, document: backupDocument, contentType: .petPlanifyBackup, defaultFilename: "PetPlanify Backup.petplanify") { result in
-            switch result {
-            case .success: store.message = String(localized: "La copia de seguridad se ha exportado.")
-            case .failure: store.message = String(localized: "No se ha podido exportar la copia. Los datos de la aplicación siguen disponibles.")
+        .sheet(isPresented: $profiles) { PetProfilesView() }
+        .confirmationDialog("¿Cerrar sesión en este dispositivo?", isPresented: $confirmsSignOut, titleVisibility: .visible) {
+            Button("Cerrar sesión", role: .destructive) {
+                Task { if await store.signOut() { signedIn = false } }
             }
-            backupDocument = nil
-        }
-        .fileImporter(isPresented: $importer, allowedContentTypes: [.petPlanifyBackup, .package]) { result in
-            if case let .success(url) = result {
-                busy = true
-                Task {
-                    do { pendingBackup = try await BackupArchive.read(from: url); confirmImport = true }
-                    catch { store.report(error) }
-                    busy = false
-                }
-            } else if case .failure = result { store.message = String(localized: "No se ha podido abrir la copia seleccionada.") }
-        }
-        .alert("¿Restaurar esta copia?", isPresented: $confirmImport) {
-            Button("Cancelar", role: .cancel) { pendingBackup = nil }
-            Button("Restaurar", role: .destructive) {
-                guard let backup = pendingBackup else { return }
-                busy = true
-                Task { _ = await store.restoreBackup(backup); busy = false; pendingBackup = nil }
-            }
-        } message: {
-            if let backup = pendingBackup {
-                Text("Mascota: \(backup.snapshot.pet.name)\nCopia del \(AppFormat.dateTime(backup.createdAt))\n\(backup.attachmentCount) archivos\nSe sustituirán los datos actuales. Se conservará un respaldo de los datos anteriores.")
-            }
-        }
-        .alert("¿Restablecer PetPlanify?", isPresented: $confirmReset) {
             Button("Cancelar", role: .cancel) { }
-            Button("Restablecer", role: .destructive) { Task { _ = await store.reset() } }
-        } message: { Text("Se eliminarán de la aplicación el perfil, los registros, las fotos, los documentos y los ajustes. Volverás a la bienvenida. Exporta una copia si quieres conservarlos.") }
-        .task { await store.refreshNotificationStatus() }
+        } message: {
+            Text("Tus mascotas y cuidados no se borrarán. Podrás recuperarlos al volver a iniciar sesión.")
+        }
+        .confirmationDialog("¿Qué hacemos con los eventos de PetPlanify?", isPresented: $confirmsCalendarUnlink, titleVisibility: .visible) {
+            Button("Mantenerlos en Calendario") {
+                Task { await store.setAppleCalendarLinked(false) }
+            }
+            Button("Eliminar eventos", role: .destructive) {
+                Task {
+                    do {
+                        try await AppleCalendarExportService.shared.deletePetPlanifyEvents()
+                        await store.setAppleCalendarLinked(false)
+                    } catch { store.message = error.localizedDescription }
+                }
+            }
+            Button("Cancelar", role: .cancel) { }
+        } message: {
+            Text("Puedes mantener los eventos en Calendario de Apple o eliminar solamente los que creó PetPlanify.")
+        }
+        .task {
+            await store.refreshNotificationStatus()
+        }
     }
     private var version: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0" }
-    private var build: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1" }
+    private var settingsSectionSpacing: CGFloat {
+        horizontalSizeClass == .compact ? AppTheme.Space.md : AppTheme.Space.xl
+    }
+    private var settingsCardSpacing: CGFloat {
+        horizontalSizeClass == .compact ? AppTheme.Space.md : AppTheme.Space.lg
+    }
+    private var profileSubtitle: String {
+        [store.snapshot.pet.ageDescription(), store.snapshot.pet.breed]
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .joined(separator: " · ")
+    }
     private func preference<Value>(_ key: WritableKeyPath<AppPreferences, Value>) -> Binding<Value> {
         Binding(get: { store.snapshot.preferences[keyPath: key] }, set: { value in Task { _ = await store.update { $0.preferences[keyPath: key] = value } } })
     }
     private func reminderPreference<Value>(_ key: WritableKeyPath<ReminderPreferences, Value>) -> Binding<Value> {
         Binding(get: { store.snapshot.preferences.reminders[keyPath: key] }, set: { value in Task { _ = await store.update { $0.preferences.reminders[keyPath: key] = value } } })
+    }
+
+    private var preferencesCard: some View {
+        SettingsSectionCard(title: "Preferencias", symbol: "slider.horizontal.3", accent: AppTheme.green) {
+            SettingRow(title: "Unidad de peso", symbol: "scalemass") { Picker("Peso", selection: preference(\.weightUnit)) { ForEach(WeightUnit.allCases) { Text($0.title).tag($0) } }.labelsHidden() }
+            Divider().opacity(0.35)
+            SettingRow(title: "Unidad de distancia", symbol: "location") { Picker("Distancia", selection: preference(\.distanceUnit)) { ForEach(DistanceUnit.allCases) { Text($0.title).tag($0) } }.labelsHidden() }
+        }
+    }
+
+    private var appearanceCard: some View {
+        SettingsSectionCard(title: "Apariencia", symbol: "circle.lefthalf.filled", accent: AppTheme.training) {
+            SettingRow(title: "Tema", detail: "Claro, oscuro o según el sistema", symbol: "paintpalette", accent: AppTheme.training) { Picker("Tema", selection: preference(\.appearance)) { ForEach(AppAppearance.allCases) { Text($0.title).tag($0) } }.labelsHidden() }
+        }
+    }
+
+    private var remindersCard: some View {
+        SettingsSectionCard(title: "Recordatorios", symbol: "bell.fill", accent: AppTheme.reminder) {
+            SettingRow(
+                title: "Notificaciones del dispositivo",
+                detail: store.notificationStatus == .denied ? "Actívalas en Ajustes del sistema" : "Avisos para los cuidados pendientes",
+                symbol: "bell.fill",
+                accent: AppTheme.reminder
+            ) {
+                Toggle("Notificaciones del dispositivo", isOn: Binding(
+                    get: { store.snapshot.preferences.reminders.notificationsEnabled },
+                    set: { value in Task { await store.setNotificationsEnabled(value) } }
+                ))
+                .labelsHidden()
+                .accessibilityIdentifier("notifications.enable")
+                .accessibilityLabel("Notificaciones del dispositivo")
+            }
+            if store.notificationStatus == .denied {
+                HStack {
+                    StatusBadge(title: "Permiso pendiente", symbol: "info.circle.fill", tint: AppTheme.reminder)
+                    Spacer()
+                    Button("Abrir Ajustes", systemImage: "gear") { openNotificationSettings() }
+                        .buttonStyle(.bordered)
+                }
+            }
+            if store.snapshot.preferences.reminders.notificationsEnabled {
+                Toggle("Salud", isOn: reminderPreference(\.healthEnabled))
+                Toggle("Alimentación", isOn: reminderPreference(\.nutritionEnabled))
+                Toggle("Entrenamiento", isOn: reminderPreference(\.trainingEnabled))
+            }
+            SettingRow(title: "Anticipación", symbol: "clock") { Picker("Avisar", selection: reminderPreference(\.advanceTime)) { ForEach(ReminderAdvanceTime.allCases) { Text($0.title).tag($0) } }.labelsHidden() }
+        }
+    }
+
+    private var calendarCard: some View {
+        SettingsSectionCard(title: "Calendario", symbol: "calendar", accent: AppTheme.blue) {
+            SettingRow(
+                title: "Vincular con Calendario de Apple",
+                detail: "Añade y mantiene tus cuidados en el calendario del dispositivo",
+                symbol: "calendar.badge.plus",
+                accent: AppTheme.blue
+            ) {
+                Toggle("Vincular con Calendario de Apple", isOn: Binding(
+                    get: { store.snapshot.preferences.appleCalendarLinked },
+                    set: { value in
+                        if value {
+                            Task { await store.setAppleCalendarLinked(true); await syncExistingCalendarEvents() }
+                        } else {
+                            confirmsCalendarUnlink = true
+                        }
+                    }
+                ))
+                    .labelsHidden()
+                    .accessibilityIdentifier("settings.appleCalendar")
+            }
+            Text("Al activarlo, los eventos de salud y cuidados se vincularán automáticamente. PetPlanify seguirá siendo la fuente principal de tus registros.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.secondaryInk)
+                .fixedSize(horizontal: false, vertical: true)
+            if store.snapshot.preferences.appleCalendarLinked {
+                SettingRow(title: "Aviso de Calendario", detail: "Calendario de Apple avisará con esta antelación", symbol: "bell.badge", accent: AppTheme.reminder) {
+                    Picker("Aviso de Calendario", selection: Binding(
+                        get: { store.snapshot.preferences.appleCalendarAlertAdvance },
+                        set: { value in Task { _ = await store.update { $0.preferences.appleCalendarAlertAdvance = value } } }
+                    )) {
+                        ForEach(AppleCalendarAlertAdvance.allCases) { Text($0.title).tag($0) }
+                    }
+                    .labelsHidden()
+                }
+            }
+        }
+    }
+
+    private func openNotificationSettings() {
+        #if os(iOS)
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
+        #elseif os(macOS)
+        guard let url = URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension") else { return }
+        NSWorkspace.shared.open(url)
+        #endif
+    }
+
+    private func syncExistingCalendarEvents() async {
+        let health = store.snapshot.health
+        var items: [AppleCalendarExportService.CalendarItem] = []
+        items += health.vaccines.map {
+            AppleCalendarExportService.CalendarItem(title: "Vacuna: \($0.name)", date: $0.dateAdministered, endDate: nil, notes: $0.notes)
+        }
+        items += health.vaccines.compactMap {
+            guard let date = $0.nextDueDate else { return nil }
+            return AppleCalendarExportService.CalendarItem(title: "Próxima vacuna: \($0.name)", date: date, endDate: nil, notes: $0.notes)
+        }
+        items += health.dewormings.map {
+            AppleCalendarExportService.CalendarItem(title: "Desparasitación: \($0.kind.title)", date: $0.applicationDate, endDate: nil, notes: $0.productName)
+        }
+        items += health.dewormings.compactMap {
+            guard let date = $0.nextDueDate else { return nil }
+            return AppleCalendarExportService.CalendarItem(title: "Próxima desparasitación: \($0.kind.title)", date: date, endDate: nil, notes: $0.productName)
+        }
+        items += health.medications.map {
+            AppleCalendarExportService.CalendarItem(title: "Medicación: \($0.name)", date: $0.startDate, endDate: $0.endDate, notes: $0.notes)
+        }
+        items += health.visits.map {
+            AppleCalendarExportService.CalendarItem(title: "Visita veterinaria: \($0.reason)", date: $0.date, endDate: $0.followUpDate, notes: [$0.clinic, $0.notes, $0.treatmentNotes].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n"))
+        }
+        items += store.snapshot.reminders.filter { !$0.isCompleted }.map {
+            AppleCalendarExportService.CalendarItem(title: $0.title, date: $0.date, endDate: nil, notes: $0.notes)
+        }
+        guard !items.isEmpty else { return }
+        do {
+            let name = store.snapshot.pet.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            try await AppleCalendarExportService.shared.exportAll(
+                items,
+                petName: name.isEmpty ? String(localized: "Tu mascota") : name,
+                alertAdvance: store.snapshot.preferences.appleCalendarAlertAdvance
+            )
+        } catch {
+            store.message = error.localizedDescription
+        }
+    }
+}
+
+private struct SettingsSectionCard<Content: View>: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    let title: LocalizedStringKey
+    let symbol: String
+    let accent: Color
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: horizontalSizeClass == .compact ? AppTheme.Space.sm : AppTheme.Space.lg) {
+            HStack(spacing: AppTheme.Space.md) {
+                AccentIcon(systemName: symbol, accent: accent, size: 34)
+                Text(title)
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(AppTheme.ink)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer(minLength: 0)
+            }
+            content
+        }
+        .padding(horizontalSizeClass == .compact ? AppTheme.Space.md : AppTheme.Space.xl)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .appSurface(elevated: false)
     }
 }
 

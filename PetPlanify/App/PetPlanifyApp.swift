@@ -4,6 +4,9 @@ import SwiftUI
 struct PetPlanifyApp: App {
     @State private var store = PetPlanifyStore.live()
     @State private var navigation = AppNavigation()
+    init() {
+        PetPlanifyNotificationRouter.shared.activate()
+    }
     var body: some Scene {
         WindowGroup {
             ContentView().environment(store).environment(navigation)

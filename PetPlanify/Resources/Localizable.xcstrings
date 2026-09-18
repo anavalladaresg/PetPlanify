@@ -7,10 +7,25 @@
     " Detente ante señales de incomodidad y nunca fuerces la conducta." : {
 
     },
+    " y " : {
+
+    },
+    "¿Cerrar sesión en este dispositivo?" : {
+
+    },
+    "¿Eliminar definitivamente?" : {
+
+    },
+    "¿Eliminar esta mascota?" : {
+
+    },
     "¿Eliminar esta observación?" : {
 
     },
     "¿Eliminar este documento?" : {
+
+    },
+    "¿Eliminar este familiar?" : {
 
     },
     "¿Eliminar este recordatorio?" : {
@@ -25,19 +40,16 @@
     "¿Finalizar esta medicación?" : {
 
     },
+    "¿Invalidar este código?" : {
+
+    },
+    "¿Qué hacemos con los eventos de PetPlanify?" : {
+
+    },
     "¿Quitar el documento de esta visita?" : {
 
     },
     "¿Quitar este truco de Mis trucos?" : {
-
-    },
-    "¿Restablecer PetPlanify?" : {
-
-    },
-    "¿Restaurar esta copia?" : {
-
-    },
-    "¿Restaurar la copia de %@?" : {
 
     },
     "%@ – %@" : {
@@ -60,12 +72,52 @@
         }
       }
     },
+    "%@ · Desde %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · Desde %2$@"
+          }
+        }
+      }
+    },
+    "%@ · eliminado el %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · eliminado el %2$@"
+          }
+        }
+      }
+    },
     "%@ → %@" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ → %2$@"
+          }
+        }
+      }
+    },
+    "%@ g al día · %lld toma%@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ g al día · %2$lld toma%3$@"
+          }
+        }
+      }
+    },
+    "%@%@ %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$@ %3$@"
           }
         }
       }
@@ -82,6 +134,19 @@
     "%lld comidas" : {
 
     },
+    "%lld comidas previstas" : {
+
+    },
+    "%lld de %lld" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld de %2$lld"
+          }
+        }
+      }
+    },
     "%lld documentos adjuntos" : {
 
     },
@@ -94,6 +159,9 @@
     "%lld por ciento" : {
 
     },
+    "%lld registros" : {
+
+    },
     "%lld registros · %@ – %@" : {
       "localizations" : {
         "es" : {
@@ -104,28 +172,92 @@
         }
       }
     },
+    "%lld sugerencias para completar" : {
+
+    },
+    "%lld%@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld%2$@"
+          }
+        }
+      }
+    },
+    "%lld%%" : {
+
+    },
+    "%lld%% completado" : {
+
+    },
+    "+%lld" : {
+
+    },
+    "0" : {
+
+    },
     "1 año" : {
+
+    },
+    "1 comida prevista" : {
 
     },
     "1 día antes" : {
 
     },
+    "1 hora antes" : {
+
+    },
     "1 mes" : {
+
+    },
+    "1 registro" : {
 
     },
     "1 semana antes" : {
 
     },
+    "1 sugerencia para completar" : {
+
+    },
+    "2 días antes" : {
+
+    },
+    "2 horas antes" : {
+
+    },
     "3 días antes" : {
+
+    },
+    "3 meses" : {
+
+    },
+    "5 minutos antes" : {
+
+    },
+    "6 meses" : {
+
+    },
+    "8 meses" : {
+
+    },
+    "10 minutos antes" : {
+
+    },
+    "15 minutos antes" : {
+
+    },
+    "30 minutos antes" : {
 
     },
     "A poca distancia y sin distracciones, di su nombre y «ven aquí» una sola vez." : {
 
     },
-    "A su ritmo" : {
+    "A tu sitio" : {
 
     },
-    "A tu sitio" : {
+    "Abre el registro para editarlo" : {
 
     },
     "Abre los detalles y permite editar el registro" : {
@@ -140,10 +272,13 @@
     "Abriendo PetPlanify…" : {
 
     },
-    "Aceptar" : {
+    "Abrir Ajustes" : {
 
     },
-    "Acerca de" : {
+    "Acciones rápidas" : {
+
+    },
+    "Aceptar" : {
 
     },
     "Acerca un premio a la nariz y muévelo despacio hacia arriba y ligeramente atrás." : {
@@ -153,6 +288,12 @@
 
     },
     "Activa" : {
+
+    },
+    "Activa sus recordatorios" : {
+
+    },
+    "Actívalas en Ajustes del sistema" : {
 
     },
     "Actualizar transición" : {
@@ -170,16 +311,31 @@
     "Adjuntar documento" : {
 
     },
+    "Adjuntar PDF" : {
+
+    },
     "Administrada el" : {
 
     },
     "Administrada: %@" : {
 
     },
+    "Administrador/a" : {
+
+    },
+    "Administrar %@" : {
+
+    },
     "Agarrar o mantener levantada la pata." : {
 
     },
     "Ajustes" : {
+
+    },
+    "Al activarlo, los eventos de salud y cuidados se vincularán automáticamente. PetPlanify seguirá siendo la fuente principal de tus registros." : {
+
+    },
+    "al día" : {
 
     },
     "Alimentación" : {
@@ -198,9 +354,6 @@
 
     },
     "Alimentos" : {
-
-    },
-    "Almacenamiento" : {
 
     },
     "Amplía primero el tiempo, luego la distancia y por último las distracciones, de una en una." : {
@@ -230,13 +383,25 @@
     "Añade «tumba» antes del gesto cuando lo comprenda y retira gradualmente el señuelo." : {
 
     },
+    "Añade alimentación, salud y recordatorios para mejorarla." : {
+
+    },
     "Añade las vacunas para conservar su historial." : {
+
+    },
+    "Añade vacunas, peso o su clínica veterinaria." : {
+
+    },
+    "Añade y mantiene tus cuidados en el calendario del dispositivo" : {
 
     },
     "Añadido el %@" : {
 
     },
     "Añadir" : {
+
+    },
+    "Añadir %@" : {
 
     },
     "Añadir a Mis trucos" : {
@@ -257,19 +422,16 @@
     "Añadir desparasitación %@" : {
 
     },
+    "Añadir mascota" : {
+
+    },
     "Añadir medicación" : {
 
     },
     "Añadir observación" : {
 
     },
-    "Añadir recordatorio" : {
-
-    },
     "Añadir registro" : {
-
-    },
-    "Añadir seguimiento" : {
 
     },
     "Añadir transición" : {
@@ -290,19 +452,16 @@
     "Añadir visita veterinaria" : {
 
     },
+    "Años" : {
+
+    },
     "Anota cambios de apetito o tolerancia que quieras recordar." : {
-
-    },
-    "Anota cambios o detalles que quieras comentar en la próxima visita." : {
-
-    },
-    "Anota lo que observas y qué le ayuda en cada situación." : {
 
     },
     "Ante una puerta interior cerrada, recompensa un instante de calma." : {
 
     },
-    "Antes de empezar" : {
+    "Anticipación" : {
 
     },
     "Apariencia" : {
@@ -326,10 +485,13 @@
     "Aprox. %@" : {
 
     },
-    "Aquí podrás volver a consultar lo que anotes sobre su comportamiento." : {
+    "Aquí aparecerán los próximos cuidados que añadas." : {
 
     },
-    "Aquí verás los próximos cuidados que hayas añadido." : {
+    "Aquí aparecerán vacunas, desparasitaciones, medicación y visitas veterinarias." : {
+
+    },
+    "Aquí podrás volver a consultar lo que anotes sobre su comportamiento." : {
 
     },
     "Área" : {
@@ -347,10 +509,22 @@
     "Aumentar tiempo y distancia a la vez." : {
 
     },
+    "Aún no hay una historia de peso" : {
+
+    },
+    "Avance medio" : {
+
+    },
     "Avanzada" : {
 
     },
     "Avisar" : {
+
+    },
+    "Aviso de Calendario" : {
+
+    },
+    "Avisos para los cuidados pendientes" : {
 
     },
     "Ayudar constantemente o apresurar la búsqueda." : {
@@ -365,7 +539,19 @@
     "Bajar con calma de una superficie baja al suelo." : {
 
     },
-    "Biblioteca de trucos" : {
+    "Base" : {
+
+    },
+    "Buen comienzo" : {
+
+    },
+    "Buenas noches" : {
+
+    },
+    "Buenas tardes" : {
+
+    },
+    "Buenos días" : {
 
     },
     "Busca" : {
@@ -380,7 +566,34 @@
     "Buscar pequeños premios con el olfato en una zona segura." : {
 
     },
+    "Buscar raza" : {
+
+    },
+    "Buscar trucos" : {
+
+    },
     "Buscar una postura alta o sostenida." : {
+
+    },
+    "Caduca el %@. Comparte este código con la persona invitada para que se una a tu familia en iCloud." : {
+
+    },
+    "Caducada" : {
+
+    },
+    "Calendario" : {
+
+    },
+    "Calendario de Apple avisará con esta antelación" : {
+
+    },
+    "Calendario de salud" : {
+
+    },
+    "Cambia el periodo o registra un cuidado de salud." : {
+
+    },
+    "Cambiar mascota" : {
 
     },
     "Cambiar nombre" : {
@@ -388,6 +601,16 @@
     },
     "Cambio de alimento" : {
 
+    },
+    "Cambio desde el primer registro: %@%@ %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cambio desde el primer registro: %1$@%2$@ %3$@"
+          }
+        }
+      }
     },
     "Camina varios pasos relajado junto a ti con pocas distracciones." : {
 
@@ -401,6 +624,12 @@
     "Cancelar" : {
 
     },
+    "Cantidad" : {
+
+    },
+    "Cantidad de la comida %lld, en gramos" : {
+
+    },
     "Cantidad diaria" : {
 
     },
@@ -408,6 +637,9 @@
 
     },
     "Cantidades y horarios" : {
+
+    },
+    "Care Score" : {
 
     },
     "Cargando foto…" : {
@@ -419,25 +651,40 @@
     "Cerrar" : {
 
     },
-    "Cerrar aviso" : {
-
-    },
     "Cerrar la puerta sobre el perro para impedirle pasar." : {
 
     },
     "Cerrar las piernas sobre el cuerpo." : {
 
     },
+    "Cerrar mensaje de error" : {
+
+    },
+    "Cerrar sesión" : {
+
+    },
+    "Cerrar sesión volverá a la bienvenida. Tus mascotas y cuidados seguirán guardados en tu cuenta." : {
+
+    },
     "Claro" : {
+
+    },
+    "Claro, oscuro o según el sistema" : {
 
     },
     "Clínica" : {
 
     },
-    "Clínica opcional" : {
+    "Clínica veterinaria" : {
 
     },
-    "Clínica veterinaria" : {
+    "Clínicas anteriores" : {
+
+    },
+    "Código de invitación" : {
+
+    },
+    "Collar" : {
 
     },
     "Coloca después dos o tres premios fáciles de localizar y oculta alguno solo parcialmente." : {
@@ -449,16 +696,28 @@
     "Colocarse voluntariamente entre tus piernas abiertas." : {
 
     },
+    "Comida" : {
+
+    },
     "Comida %lld" : {
+
+    },
+    "Comida cocinada" : {
+
+    },
+    "comidas" : {
 
     },
     "Comidas" : {
 
     },
-    "Cómo recompensar" : {
+    "Comidas al día" : {
 
     },
-    "Comparte una copia entre tus dispositivos. Si las copias son distintas, podrás elegir cuál conservar." : {
+    "Cómo hacerlo" : {
+
+    },
+    "Completa sus datos de salud" : {
 
     },
     "Completa una vuelta lenta con un gesto pequeño sin perder equilibrio." : {
@@ -467,16 +726,22 @@
     "Completada" : {
 
     },
+    "Completado" : {
+
+    },
     "Completados" : {
 
     },
-    "Completar PetPlanify" : {
+    "Completar cuidado" : {
 
     },
-    "Completar recordatorio" : {
+    "Completar: %@" : {
 
     },
     "Comportamiento" : {
+
+    },
+    "Comprueba la cuenta de Apple del dispositivo." : {
 
     },
     "Comprueba que puede bajar mediante un paso cómodo, sin saltar." : {
@@ -485,16 +750,22 @@
     "Con las cuatro patas en el suelo, guía la nariz con un premio en un arco amplio." : {
 
     },
+    "Configura sus comidas" : {
+
+    },
     "Configurar alimentación" : {
 
     },
     "Configurar recordatorios" : {
 
     },
+    "Conozcamos a tu perro" : {
+
+    },
     "Conozco su fecha de nacimiento" : {
 
     },
-    "Conservar este dispositivo" : {
+    "Consejo" : {
 
     },
     "Consulta cada registro o abre el historial para ver todas las fechas y pesos" : {
@@ -512,6 +783,9 @@
     "Convivencia" : {
 
     },
+    "Copiar código" : {
+
+    },
     "Corregir con tirones al cambiar de dirección." : {
 
     },
@@ -521,19 +795,31 @@
     "Crear un truco" : {
 
     },
+    "Crudo / BARF" : {
+
+    },
     "Cuando abra la boca, di «bien», entrega el premio y recoge el juguete con calma." : {
 
     },
     "Cuando anticipe el gesto, di «sentado» antes de hacerlo. Reduce la ayuda de la mano." : {
 
     },
-    "Cuándo avanzar" : {
+    "Cuando registres un cuidado o domines un truco aparecerá aquí." : {
 
     },
     "Cuando se acerque y la toque, marca y recompensa desde la otra mano." : {
 
     },
     "Cuando suba con comodidad, añade «sube». Enseña también una salida fácil." : {
+
+    },
+    "Cuidado al día: %lld por ciento" : {
+
+    },
+    "Cuidador/a" : {
+
+    },
+    "Cuidados de salud completados" : {
 
     },
     "Da un paso y recompensa cerca de tu lado si te acompaña con la correa floja." : {
@@ -548,10 +834,10 @@
     "Datos básicos" : {
 
     },
-    "Datos y privacidad" : {
+    "Debe poder alejarse. No encierres ni fuerces la permanencia." : {
 
     },
-    "Debe poder alejarse. No encierres ni fuerces la permanencia." : {
+    "Define horarios y cantidades para empezar." : {
 
     },
     "Deja espacio para retirarse y evita acercarte de frente si le incomoda." : {
@@ -569,7 +855,19 @@
     "Dejar el objeto demasiado cerca o inaccesible durante demasiado tiempo." : {
 
     },
+    "Dentro de %lld meses" : {
+
+    },
+    "Describe el tipo de alimento" : {
+
+    },
+    "Describe el tipo de alimento personalizado." : {
+
+    },
     "Desde %@" : {
+
+    },
+    "Desde aquí puedes añadir su peso, alimentación, salud, entrenamiento y recordatorios." : {
 
     },
     "Desde detrás de ti, invita a seguir tu mano o un premio hasta el centro y recompensa." : {
@@ -590,7 +888,13 @@
     "Desparasitación interna" : {
 
     },
-    "Después podrás configurar la alimentación, añadir registros de salud, elegir trucos y crear recordatorios. A tu ritmo." : {
+    "Desparasitación: %@" : {
+
+    },
+    "Desparasitaciones" : {
+
+    },
+    "Después" : {
 
     },
     "Detalle de la visita" : {
@@ -611,16 +915,16 @@
     "Dificultad" : {
 
     },
-    "Diseñado y desarrollado por Ana Valladares." : {
-
-    },
-    "Disponible" : {
-
-    },
     "Distancia" : {
 
     },
+    "Distribución diaria de alimentación" : {
+
+    },
     "Diversión" : {
+
+    },
+    "Documento" : {
 
     },
     "Documentos" : {
@@ -629,7 +933,16 @@
     "Dominado" : {
 
     },
+    "Dominados" : {
+
+    },
     "Dónde guardarla" : {
+
+    },
+    "Duración" : {
+
+    },
+    "Duración de la protección" : {
 
     },
     "Edad aproximada en meses" : {
@@ -639,9 +952,6 @@
 
     },
     "Editar" : {
-
-    },
-    "Editar clínica, microchip y rango de peso" : {
 
     },
     "Editar desparasitación" : {
@@ -665,9 +975,6 @@
     "Editar plan" : {
 
     },
-    "Editar plan de alimentación" : {
-
-    },
     "Editar progreso" : {
 
     },
@@ -683,7 +990,7 @@
     "Editar visita" : {
 
     },
-    "El archivo es demasiado grande. Elige uno de menos de 50 MB." : {
+    "El archivo es demasiado grande." : {
 
     },
     "El archivo seguirá disponible en la lista Documentos de Salud." : {
@@ -692,19 +999,22 @@
     "El cambio no se ha guardado. Puedes volver a intentarlo." : {
 
     },
+    "El código dejará de estar disponible para nuevas incorporaciones." : {
+
+    },
     "El documento no está disponible en este dispositivo." : {
 
     },
     "El mismo día" : {
 
     },
-    "El permiso está desactivado en los ajustes del sistema. Los recordatorios de la aplicación siguen funcionando." : {
+    "El plan no tiene horarios configurados." : {
 
     },
     "El registro se conservará en el historial." : {
 
     },
-    "El seguimiento debe ser posterior a la visita." : {
+    "El registro se moverá a la papelera y podrás restaurarlo desde Ajustes." : {
 
     },
     "El truco sigue guardado. Puedes volver a intentarlo." : {
@@ -719,9 +1029,6 @@
     "Elegir truco" : {
 
     },
-    "Elegir un truco" : {
-
-    },
     "Elegir una altura que requiera saltar." : {
 
     },
@@ -731,19 +1038,25 @@
     "Elige entre una y ocho comidas." : {
 
     },
-    "Elige un PDF o una imagen compatible." : {
-
-    },
     "Elige un truco y adapta el aprendizaje a su ritmo." : {
 
     },
     "Eliminar" : {
 
     },
+    "Eliminar definitivamente" : {
+
+    },
     "Eliminar desparasitación" : {
 
     },
     "Eliminar documento" : {
+
+    },
+    "Eliminar eventos" : {
+
+    },
+    "Eliminar mascota" : {
 
     },
     "Eliminar medicación" : {
@@ -770,6 +1083,9 @@
     "Empezar" : {
 
     },
+    "Empezar ahora" : {
+
+    },
     "Empujar la mano contra el hocico." : {
 
     },
@@ -782,7 +1098,13 @@
     "En cuanto apoye el trasero, di «bien» y entrega el premio. No empujes la cadera." : {
 
     },
+    "En curso" : {
+
+    },
     "En otra repetición, presenta la mano algo más lejos para premiar antes del contacto." : {
+
+    },
+    "En progreso" : {
 
     },
     "En un entorno tranquilo, espera a que te mire y marca ese instante." : {
@@ -809,13 +1131,10 @@
     "Entrega un premio y deja que vuelva a mirar alrededor." : {
 
     },
+    "Entrena a su ritmo" : {
+
+    },
     "Entrenamiento" : {
-
-    },
-    "Error" : {
-
-    },
-    "Errores que conviene evitar" : {
 
     },
     "Esconder los premios en lugares demasiado difíciles." : {
@@ -827,10 +1146,16 @@
     "Escribe el nombre de la vacuna." : {
 
     },
+    "Escribe el nombre de tu mascota." : {
+
+    },
     "Escribe el nombre del medicamento." : {
 
     },
     "Escribe la observación." : {
+
+    },
+    "Escribe la raza" : {
 
     },
     "Escribe un nombre para el documento." : {
@@ -839,16 +1164,13 @@
     "Escribe un título." : {
 
     },
-    "Especie" : {
-
-    },
     "Espera" : {
 
     },
     "Esperar mucha duración cuando aún está aprendiendo." : {
 
     },
-    "Esta acción eliminará el registro de forma permanente." : {
+    "Esta acción no se puede deshacer." : {
 
     },
     "Estado" : {
@@ -860,16 +1182,19 @@
     "Estas observaciones no sustituyen la valoración de un educador canino o profesional veterinario." : {
 
     },
-    "Este archivo no es una copia válida de PetPlanify." : {
+    "Este documento no es compatible." : {
 
     },
     "Este truco ya no está disponible" : {
 
     },
-    "Estos datos pertenecen a una versión más reciente de PetPlanify. Actualiza la aplicación para abrirlos; tus archivos se han conservado." : {
+    "Estos datos pertenecen a una versión más reciente de PetPlanify." : {
 
     },
     "Estos registros no sustituyen la valoración de un profesional veterinario." : {
+
+    },
+    "Eventos pendientes" : {
 
     },
     "Evita palos, pelotas pequeñas, saltos y frenadas bruscas. No todos los perros disfrutan de este juego." : {
@@ -881,7 +1206,16 @@
     "Evítalo si el tamaño o la movilidad dificultan el paso. No lo uses para sujetarlo ni en aglomeraciones." : {
 
     },
+    "Evolución" : {
+
+    },
+    "Evolución del Care Score de %@" : {
+
+    },
     "Evolución del peso" : {
+
+    },
+    "Evolución del peso de %@" : {
 
     },
     "Exigir atención constante durante todo el paseo." : {
@@ -890,16 +1224,22 @@
     "Explora con calma y encuentra premios parcialmente ocultos cerca." : {
 
     },
-    "Explorar trucos" : {
+    "Explorar biblioteca" : {
 
     },
-    "Exportar copia de seguridad" : {
+    "Explorar trucos" : {
 
     },
     "Externa" : {
 
     },
     "Fácil" : {
+
+    },
+    "Faltan algunos datos para calcular una puntuación más precisa." : {
+
+    },
+    "Familia" : {
 
     },
     "Fecha" : {
@@ -920,10 +1260,10 @@
     "Fecha y hora" : {
 
     },
-    "Fecha y hora del seguimiento" : {
+    "Fechas pasadas" : {
 
     },
-    "Fechas pasadas" : {
+    "Filtra las gráficas y el historial por periodo" : {
 
     },
     "Filtrar trucos" : {
@@ -947,13 +1287,19 @@
     "Finalizar medicación" : {
 
     },
-    "Gato" : {
+    "g" : {
 
     },
     "General" : {
 
     },
+    "Generar nuevo" : {
+
+    },
     "Gestiona el entorno para evitar ingestiones. Si protege objetos, pide ayuda profesional sin confrontarlo." : {
+
+    },
+    "Gestionar mascotas y familia" : {
 
     },
     "Gira" : {
@@ -962,16 +1308,10 @@
     "Gramos" : {
 
     },
-    "Gramos de la comida %lld" : {
-
-    },
     "Guarda citas, valoraciones y documentos en un mismo lugar." : {
 
     },
     "Guarda el alimento, la cantidad y los horarios que ya sigues." : {
-
-    },
-    "Guarda una guía propia." : {
 
     },
     "Guardando documento…" : {
@@ -992,10 +1332,10 @@
     "Guía escrita por ti" : {
 
     },
-    "Guía propia" : {
+    "Guía práctica para hacerlo juntos" : {
 
     },
-    "Guías breves para aprender con calma y premios." : {
+    "Guía propia" : {
 
     },
     "Hace una pausa breve con una puerta interior abierta hasta que lo invitas a pasar." : {
@@ -1025,13 +1365,7 @@
     "Hay un truco o un progreso de entrenamiento no válido." : {
 
     },
-    "Hay una copia distinta en iCloud" : {
-
-    },
     "Hembra" : {
-
-    },
-    "Hemos recuperado tus datos desde la última copia local disponible." : {
 
     },
     "Historial de alimentación" : {
@@ -1052,44 +1386,40 @@
     "Historial de vacunas" : {
 
     },
-    "Hora" : {
+    "Hitos de cuidado" : {
 
     },
-    "Hora de la comida %lld" : {
+    "Hora" : {
 
     },
     "Horario" : {
 
     },
+    "Horario de la comida %lld" : {
+
+    },
+    "Hoy" : {
+
+    },
+    "Hoy · %@" : {
+
+    },
     "iCloud" : {
 
     },
-    "iCloud está descargando la copia. Vuelve a sincronizar cuando termine." : {
+    "iCloud no disponible" : {
 
     },
-    "iCloud no está configurado o no está disponible. Tus datos siguen guardados en este dispositivo." : {
-
-    },
-    "iCloud: %@, %@.\nEste dispositivo: %@, %@.\nSe conservará un respaldo de la copia que sustituyas." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "iCloud: %1$@, %2$@.\nEste dispositivo: %3$@, %4$@.\nSe conservará un respaldo de la copia que sustituyas."
-          }
-        }
-      }
-    },
-    "Idioma" : {
+    "Identidad" : {
 
     },
     "Imagen" : {
 
     },
-    "Importar copia de seguridad" : {
+    "Indica ambos alimentos y revisa las fechas." : {
 
     },
-    "Indica ambos alimentos y revisa las fechas." : {
+    "Indica cuánto tiempo protege para calcular la próxima vacuna automáticamente." : {
 
     },
     "Indica el alimento." : {
@@ -1101,13 +1431,19 @@
     "Indica el nombre y la especie de tu mascota." : {
 
     },
-    "Indica la fecha acordada con tu profesional veterinario." : {
+    "Indica la categoría o el producto de la desparasitación." : {
+
+    },
+    "Indica la fecha de nacimiento." : {
 
     },
     "Indica su nombre para continuar." : {
 
     },
     "Indica un peso positivo." : {
+
+    },
+    "Indica un peso válido y positivo. Puedes usar decimales con coma." : {
 
     },
     "Indica un rango de peso positivo, con el mínimo menor que el máximo." : {
@@ -1119,10 +1455,16 @@
     "Indica una cantidad diaria positiva." : {
 
     },
+    "Indica una edad aproximada entre 0 y 1.200 meses." : {
+
+    },
     "Indicaciones y notas" : {
 
     },
     "Información de la consulta" : {
+
+    },
+    "Inicia sesión para mantener tus mascotas y cuidados vinculados a tu identidad." : {
 
     },
     "Inicio" : {
@@ -1131,16 +1473,10 @@
     "Insistir si solo olfatea o pierde interés." : {
 
     },
-    "Intentos breves" : {
-
-    },
     "Intercambia con «suelta» y devuelve el juguete. Añade «trae» y aumenta un poco la distancia." : {
 
     },
     "Interna" : {
-
-    },
-    "Introduce la próxima fecha indicada por tu profesional veterinario." : {
 
     },
     "Introduce un peso válido y positivo en %@." : {
@@ -1149,7 +1485,22 @@
     "Introduce únicamente el rango que te haya indicado tu profesional veterinario." : {
 
     },
+    "Invalidar" : {
+
+    },
+    "Invalidar código" : {
+
+    },
+    "Invita a familiares para compartir las mascotas y sus cuidados mediante iCloud." : {
+
+    },
     "Invita a seguir tu mano hacia el suelo y recompensa cuando las cuatro patas estén apoyadas." : {
+
+    },
+    "Invitar a alguien" : {
+
+    },
+    "Juego" : {
 
     },
     "Juguete blando de tamaño adecuado y un premio para intercambiar." : {
@@ -1167,28 +1518,19 @@
     "Kilómetros" : {
 
     },
-    "La aplicación funciona completamente con los datos de este dispositivo." : {
-
-    },
     "La comodidad y el olfateo forman parte del paseo. Aumenta la distancia de lo que lo altere." : {
 
     },
-    "La copia contiene una ruta de archivo no permitida." : {
+    "La compartición familiar con iCloud todavía no está disponible. Tus datos siguen vinculados a tu cuenta de Apple." : {
 
     },
-    "La copia de seguridad se ha exportado." : {
+    "La compartición familiar requiere una invitación de iCloud válida." : {
 
     },
-    "La copia está incompleta o alguno de sus archivos ha cambiado. Tus datos actuales se han conservado." : {
-
-    },
-    "La copia se ha restaurado. Los datos anteriores se han conservado como respaldo." : {
+    "La evolución de %@" : {
 
     },
     "La fecha de nacimiento no puede estar en el futuro." : {
-
-    },
-    "La fecha de un peso registrado no puede ser futura." : {
 
     },
     "La fecha final debe ser posterior al inicio." : {
@@ -1200,16 +1542,31 @@
     "La observación sigue guardada. Puedes volver a intentarlo." : {
 
     },
-    "La próxima aplicación debe ser posterior a la última." : {
+    "La papelera está vacía" : {
+
+    },
+    "La próxima aplicación se calculará automáticamente." : {
 
     },
     "La próxima desparasitación no puede ser anterior a la aplicación registrada." : {
 
     },
-    "La próxima dosis debe ser posterior a la administración." : {
+    "La próxima vacuna no puede ser anterior a la administración registrada." : {
 
     },
-    "La próxima vacuna no puede ser anterior a la administración registrada." : {
+    "La rutina de %@ está lista" : {
+
+    },
+    "La tendencia aparecerá cuando haya más hitos de cuidado." : {
+
+    },
+    "La vacuna de %@ vence la semana que viene." : {
+
+    },
+    "La vacuna de %@ vence mañana." : {
+
+    },
+    "La visita se moverá a la papelera. Sus documentos y vínculos se conservarán para poder restaurarla." : {
 
     },
     "Lanzar lejos antes de que quiera traerlo." : {
@@ -1218,7 +1575,7 @@
     "Las cantidades de las comidas deben sumar la cantidad diaria." : {
 
     },
-    "Las categorías se aplican a los cuidados y recordatorios que tú añadas. No se crean pautas automáticamente." : {
+    "Las medicaciones finalizadas quedan disponibles en el historial." : {
 
     },
     "Las notificaciones están desactivadas en el sistema. Puedes activarlas en los ajustes del dispositivo; los recordatorios siguen disponibles aquí." : {
@@ -1239,19 +1596,46 @@
     "Libras" : {
 
     },
+    "Línea de vida" : {
+
+    },
     "Llamar para regañar o terminar siempre la diversión." : {
 
     },
     "Los cambios de plan se guardarán aquí." : {
 
     },
+    "Los cuidados que registres aparecerán ordenados por fecha." : {
+
+    },
     "Los datos se han guardado, pero no se han podido actualizar las notificaciones. Los recordatorios siguen disponibles en la aplicación." : {
+
+    },
+    "Los miembros compartidos aparecerán aquí cuando haya invitaciones activas en iCloud." : {
+
+    },
+    "Los primeros hitos están por llegar" : {
+
+    },
+    "Los registros que elimines podrán restaurarse desde aquí." : {
+
+    },
+    "Los registros se conservan en este dispositivo hasta que decidas eliminarlos definitivamente." : {
 
     },
     "Los trucos personalizados necesitan un nombre." : {
 
     },
     "Macho" : {
+
+    },
+    "Mañana" : {
+
+    },
+    "Mañana · %@" : {
+
+    },
+    "Mañana %@ tiene cita veterinaria." : {
 
     },
     "Manta o cama estable en una zona tranquila y premios." : {
@@ -1269,6 +1653,9 @@
     "Mantener una postura cómoda hasta la señal de terminar." : {
 
     },
+    "Mantenerlos en Calendario" : {
+
+    },
     "Marca" : {
 
     },
@@ -1281,17 +1668,19 @@
     "Marcar como completada" : {
 
     },
-    "Mascota: %@\nCopia del %@\n%lld archivos\nSe sustituirán los datos actuales. Se conservará un respaldo de los datos anteriores." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Mascota: %1$@\nCopia del %2$@\n%3$lld archivos\nSe sustituirán los datos actuales. Se conservará un respaldo de los datos anteriores."
-          }
-        }
-      }
+    "Más acciones para %@" : {
+
+    },
+    "Mascotas" : {
+
+    },
+    "Mascotas y familia" : {
+
     },
     "Media" : {
+
+    },
+    "medicación" : {
 
     },
     "Medicación" : {
@@ -1300,10 +1689,19 @@
     "Medicación relacionada" : {
 
     },
-    "Mi progreso" : {
+    "Mes anterior" : {
 
     },
-    "Microchip" : {
+    "Mes siguiente" : {
+
+    },
+    "Meses" : {
+
+    },
+    "MI MASCOTA" : {
+
+    },
+    "Mi progreso" : {
 
     },
     "Mientras tiene un juguete sencillo, presenta un intercambio atractivo a su lado." : {
@@ -1333,7 +1731,10 @@
     "Nacimiento" : {
 
     },
-    "No configurado" : {
+    "Necesitamos permiso para gestionar los eventos del calendario PetPlanify." : {
+
+    },
+    "No es posible añadir una mascota que todavía no ha nacido. Revisa la fecha de nacimiento." : {
 
     },
     "No exijas contacto visual prolongado. Acepta una orientación cómoda de la cabeza." : {
@@ -1348,16 +1749,25 @@
     "No hay trucos con estos filtros" : {
 
     },
+    "No hay un calendario disponible para añadir este cuidado." : {
+
+    },
+    "No hemos podido cargar tus datos todavía." : {
+
+    },
+    "No indicar" : {
+
+    },
     "No metas la mano en su boca. Si se queda rígido o protege el objeto, detente y consulta." : {
 
     },
     "No practiques sobre muebles altos. Si necesita una rampa, introdúcela gradualmente; evita el ejercicio si hay dolor." : {
 
     },
-    "No se ha podido abrir el archivo. Comprueba que sigue disponible e inténtalo de nuevo." : {
+    "No se ha podido acceder al archivo." : {
 
     },
-    "No se ha podido abrir la copia seleccionada." : {
+    "No se ha podido añadir al Calendario porque el permiso de escritura no está activo. Puedes activarlo en Ajustes del sistema." : {
 
     },
     "No se ha podido cargar la foto. Prueba con otra imagen." : {
@@ -1366,43 +1776,55 @@
     "No se ha podido completar la operación. Tus datos anteriores siguen disponibles." : {
 
     },
-    "No se ha podido completar la transferencia con iCloud. Tus datos locales se conservan." : {
-
-    },
     "No se ha podido eliminar" : {
-
-    },
-    "No se ha podido exportar la copia. Los datos de la aplicación siguen disponibles." : {
 
     },
     "No se ha podido guardar" : {
 
     },
-    "No se ha podido importar la copia. Se han conservado los datos anteriores." : {
+    "No se ha podido guardar el archivo." : {
 
     },
-    "No se han podido abrir los datos locales. Vuelve a intentarlo." : {
+    "No se ha podido guardar el perfil. Vuelve a intentarlo." : {
 
     },
-    "No se han podido guardar los cambios. Comprueba el espacio disponible y vuelve a intentarlo." : {
+    "No se ha podido guardar el plan de alimentación." : {
 
     },
-    "No se han podido guardar los cambios. Revisa los datos e inténtalo de nuevo." : {
+    "No se ha podido guardar el recordatorio." : {
 
     },
-    "No se han podido leer los datos de PetPlanify." : {
+    "No se ha podido guardar la observación." : {
 
     },
-    "No se han podido recuperar los datos. Los archivos originales se han conservado. Puedes importar una copia o restablecer PetPlanify." : {
+    "No se ha podido guardar la transición." : {
 
     },
-    "No se han podido restablecer los datos. Vuelve a intentarlo." : {
+    "No se ha podido iniciar sesión con Apple. Vuelve a intentarlo." : {
+
+    },
+    "No se ha podido validar tu cuenta de Apple." : {
+
+    },
+    "No se han podido cargar tus datos de iCloud." : {
+
+    },
+    "No se han podido eliminar los datos de iCloud." : {
+
+    },
+    "No se han podido guardar los cambios en iCloud." : {
+
+    },
+    "No se han podido leer los datos de tu cuenta de Apple." : {
 
     },
     "No se pudieron guardar los cambios. Vuelve a intentarlo." : {
 
     },
     "No se pudo abrir el documento seleccionado." : {
+
+    },
+    "No se pudo abrir el PDF seleccionado." : {
 
     },
     "No se pudo adjuntar el documento. Comprueba el formato y vuelve a intentarlo." : {
@@ -1438,10 +1860,22 @@
     "No se pudo quitar el documento de la visita." : {
 
     },
-    "No sueltes la correa para comprobar si funciona. Evita tirones y no lo persigas." : {
+    "No se puede registrar un peso en una fecha futura." : {
 
     },
-    "No tienes recordatorios. Añade uno cuando lo necesites." : {
+    "No se puede registrar una desparasitación antes de aplicarla. Elige hoy o una fecha anterior." : {
+
+    },
+    "No se puede registrar una desparasitación en una fecha futura." : {
+
+    },
+    "No se puede registrar una vacuna antes de administrarla. Elige hoy o una fecha anterior." : {
+
+    },
+    "No se puede registrar una vacuna en una fecha futura." : {
+
+    },
+    "No sueltes la correa para comprobar si funciona. Evita tirones y no lo persigas." : {
 
     },
     "Nombre" : {
@@ -1480,10 +1914,10 @@
     "Nuevo alimento" : {
 
     },
-    "Obediencia básica" : {
+    "Número de microchip (opcional)" : {
 
     },
-    "Objetivo" : {
+    "Obediencia básica" : {
 
     },
     "Objetivo (opcional)" : {
@@ -1525,11 +1959,24 @@
     "Oscuro" : {
 
     },
-    "Otra" : {
-
-    },
     "Otro" : {
 
+    },
+    "Otro / personalizado" : {
+
+    },
+    "Papelera" : {
+
+    },
+    "Paso %lld de 3, %@, %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Paso %1$lld de 3, %2$@, %3$@"
+          }
+        }
+      }
     },
     "Paso %lld. %@" : {
       "localizations" : {
@@ -1541,10 +1988,10 @@
         }
       }
     },
-    "Paso a paso" : {
+    "Pasos (uno por línea, opcional)" : {
 
     },
-    "Pasos (uno por línea, opcional)" : {
+    "Pastilla" : {
 
     },
     "Pata" : {
@@ -1565,7 +2012,19 @@
     "Pedir que siga la mano demasiado lejos al principio." : {
 
     },
-    "Perfil" : {
+    "Pendiente" : {
+
+    },
+    "pendientes" : {
+
+    },
+    "Pequeños pasos, mucha confianza." : {
+
+    },
+    "Perfil de" : {
+
+    },
+    "Periodo" : {
 
     },
     "Permanece quieto con las piernas separadas y espacio suficiente para pasar." : {
@@ -1601,6 +2060,12 @@
     "Peso (%@)" : {
 
     },
+    "Peso actual" : {
+
+    },
+    "Peso actual (%@, opcional)" : {
+
+    },
     "Peso actual (%@)" : {
 
     },
@@ -1613,13 +2078,13 @@
     "Peso mínimo (%@)" : {
 
     },
+    "Pet Care Score" : {
+
+    },
     "PetPlanify" : {
 
     },
-    "PetPlanify adapta colores y contraste al tema elegido." : {
-
-    },
-    "PetPlanify guarda la información localmente. No vende tus datos, no incluye publicidad ni servicios de analítica y no envía los registros de tu mascota a servidores externos. Si activas iCloud, se utiliza tu entorno de Apple." : {
+    "PetPlanify · versión %@" : {
 
     },
     "Pide «pata» con la mano baja y recompensa el levantamiento inicial." : {
@@ -1628,25 +2093,25 @@
     "Pide una postura conocida, espera un instante y recompensa sin alejarte." : {
 
     },
+    "Pipeta" : {
+
+    },
     "Plan de alimentación" : {
 
     },
     "Plataforma ancha, baja, firme y antideslizante; premios." : {
 
     },
-    "Plataformas" : {
+    "Por ahora, todo en orden" : {
 
     },
-    "Por ahora, todo en orden" : {
+    "Por ejemplo: dieta veterinaria, liofilizado o preparado personalizado." : {
 
     },
     "Por empezar" : {
 
     },
     "Practica en un recinto seguro; esta señal nunca sustituye la correa cerca del tráfico." : {
-
-    },
-    "Precauciones" : {
 
     },
     "Preferencias" : {
@@ -1664,7 +2129,7 @@
     "Premios valiosos; fuera de casa, arnés y correa larga en una zona segura." : {
 
     },
-    "Preparando los datos…" : {
+    "Preparación" : {
 
     },
     "Presenta un premio dentro de una mano cerrada, sin acercarla a su cara." : {
@@ -1673,25 +2138,19 @@
     "Presenta una mano cerrada con un premio a baja altura y espera un movimiento de pata." : {
 
     },
-    "Producto" : {
-
-    },
     "Producto opcional" : {
 
     },
     "Progreso" : {
 
     },
-    "Progreso: %lld %%" : {
+    "Progreso de aprendizaje" : {
 
     },
     "Próxima" : {
 
     },
-    "Próxima aplicación" : {
-
-    },
-    "Próxima dosis" : {
+    "Próxima cita veterinaria de %@." : {
 
     },
     "Próxima: %@" : {
@@ -1703,6 +2162,12 @@
     "Próximo cuidado" : {
 
     },
+    "Próximo cuidado: %@." : {
+
+    },
+    "Próximos eventos" : {
+
+    },
     "Prueba durante uno o dos minutos, o menos si pierde interés. Haz una pausa cuando lo necesite." : {
 
     },
@@ -1712,13 +2177,10 @@
     "Puedes activar las notificaciones del dispositivo en Ajustes. El recordatorio estará disponible en la aplicación." : {
 
     },
-    "Puedes adjuntar PDF e imágenes desde los detalles de la visita después de guardarla." : {
-
-    },
     "Puedes adjuntarlos desde los detalles de una visita veterinaria." : {
 
     },
-    "Puedes cerrar la aplicación y volver a intentarlo, importar una copia válida o restablecer PetPlanify." : {
+    "Puedes mantener los eventos en Calendario de Apple o eliminar solamente los que creó PetPlanify." : {
 
     },
     "Qué has observado" : {
@@ -1754,10 +2216,13 @@
     "Quitar truco" : {
 
     },
-    "Raza (opcional)" : {
+    "Raza" : {
 
     },
-    "Reabrir recordatorio" : {
+    "Reabrir cuidado" : {
+
+    },
+    "Recibe avisos para no olvidar sus cuidados." : {
 
     },
     "Recoge el juguete a pocos pasos y vuelve para un intercambio tranquilo." : {
@@ -1794,10 +2259,16 @@
     "Regañar si se mueve; vuelve a una versión más fácil." : {
 
     },
+    "Registra un cuidado en un toque" : {
+
+    },
     "Registra un peso para empezar a ver su evolución." : {
 
     },
     "Registra únicamente las indicaciones recibidas de tu profesional veterinario." : {
+
+    },
+    "Registra varios pesos para ver cómo cambia con el tiempo." : {
 
     },
     "Registrada" : {
@@ -1806,19 +2277,25 @@
     "Registrar peso" : {
 
     },
+    "Registro de peso" : {
+
+    },
+    "Repartimos la cantidad diaria por igual. Puedes ajustar cada comida si lo necesitas." : {
+
+    },
     "Repartir la cantidad por igual" : {
 
     },
     "Repetir la señal si la distracción es demasiado difícil." : {
 
     },
-    "Restablecer" : {
-
-    },
-    "Restablecer PetPlanify" : {
-
-    },
     "Restaurar" : {
+
+    },
+    "Resume las áreas de cuidado registradas para" : {
+
+    },
+    "Resumen de salud" : {
 
     },
     "Retira y vuelve a presentar la mano. Añade «toca» y cambia ligeramente su posición." : {
@@ -1845,16 +2322,13 @@
     "Revisa el nombre y las fechas de la medicación." : {
 
     },
-    "Revisa el nombre, la edad y el peso. Puedes escribir decimales con coma." : {
-
-    },
     "Revisa la cantidad diaria." : {
 
     },
     "Revisa la edad aproximada." : {
 
     },
-    "Revisa la fecha o edad y escribe un peso válido." : {
+    "Revisa la próxima vacuna de %@." : {
 
     },
     "Revisa las cantidades de las comidas." : {
@@ -1872,22 +2346,31 @@
     "Revisa los pesos registrados: deben ser positivos." : {
 
     },
+    "Revisa su perfil" : {
+
+    },
+    "Revocada" : {
+
+    },
+    "Rol" : {
+
+    },
     "Salud" : {
 
     },
     "Saluda" : {
 
     },
+    "Se acerca la desparasitación de %@." : {
+
+    },
     "Se eliminará de PetPlanify y de la visita vinculada." : {
 
     },
-    "Se eliminará la visita. Sus documentos se conservarán en Documentos, sin vincular." : {
-
-    },
-    "Se eliminarán de la aplicación el perfil, los registros, las fotos, los documentos y los ajustes. Volverás a la bienvenida. Exporta una copia si quieres conservarlos." : {
-
-    },
     "Se eliminarán la guía, el progreso y la nota personal de este truco." : {
+
+    },
+    "Se eliminarán su perfil y todos sus registros de salud, alimentación, entrenamiento y recordatorios." : {
 
     },
     "Se eliminarán su progreso y su nota personal. La guía seguirá en la biblioteca." : {
@@ -1896,13 +2379,7 @@
     "Se guardará con las observaciones de Salud." : {
 
     },
-    "Se retirarán los datos de la aplicación y volverás a la bienvenida." : {
-
-    },
     "Se sienta con un gesto pequeño; después prueba la señal en otra habitación." : {
-
-    },
-    "Se sustituirán los datos actuales y se conservarán los archivos anteriores como respaldo." : {
 
     },
     "Se tumba siguiendo un gesto breve sin necesidad de comida visible." : {
@@ -1915,6 +2392,12 @@
 
     },
     "Seguridad" : {
+
+    },
+    "Seleccionar raza" : {
+
+    },
+    "Semana" : {
 
     },
     "Sentado" : {
@@ -1932,10 +2415,34 @@
     "Sentarse voluntariamente al oír una señal." : {
 
     },
+    "Sesión" : {
+
+    },
     "Sexo" : {
 
     },
+    "Siguiente paso" : {
+
+    },
+    "Sin aviso" : {
+
+    },
+    "Sin cuidados en este periodo" : {
+
+    },
+    "Sin cuidados registrados para este día." : {
+
+    },
     "Sin especificar" : {
+
+    },
+    "Sin indicar" : {
+
+    },
+    "Sin observaciones" : {
+
+    },
+    "Sin registros" : {
 
     },
     "Sin vincular" : {
@@ -1944,16 +2451,13 @@
     "Sin visita vinculada" : {
 
     },
-    "Sincronizado" : {
-
-    },
-    "Sincronizando" : {
-
-    },
-    "Sincronizar ahora" : {
+    "Sincronización con iCloud: activa" : {
 
     },
     "Sistema" : {
+
+    },
+    "Solo lectura" : {
 
     },
     "Soltar un juguete a cambio de algo que valore." : {
@@ -1962,7 +2466,7 @@
     "Su alimentación, a su manera" : {
 
     },
-    "Su cuidado, con calma." : {
+    "Su edad y peso" : {
 
     },
     "Su identidad" : {
@@ -1989,16 +2493,16 @@
     "Supervisa la búsqueda, evita tóxicos y adapta los premios a su alimentación." : {
 
     },
-    "Te mira un instante al oír la señal con distracciones leves y a distancia." : {
+    "Suplemento" : {
 
     },
-    "Tecnología" : {
+    "Te mira un instante al oír la señal con distracciones leves y a distancia." : {
 
     },
     "Tema" : {
 
     },
-    "Tienes un cuidado pendiente en PetPlanify." : {
+    "Tienes un cuidado pendiente para %@ en PetPlanify." : {
 
     },
     "Tipo" : {
@@ -2013,6 +2517,9 @@
     "Toca" : {
 
     },
+    "Toca administrar la medicación de %@." : {
+
+    },
     "Toca suavemente la mano abierta después de una señal." : {
 
     },
@@ -2025,13 +2532,31 @@
     "Todavía no hay observaciones" : {
 
     },
+    "Todavía no hay próximos eventos" : {
+
+    },
     "Todavía no hay registros" : {
+
+    },
+    "Todo" : {
+
+    },
+    "Todo al día" : {
+
+    },
+    "Todo al día. Sigue registrando sus cuidados habituales." : {
 
     },
     "Todo listo para %@" : {
 
     },
+    "Todo listo para empezar a cuidar de %@." : {
+
+    },
     "Trae" : {
+
+    },
+    "Transferencia copiada" : {
 
     },
     "Transición" : {
@@ -2046,7 +2571,28 @@
     "Trazar círculos pequeños o mover el premio con rapidez." : {
 
     },
+    "trucos" : {
+
+    },
+    "Trucos" : {
+
+    },
     "Trucos disponibles" : {
+
+    },
+    "Tu cuidado, con calma." : {
+
+    },
+    "Tu historia empezará aquí" : {
+
+    },
+    "tu mascota" : {
+
+    },
+    "Tu mascota" : {
+
+    },
+    "Tu rutina, paso a paso" : {
 
     },
     "Tu truco" : {
@@ -2058,10 +2604,16 @@
     "Tumbarse de forma relajada al recibir una señal." : {
 
     },
-    "Tus archivos se han conservado" : {
+    "Tus datos de iCloud no se han borrado. Comprueba la conexión y vuelve a intentarlo." : {
 
     },
     "Tus datos se conservan. Vuelve a intentarlo." : {
+
+    },
+    "Tus datos se guardan en tu cuenta de Apple." : {
+
+    },
+    "Tus mascotas y cuidados no se borrarán. Podrás recuperarlos al volver a iniciar sesión." : {
 
     },
     "Última aplicación" : {
@@ -2070,46 +2622,73 @@
     "Última aplicación: %@" : {
 
     },
-    "Un año son 12 meses." : {
-
-    },
     "Un lugar para recordar sus cuidados, guardar su historia y acompañar cada aprendizaje." : {
 
     },
-    "Un lugar tranquilo para organizar el cuidado y la historia de tu mascota." : {
+    "Un momento breve cada día hace la diferencia." : {
 
     },
     "Un pequeño paso para empezar" : {
 
     },
+    "Una lectura clara de su peso, cuidados y rutina." : {
+
+    },
     "Una medicación está vinculada a una visita que ya no existe." : {
+
+    },
+    "Una observación de comportamiento no puede tener una fecha futura." : {
+
+    },
+    "Una observación no puede tener una fecha futura." : {
 
     },
     "Una referencia personal, sin objetivos ni plazos." : {
 
     },
+    "Unidad" : {
+
+    },
+    "Unidad de distancia" : {
+
+    },
+    "Unidad de peso" : {
+
+    },
     "Usa suelo antideslizante. Si sentarse parece incómodo, detén el ejercicio." : {
+
+    },
+    "Usada" : {
 
     },
     "Usar algo peligroso para practicar." : {
 
     },
-    "Usar iCloud" : {
+    "Usar esta raza" : {
 
     },
     "Usar la cama como castigo." : {
 
     },
-    "Usar la copia de iCloud" : {
+    "Usar una puerta a la calle como primera práctica." : {
 
     },
-    "Usar una puerta a la calle como primera práctica." : {
+    "Usaremos tu cuenta de Apple para identificar tu espacio. No necesitas crear otra contraseña." : {
 
     },
     "Utiliza rampa si la necesita y evita alturas. La señal no debe obligar a un movimiento doloroso." : {
 
     },
+    "Vacuna" : {
+
+    },
+    "Vacuna: %@" : {
+
+    },
     "Vacunas" : {
+
+    },
+    "Vacunas y cuidados" : {
 
     },
     "Valoración del profesional" : {
@@ -2121,13 +2700,22 @@
     "Ven aquí" : {
 
     },
+    "Ver evolución" : {
+
+    },
     "Ver historial" : {
 
     },
     "Ver los %lld medicamentos activos" : {
 
     },
-    "Ver registros de salud" : {
+    "Ver más" : {
+
+    },
+    "Ver menos" : {
+
+    },
+    "Ver próximo cuidado" : {
 
     },
     "Ver todas las observaciones" : {
@@ -2137,6 +2725,9 @@
 
     },
     "Vincular a una visita" : {
+
+    },
+    "Vincular con Calendario de Apple" : {
 
     },
     "Vincular documento" : {
@@ -2151,7 +2742,25 @@
     "Visita veterinaria" : {
 
     },
+    "Visita veterinaria: %@" : {
+
+    },
+    "Visitas" : {
+
+    },
     "Visitas veterinarias" : {
+
+    },
+    "Volver a hoy" : {
+
+    },
+    "Volver a intentar" : {
+
+    },
+    "Volver al día de hoy" : {
+
+    },
+    "Ya puedes configurar la alimentación, añadir registros de salud, elegir trucos y crear recordatorios." : {
 
     }
   },

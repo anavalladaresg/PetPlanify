@@ -15,17 +15,15 @@ struct ProfileEditor: View {
     @State private var photoLoading = false
     @State private var loaded = false
     var body: some View {
-        CareForm(title: "Editar perfil", onSave: save, saveDisabled: photoLoading) {
+        CareForm(title: "Editar perfil", onSave: save, saveDisabled: photoLoading, error: $error) {
             ProfileIdentityFields(draft: $draft, photoData: $photoData, removePhoto: $removePhoto, isLoadingPhoto: $photoLoading, existingPhotoURL: store.profilePhotoURL())
             ProfileBasicFields(draft: $draft, exactBirthday: $exactBirthday, approximateAge: $approximateAge, weight: $weight, unit: store.snapshot.preferences.weightUnit)
             Section("Referencia veterinaria opcional") {
                 Text("Introduce únicamente el rango que te haya indicado tu profesional veterinario.").font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
                 TextField("Peso mínimo (\(store.snapshot.preferences.weightUnit.symbol))", text: $lowerWeight).decimalEntry()
                 TextField("Peso máximo (\(store.snapshot.preferences.weightUnit.symbol))", text: $upperWeight).decimalEntry()
-                TextField("Microchip", text: Binding(get: { draft.microchip ?? "" }, set: { draft.microchip = $0.isEmpty ? nil : $0 }))
                 TextField("Clínica veterinaria", text: Binding(get: { draft.primaryVeterinaryClinic ?? "" }, set: { draft.primaryVeterinaryClinic = $0.isEmpty ? nil : $0 }))
             }
-            if let error { Section { Text(error).foregroundStyle(.red) } }
         }.onAppear {
             guard !loaded else { return }; loaded = true
             draft = store.snapshot.pet
@@ -39,10 +37,12 @@ struct ProfileEditor: View {
     }
     private func save() async -> Bool {
         let unit = store.snapshot.preferences.weightUnit
-        guard let value = ProfileValidation.prepare(draft, weight: weight, unit: unit, exactBirthday: exactBirthday, approximateAge: approximateAge) else {
-            error = String(localized: "Revisa el nombre, la edad y el peso. Puedes escribir decimales con coma."); return false
+        let profileResult = ProfileValidation.prepare(draft, weight: weight, unit: unit, exactBirthday: exactBirthday, approximateAge: approximateAge)
+        guard let preparedProfile = profileResult.profile else {
+            error = profileResult.error
+            return false
         }
-        var profile = value
+        var profile = preparedProfile
         if !lowerWeight.isEmpty || !upperWeight.isEmpty {
             guard let lower = AppFormat.parseNumber(lowerWeight), let upper = AppFormat.parseNumber(upperWeight), lower < upper,
                   AppFormat.validWeight(unit.kilograms(from: lower)), AppFormat.validWeight(unit.kilograms(from: upper)) else {
@@ -50,7 +50,9 @@ struct ProfileEditor: View {
             }
             profile.healthyWeightRange = WeightRange(lower: unit.kilograms(from: lower), upper: unit.kilograms(from: upper))
         } else { profile.healthyWeightRange = nil }
-        return await store.saveProfile(profile, photoData: photoData, removePhoto: removePhoto, onboarding: false)
+        let saved = await store.saveProfile(profile, photoData: photoData, removePhoto: removePhoto, onboarding: false)
+        if !saved { error = store.message ?? String(localized: "No se ha podido guardar el perfil. Vuelve a intentarlo.") }
+        return saved
     }
 }
 
@@ -87,12 +89,14 @@ struct ProfileIdentityFields: View {
             }
             if let error { Text(error).foregroundStyle(.red) }
             TextField("Nombre", text: $draft.name).accessibilityIdentifier("profile.name")
-            Picker("Especie", selection: $draft.species) {
-                Text("Perro").tag("Perro")
-                Text("Gato").tag("Gato")
-                Text("Otra").tag("Otra")
-            }
-            TextField("Raza (opcional)", text: $draft.breed)
+            BreedSelector(species: "Perro", breed: $draft.breed)
+            TextField(
+                "Número de microchip (opcional)",
+                text: Binding(
+                    get: { draft.microchip ?? "" },
+                    set: { draft.microchip = $0.isEmpty ? nil : $0 }
+                )
+            )
         }
         .onChange(of: selection) { _, value in
             guard let value else { return }
@@ -119,38 +123,54 @@ struct ProfileBasicFields: View {
     @Binding var approximateAge: String
     @Binding var weight: String
     let unit: WeightUnit
+    var weightRequired = true
     var body: some View {
         Section("Datos básicos") {
             Toggle("Conozco su fecha de nacimiento", isOn: $exactBirthday)
             if exactBirthday {
-                DatePicker("Nacimiento", selection: Binding(get: { draft.birthDate ?? Date.now }, set: { draft.birthDate = $0 }), in: ...Date.now, displayedComponents: .date)
+                DatePicker("Nacimiento", selection: Binding(get: { draft.birthDate ?? Date.now }, set: { draft.birthDate = $0 }), displayedComponents: .date)
                     .onAppear { if draft.birthDate == nil { draft.birthDate = .now } }
             } else {
                 TextField("Edad aproximada en meses", text: $approximateAge)
                     #if os(iOS)
                     .keyboardType(.numberPad)
                     #endif
-                Text("Un año son 12 meses.").font(.caption).foregroundStyle(AppTheme.secondaryInk)
             }
             Picker("Sexo", selection: $draft.sex) { ForEach(PetSex.allCases) { Text($0.title).tag($0) } }
-            TextField("Peso actual (\(unit.symbol))", text: $weight).decimalEntry().accessibilityIdentifier("profile.weight")
+            TextField(weightRequired ? "Peso actual (\(unit.symbol))" : "Peso actual (\(unit.symbol), opcional)", text: $weight)
+                .decimalEntry().accessibilityIdentifier("profile.weight")
         }
     }
 }
 
 enum ProfileValidation {
-    static func prepare(_ draft: PetProfile, weight: String, unit: WeightUnit, exactBirthday: Bool, approximateAge: String) -> PetProfile? {
+    static func prepare(_ draft: PetProfile, weight: String, unit: WeightUnit, exactBirthday: Bool, approximateAge: String, weightRequired: Bool = true) -> (profile: PetProfile?, error: String) {
         var value = draft
         value.name = value.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !value.name.isEmpty, let number = AppFormat.parseNumber(weight), AppFormat.validWeight(unit.kilograms(from: number)) else { return nil }
-        value.currentWeight = unit.kilograms(from: number)
+        value.microchip = value.microchip?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if value.microchip?.isEmpty == true { value.microchip = nil }
+        guard !value.name.isEmpty else { return (nil, String(localized: "Escribe el nombre de tu mascota.")) }
+        if weight.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            guard !weightRequired else { return (nil, String(localized: "Indica un peso válido y positivo. Puedes usar decimales con coma.")) }
+            value.currentWeight = nil
+        } else {
+            guard let number = AppFormat.parseNumber(weight), AppFormat.validWeight(unit.kilograms(from: number)) else {
+                return (nil, String(localized: "Indica un peso válido y positivo. Puedes usar decimales con coma."))
+            }
+            value.currentWeight = unit.kilograms(from: number)
+        }
         if exactBirthday {
-            guard let birthday = value.birthDate, birthday <= .now else { return nil }
+            guard let birthday = value.birthDate else { return (nil, String(localized: "Indica la fecha de nacimiento.")) }
+            guard !AppInputValidation.isFutureDay(birthday) else {
+                return (nil, String(localized: "No es posible añadir una mascota que todavía no ha nacido. Revisa la fecha de nacimiento."))
+            }
             value.approximateAgeMonths = nil
         } else {
-            guard let months = Int(approximateAge), (0...1_200).contains(months) else { return nil }
+            guard let months = Int(approximateAge), (0...1_200).contains(months) else {
+                return (nil, String(localized: "Indica una edad aproximada entre 0 y 1.200 meses."))
+            }
             value.birthDate = nil; value.approximateAgeMonths = months; value.ageReferenceDate = .now
         }
-        return value
+        return (value, "")
     }
 }

@@ -9,7 +9,7 @@ struct SelectedTrickEditor: View {
     }
 
     var body: some View {
-        CareForm(title: "Editar progreso", onSave: save) {
+        CareForm(title: "Editar progreso", onSave: save, symbol: "chart.bar.fill") {
             Section("Aprendizaje") {
                 Picker("Estado", selection: $draft.status) {
                     ForEach(TrickStatus.allCases) { status in
@@ -17,8 +17,22 @@ struct SelectedTrickEditor: View {
                     }
                 }
                 .accessibilityIdentifier("training.progressStatus")
-                Stepper(value: $draft.progress, in: 0...100, step: 5) {
-                    Text("Progreso: \(draft.progress) %")
+                VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Progreso")
+                            .font(.subheadline.weight(.medium))
+                        Spacer()
+                        Text("\(draft.progress) %")
+                            .font(.subheadline.weight(.semibold).monospacedDigit())
+                            .foregroundStyle(AppTheme.green)
+                    }
+                    Slider(value: Binding(
+                        get: { Double(draft.progress) },
+                        set: { draft.progress = Int($0.rounded()) }
+                    ), in: 0...100, step: 1)
+                    .tint(AppTheme.green)
+                    .accessibilityLabel("Progreso de aprendizaje")
+                    .accessibilityValue("\(draft.progress) por ciento")
                 }
                 .accessibilityIdentifier("training.progressValue")
                 Text("Una referencia personal, sin objetivos ni plazos.")
@@ -61,7 +75,7 @@ struct CustomTrickEditor: View {
     }
 
     var body: some View {
-        CareForm(title: isNew ? "Crear truco" : "Editar truco", onSave: save) {
+        CareForm(title: isNew ? "Crear truco" : "Editar truco", onSave: save, symbol: "pawprint.fill") {
             if let validationMessage {
                 Section {
                     Text(validationMessage).foregroundStyle(AppTheme.orange)
@@ -163,7 +177,7 @@ struct BehaviorObservationEditor: View {
     }
 
     var body: some View {
-        CareForm(title: isNew ? "Añadir observación" : "Editar observación", onSave: save) {
+        CareForm(title: isNew ? "Añadir observación" : "Editar observación", onSave: save, symbol: "text.bubble.fill") {
             if let validationMessage {
                 Section {
                     Text(validationMessage).foregroundStyle(AppTheme.orange)
@@ -171,7 +185,7 @@ struct BehaviorObservationEditor: View {
                 }
             }
             Section("Comportamiento") {
-                DatePicker("Fecha", selection: $draft.date, in: ...Date(), displayedComponents: .date)
+                DatePicker("Fecha", selection: $draft.date, displayedComponents: .date)
                 TextField("Título", text: $draft.title)
                     .accessibilityIdentifier("training.observationTitle")
                 TextField("Qué has observado", text: $draft.observation, axis: .vertical)
@@ -217,15 +231,21 @@ struct BehaviorObservationEditor: View {
             validationMessage = "Escribe un título y lo que has observado."
             return false
         }
+        guard !AppInputValidation.isFutureDay(record.date) else {
+            validationMessage = "Una observación no puede tener una fecha futura."
+            return false
+        }
         validationMessage = nil
         let savedRecord = record
-        return await store.update { snapshot in
+        let saved = await store.update { snapshot in
             if let index = snapshot.training.observations.firstIndex(where: { $0.id == savedRecord.id }) {
                 snapshot.training.observations[index] = savedRecord
             } else if isNew {
                 snapshot.training.observations.append(savedRecord)
             }
         }
+        if !saved { validationMessage = store.message ?? "No se ha podido guardar la observación." }
+        return saved
     }
 
     private func delete() async {
@@ -233,7 +253,7 @@ struct BehaviorObservationEditor: View {
         isDeleting = true
         defer { isDeleting = false }
         let id = draft.id
-        if await store.update({ $0.training.observations.removeAll { $0.id == id } }) {
+        if await store.softDeleteTrainingObservation(id) {
             dismiss()
         } else {
             deletionFailed = true

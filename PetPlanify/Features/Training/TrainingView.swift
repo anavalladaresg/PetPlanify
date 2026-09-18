@@ -6,10 +6,6 @@ struct TrainingView: View {
     @State private var presentedDetail: TrainingPresentation?
 
     private var training: TrainingData { store.snapshot.training }
-    private var observations: [BehaviorObservation] {
-        training.observations.sorted { $0.date > $1.date }
-    }
-
     private var masteredCount: Int {
         training.selectedTricks.filter { $0.status == .mastered }.count
     }
@@ -43,45 +39,10 @@ struct TrainingView: View {
                             }
                         }
                     }
-                }
-            }
-
-            CareSection(title: "Explorar trucos", style: .compact) {
-                Button { presentedDetail = .library } label: {
-                    TrainingActionRow(
-                        title: "Biblioteca de trucos", symbol: "books.vertical",
-                        subtitle: "Guías breves para aprender con calma y premios."
-                    )
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("training.library")
-                Divider()
-                Button { presentedDetail = .customTrick } label: {
-                    TrainingActionRow(
-                        title: "Crear un truco", symbol: "plus",
-                        subtitle: "Guarda una guía propia."
-                    )
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("training.addCustom")
-            }
-
-            CareSection(title: "Comportamiento", style: .compact, symbol: "square.and.pencil") {
-                if observations.isEmpty {
-                    Text("Anota lo que observas y qué le ayuda en cada situación.")
-                        .foregroundStyle(AppTheme.secondaryInk)
-                } else {
-                    ForEach(Array(observations.prefix(3))) { observation in
-                        Button { presentedDetail = .observation(observation.id) } label: {
-                            BehaviorObservationRow(record: observation)
-                        }
-                        .buttonStyle(.plain)
-                        if observation.id != observations.prefix(3).last?.id { Divider() }
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: AppTheme.Space.sm) { trainingActions }
+                        VStack(alignment: .leading, spacing: AppTheme.Space.sm) { trainingActions }
                     }
-                }
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: AppTheme.Space.lg) { observationActions }
-                    VStack(alignment: .leading, spacing: AppTheme.Space.sm) { observationActions }
                 }
             }
         }
@@ -90,7 +51,6 @@ struct TrainingView: View {
                 Menu {
                     Button("Elegir truco", systemImage: "books.vertical") { presentedDetail = .library }
                     Button("Crear truco", systemImage: "pawprint") { presentedDetail = .customTrick }
-                    Button("Añadir observación", systemImage: "square.and.pencil") { presentedDetail = .newObservation }
                 } label: {
                     Label("Añadir", systemImage: "plus")
                 }
@@ -127,25 +87,31 @@ struct TrainingView: View {
                 Text("Un pequeño paso para empezar").font(.headline)
                 Text("Elige un truco y adapta el aprendizaje a su ritmo.")
                     .font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
-                Button("Elegir un truco", systemImage: "plus") { presentedDetail = .library }
-                    .buttonStyle(.bordered)
+                Button("Explorar biblioteca", systemImage: "books.vertical") { presentedDetail = .library }
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppTheme.green)
                     .accessibilityIdentifier("training.chooseFirst")
+                Button("Crear un truco", systemImage: "plus") { presentedDetail = .customTrick }
+                    .buttonStyle(.bordered)
+                    .tint(AppTheme.green)
+                    .accessibilityIdentifier("training.addCustom")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
     @ViewBuilder
-    private var observationActions: some View {
-        Button("Añadir observación", systemImage: "plus") { presentedDetail = .newObservation }
-            .frame(minHeight: 44)
-            .accessibilityIdentifier("training.addObservation")
-        if !observations.isEmpty {
-            Button("Ver historial", systemImage: "clock") { presentedDetail = .history }
-                .frame(minHeight: 44)
-                .accessibilityIdentifier("training.behaviorHistory")
-        }
+    private var trainingActions: some View {
+        Button("Explorar biblioteca", systemImage: "books.vertical") { presentedDetail = .library }
+            .buttonStyle(.bordered)
+            .tint(AppTheme.green)
+            .accessibilityIdentifier("training.library")
+        Button("Crear un truco", systemImage: "plus") { presentedDetail = .customTrick }
+            .buttonStyle(.bordered)
+            .tint(AppTheme.green)
+            .accessibilityIdentifier("training.addCustom")
     }
+
 }
 
 private enum TrainingPresentation: Identifiable {

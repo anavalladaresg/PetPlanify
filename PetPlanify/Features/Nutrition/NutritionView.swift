@@ -18,7 +18,7 @@ struct NutritionView: View {
                                 .padding(.horizontal, 10).padding(.vertical, 5)
                                 .background(AppTheme.greenSoft, in: Capsule())
                         }
-                        Text(plan.product.type.title).font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+                        Text(plan.product.typeDescription).font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
                     }
                     HStack(spacing: AppTheme.Space.sm) {
                         nutritionMetric("Cantidad diaria", AppFormat.grams(plan.dailyAmountGrams))
@@ -97,7 +97,7 @@ struct NutritionView: View {
         .confirmationDialog("¿Eliminar esta observación?", isPresented: Binding(get: { observationToDelete != nil }, set: { if !$0 { observationToDelete = nil } })) {
             Button("Eliminar observación", role: .destructive) {
                 guard let item = observationToDelete else { return }
-                Task { _ = await store.update { $0.nutrition.observations.removeAll { $0.id == item.id } } }
+                Task { _ = await store.softDeleteObservation(item) }
             }
         }
     }

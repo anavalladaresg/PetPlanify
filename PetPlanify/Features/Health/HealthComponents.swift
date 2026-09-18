@@ -238,7 +238,7 @@ struct HealthSectionActions: View {
 struct HealthDeleteButton: View {
     @Environment(\.dismiss) private var dismiss
     let title: LocalizedStringKey
-    var message: LocalizedStringKey = "Esta acción eliminará el registro de forma permanente."
+    var message: LocalizedStringKey = "El registro se moverá a la papelera y podrás restaurarlo desde Ajustes."
     let action: () async -> Bool
     @State private var confirmsDeletion = false
     @State private var failed = false
@@ -267,16 +267,11 @@ struct HealthOptionalDate: View {
     let title: LocalizedStringKey
     @Binding var isEnabled: Bool
     @Binding var date: Date
-    var minimum: Date? = nil
 
     var body: some View {
         Toggle(title, isOn: $isEnabled)
         if isEnabled {
-            if let minimum {
-                DatePicker("Fecha", selection: $date, in: minimum..., displayedComponents: .date)
-            } else {
-                DatePicker("Fecha", selection: $date, displayedComponents: .date)
-            }
+            DatePicker("Fecha", selection: $date, displayedComponents: .date)
         }
     }
 }
