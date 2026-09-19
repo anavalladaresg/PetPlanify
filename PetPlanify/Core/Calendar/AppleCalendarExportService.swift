@@ -19,7 +19,7 @@ actor AppleCalendarExportService {
         var errorDescription: String? {
             switch self {
             case .permissionDenied:
-                String(localized: "No se ha podido añadir al Calendario porque el permiso de escritura no está activo. Puedes activarlo en Ajustes del sistema.")
+                String(localized: "Activa el acceso completo al calendario en Ajustes del iPhone > Apps > PetPlanify > Calendarios y vuelve a intentarlo.")
             case .noWritableCalendar:
                 String(localized: "No hay un calendario disponible para añadir este cuidado.")
             case .fullAccessRequired:
@@ -99,6 +99,8 @@ actor AppleCalendarExportService {
         for event in events { try eventStore.remove(event, span: .thisEvent, commit: false) }
         if !events.isEmpty { try eventStore.commit() }
     }
+
+    func requestCalendarAccess() async throws -> Bool { try await requestFullAccess() }
 
     private func requestWriteOnlyAccess() async throws -> Bool {
         #if os(iOS)

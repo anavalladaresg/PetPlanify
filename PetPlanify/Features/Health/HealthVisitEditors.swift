@@ -50,8 +50,8 @@ struct VisitEditor: View {
             Section("Notas") {
                 TextField("Notas", text: $notes, axis: .vertical).lineLimit(3...8)
             }
-            Section("Documento") {
-                Button("Adjuntar PDF", systemImage: "doc.badge.plus") { importing = true }
+            Section("Documentos") {
+                Button("Adjuntar documento", systemImage: "paperclip") { importing = true }
                 if let pendingPDF {
                     Label(pendingPDF.lastPathComponent, systemImage: "doc.text.fill")
                         .font(.caption)
@@ -148,9 +148,6 @@ struct VisitDetailView: View {
                     }
                     CareSection(title: "Documentos", style: .compact, symbol: "paperclip") {
                         let documents = store.snapshot.health.documents.filter { $0.linkedVisitID == visitID }
-                        if documents.isEmpty {
-                            EmptyCareState(title: "Adjunta resultados, facturas…", symbol: "doc.text")
-                        }
                         ForEach(documents) { document in HealthDocumentRow(document: document) }
                         Button("Adjuntar documento", systemImage: "paperclip") { importing = true }
                             .buttonStyle(.bordered)

@@ -5,16 +5,17 @@ actor LocalReminderSchedulingService: ReminderSchedulingService {
     private let center = UNUserNotificationCenter.current()
     private let testPrefix = "petplanify.test."
 
-    func scheduleTestNotifications() async throws {
+    func scheduleTestNotifications(petName: String) async throws {
         let status = await permissionStatus()
         guard status == .authorized || status == .provisional else { throw NSError(domain: "PetPlanifyNotifications", code: 1) }
         center.removePendingNotificationRequests(withIdentifiers: (0..<8).map { "\(testPrefix)\($0)" })
+        let name = petName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "tu perro" : petName
         let messages = [
-            ("🩺 Próxima visita", "Mañana tienes que llevar a Neo al veterinario."),
-            ("💉 Próxima vacuna", "Se acerca una vacunación importante para Neo."),
-            ("🟠 Desparasitación", "Se acerca la próxima desparasitación de Neo."),
-            ("💊 Medicación", "Hoy tienes que administrar la medicación de Neo."),
-            ("🐾 Seguimiento de visita", "Cuéntanos qué le han dicho al veterinario sobre Neo y si necesita algún tratamiento.")
+            ("🩺 Próxima visita", "Mañana tienes que llevar a \(name) al veterinario."),
+            ("💉 Próxima vacuna", "Se acerca una vacunación importante para \(name)."),
+            ("🟠 Desparasitación", "Se acerca la próxima desparasitación de \(name)."),
+            ("💊 Medicación", "Hoy tienes que administrar la medicación de \(name)."),
+            ("🐾 Seguimiento de visita", "Cuéntanos qué le han dicho al veterinario sobre \(name) y si necesita algún tratamiento.")
         ].shuffled()
         for (index, message) in messages.enumerated() {
             let content = UNMutableNotificationContent(); content.title = message.0; content.body = message.1; content.sound = .default; content.threadIdentifier = "petplanify.test"

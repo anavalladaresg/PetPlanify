@@ -305,7 +305,7 @@
     "Acudir a una manta o cama y sentirse cómodo allí." : {
 
     },
-    "Adjunta informes, resultados o la cartilla de vacunación." : {
+    "Adjunta resultados, facturas…" : {
 
     },
     "Adjuntar documento" : {
@@ -384,9 +384,6 @@
 
     },
     "Añade «tumba» antes del gesto cuando lo comprenda y retira gradualmente el señuelo." : {
-
-    },
-    "Añade alimentación, salud y recordatorios para mejorarla." : {
 
     },
     "Añade las vacunas para conservar su historial." : {
@@ -808,6 +805,9 @@
 
     },
     "Cuando suba con comodidad, añade «sube». Enseña también una salida fácil." : {
+
+    },
+    "Cuéntanos qué le han dicho al veterinario sobre %@ y si necesita algún tratamiento." : {
 
     },
     "Cuidado al día: %lld por ciento" : {
@@ -1239,9 +1239,6 @@
     "Fácil" : {
 
     },
-    "Faltan algunos datos para calcular una puntuación más precisa." : {
-
-    },
     "Familia" : {
 
     },
@@ -1407,6 +1404,9 @@
     "Hoy · %@" : {
 
     },
+    "Hoy tienes que administrar la medicación de %@." : {
+
+    },
     "iCloud" : {
 
     },
@@ -1563,16 +1563,13 @@
     "La próxima vacuna no puede ser anterior a la administración registrada." : {
 
     },
+    "La próxima vacunación de %@ es la semana que viene." : {
+
+    },
     "La rutina de %@ está lista" : {
 
     },
     "La tendencia aparecerá cuando haya más hitos de cuidado." : {
-
-    },
-    "La vacuna de %@ vence la semana que viene." : {
-
-    },
-    "La vacuna de %@ vence mañana." : {
 
     },
     "La visita se moverá a la papelera. Sus documentos y vínculos se conservarán para poder restaurarla." : {
@@ -1644,7 +1641,10 @@
     "Mañana · %@" : {
 
     },
-    "Mañana %@ tiene cita veterinaria." : {
+    "Mañana tienes que llevar a %@ al veterinario." : {
+
+    },
+    "Mañana tienes que vacunar a %@." : {
 
     },
     "Manta o cama estable en una zona tranquila y premios." : {
@@ -2165,9 +2165,6 @@
     "Próxima" : {
 
     },
-    "Próxima cita veterinaria de %@." : {
-
-    },
     "Próxima: %@" : {
 
     },
@@ -2196,6 +2193,15 @@
 
     },
     "Puedes mantener los eventos en Calendario de Apple o eliminar solamente los que creó PetPlanify." : {
+
+    },
+    "Puntuación basada en perfil, alimentación, salud, peso, entrenamiento y próximos eventos." : {
+
+    },
+    "Puntuación inicial basada en perfil, alimentación, salud, peso, entrenamiento y próximos eventos." : {
+
+    },
+    "Puntuación provisional basada en perfil, alimentación, salud, peso, entrenamiento y próximos eventos." : {
 
     },
     "Qué has observado" : {
@@ -2307,9 +2313,6 @@
     "Restaurar" : {
 
     },
-    "Resume las áreas de cuidado registradas para" : {
-
-    },
     "Resumen de salud" : {
 
     },
@@ -2343,9 +2346,6 @@
     "Revisa la edad aproximada." : {
 
     },
-    "Revisa la próxima vacuna de %@." : {
-
-    },
     "Revisa las cantidades de las comidas." : {
 
     },
@@ -2376,10 +2376,13 @@
     "Saluda" : {
 
     },
-    "Se acerca la desparasitación de %@." : {
+    "Se acerca la próxima desparasitación de %@." : {
 
     },
-    "Se basa en perfil, alimentación, salud, peso, entrenamiento y próximos eventos." : {
+    "Se acerca la visita veterinaria de %@." : {
+
+    },
+    "Se acerca una vacunación importante para %@." : {
 
     },
     "Se eliminará de PetPlanify y de la visita vinculada." : {
@@ -2533,9 +2536,6 @@
 
     },
     "Toca" : {
-
-    },
-    "Toca administrar la medicación de %@." : {
 
     },
     "Toca suavemente la mano abierta después de una señal." : {

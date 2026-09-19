@@ -297,7 +297,7 @@ final class PetPlanifyStore {
 
     func scheduleTestNotifications() async -> Bool {
         guard let notifications else { return false }
-        do { try await notifications.scheduleTestNotifications(); return true } catch { return false }
+        do { try await notifications.scheduleTestNotifications(petName: snapshot.pet.name); return true } catch { return false }
     }
 
     func cancelTestNotifications() async { await notifications?.cancelTestNotifications() }

@@ -13,7 +13,6 @@ struct SettingsView: View {
     @State private var profiles = false
     @State private var confirmsSignOut = false
     @State private var confirmsCalendarUnlink = false
-    @State private var testNotificationMessage: String?
     @AppStorage("petplanify.apple.signedIn") private var signedIn = true
     var body: some View {
         CarePage {
@@ -155,13 +154,8 @@ struct SettingsView: View {
                 Toggle("Entrenamiento", isOn: reminderPreference(\.trainingEnabled))
             }
             SettingRow(title: "Anticipación", symbol: "clock") { Picker("Avisar", selection: reminderPreference(\.advanceTime)) { ForEach(ReminderAdvanceTime.allCases) { Text($0.title).tag($0) } }.labelsHidden() }
-            VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
-                Button("Probar notificaciones", systemImage: "bell.and.waves.left.and.right") {
-                    Task { testNotificationMessage = await store.scheduleTestNotifications() ? "Se han programado 8 avisos de prueba, uno cada 7 segundos." : "Activa las notificaciones en Ajustes > PetPlanify > Notificaciones." }
-                }
-                Button("Borrar avisos de prueba", systemImage: "trash", role: .destructive) { Task { await store.cancelTestNotifications(); testNotificationMessage = "Avisos de prueba eliminados." } }
-                if let testNotificationMessage { Text(testNotificationMessage).font(.caption).foregroundStyle(AppTheme.secondaryInk) }
-            }
+            Text("Te avisaremos el día anterior de vacunas, desparasitaciones, visitas y comienzos o finales de medicación. Después de una visita, te preguntaremos 30 minutos más tarde cómo ha ido.")
+                .font(.caption).foregroundStyle(AppTheme.secondaryInk).fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -177,7 +171,7 @@ struct SettingsView: View {
                     get: { store.snapshot.preferences.appleCalendarLinked },
                     set: { value in
                         if value {
-                            Task { await store.setAppleCalendarLinked(true); await syncExistingCalendarEvents() }
+                            Task { _ = try? await AppleCalendarExportService.shared.requestCalendarAccess(); await store.setAppleCalendarLinked(true); await syncExistingCalendarEvents() }
                         } else {
                             confirmsCalendarUnlink = true
                         }
