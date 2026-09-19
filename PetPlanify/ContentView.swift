@@ -116,7 +116,7 @@ private struct AppleSignInView: View {
                         UserDefaults.standard.set(credential.user, forKey: "petplanify.apple.userID")
                         if let name = credential.fullName,
                            let formatted = PersonNameComponentsFormatter().string(from: name).nilIfEmpty {
-                            displayName = formatted
+                            displayName = formatted.split(whereSeparator: { $0.isWhitespace }).first.map(String.init) ?? formatted
                         }
                         onSignedIn()
                     case .failure:

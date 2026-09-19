@@ -640,7 +640,11 @@ struct HomeView: View {
         case 12..<20: base = String(localized: "Buenas tardes")
         default: base = String(localized: "Buenas noches")
         }
-        let name = appleDisplayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let name = appleDisplayName
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(whereSeparator: { $0.isWhitespace })
+            .first
+            .map(String.init) ?? ""
         return name.isEmpty ? base : "\(base), \(name)"
     }
 
