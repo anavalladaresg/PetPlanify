@@ -338,9 +338,6 @@
     "Ajustes" : {
 
     },
-    "Al activarlo, los eventos de salud y cuidados se vincularán automáticamente. PetPlanify seguirá siendo la fuente principal de tus registros." : {
-
-    },
     "al día" : {
 
     },
@@ -539,10 +536,10 @@
     "Bajar con calma de una superficie baja al suelo." : {
 
     },
-    "Basado en perfil, alimentación, salud, peso, entrenamiento y próximos eventos." : {
+    "Base" : {
 
     },
-    "Base" : {
+    "Borrar avisos de prueba" : {
 
     },
     "Buen comienzo" : {
@@ -1614,9 +1611,6 @@
     "Llamar para regañar o terminar siempre la diversión." : {
 
     },
-    "Los avisos se enviarán desde PetPlanify. El calendario de Apple solo conservará los eventos." : {
-
-    },
     "Los cambios de plan se guardarán aquí." : {
 
     },
@@ -2156,6 +2150,9 @@
     "Presenta una mano cerrada con un premio a baja altura y espera un movimiento de pata." : {
 
     },
+    "Probar notificaciones" : {
+
+    },
     "Producto opcional" : {
 
     },
@@ -2380,6 +2377,9 @@
 
     },
     "Se acerca la desparasitación de %@." : {
+
+    },
+    "Se basa en perfil, alimentación, salud, peso, entrenamiento y próximos eventos." : {
 
     },
     "Se eliminará de PetPlanify y de la visita vinculada." : {
@@ -2740,6 +2740,9 @@
 
     },
     "Ver todos" : {
+
+    },
+    "Vincula tus cuidados con un calendario PetPlanify dentro de Apple Calendar; los avisos seguirán llegando desde PetPlanify." : {
 
     },
     "Vincular a una visita" : {

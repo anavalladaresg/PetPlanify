@@ -27,9 +27,8 @@ enum ReminderEngine {
             if visit.date > now || snapshot.reminders.contains(where: { $0.sourceKey == key }) {
                 sources.append((key, visit.id, String(localized: "Visita veterinaria: \(visit.reason)"), visit.date, visit.clinic))
             }
-            if let date = visit.followUpDate {
-                sources.append(("followup.\(visit.id)", visit.id, String(localized: "Seguimiento: \(visit.reason)"), date, visit.clinic))
-            }
+            let followUp = visit.followUpDate ?? visit.date.addingTimeInterval(30 * 60)
+            if followUp > now { sources.append(("followup.\(visit.id)", visit.id, String(localized: "Seguimiento: \(visit.reason)"), followUp, visit.clinic)) }
         }
         sources.removeAll { suppressedSourceKeys.contains($0.0) }
         let validKeys = Set(sources.map(\.0))

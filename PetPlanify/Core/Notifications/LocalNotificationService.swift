@@ -10,14 +10,11 @@ actor LocalReminderSchedulingService: ReminderSchedulingService {
         guard status == .authorized || status == .provisional else { throw NSError(domain: "PetPlanifyNotifications", code: 1) }
         center.removePendingNotificationRequests(withIdentifiers: (0..<8).map { "\(testPrefix)\($0)" })
         let messages = [
-            ("🩺 Próxima visita", "Recuerda la cita veterinaria de tu perro."),
-            ("💉 Próxima vacuna", "Se acerca una vacuna importante para tu perro."),
-            ("🟠 Desparasitación", "Toca revisar la próxima desparasitación."),
-            ("💊 Medicación", "Tu perro tiene una medicación pendiente."),
-            ("🐾 PetPlanify", "Cuéntanos cómo sigue tu perro después de su visita."),
-            ("📋 Historia de salud", "Puedes actualizar hoy la historia de tu perro."),
-            ("🍽️ Alimentación", "Es un buen momento para revisar su plan de alimentación."),
-            ("🐶 PetPlanify", "Un pequeño cuidado hoy hace la diferencia.")
+            ("🩺 Próxima visita", "Mañana tienes que llevar a Neo al veterinario."),
+            ("💉 Próxima vacuna", "Se acerca una vacunación importante para Neo."),
+            ("🟠 Desparasitación", "Se acerca la próxima desparasitación de Neo."),
+            ("💊 Medicación", "Hoy tienes que administrar la medicación de Neo."),
+            ("🐾 Seguimiento de visita", "Cuéntanos qué le han dicho al veterinario sobre Neo y si necesita algún tratamiento.")
         ].shuffled()
         for (index, message) in messages.enumerated() {
             let content = UNMutableNotificationContent(); content.title = message.0; content.body = message.1; content.sound = .default; content.threadIdentifier = "petplanify.test"
@@ -69,32 +66,35 @@ actor LocalReminderSchedulingService: ReminderSchedulingService {
     private func notificationBody(for reminder: CareReminder, petName: String, advanceDays: Int) -> String {
         let name = petName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? String(localized: "tu mascota") : petName
         let prefix = reminder.sourceKey ?? ""
+        if prefix.hasPrefix("followup.") {
+            return String(localized: "Cuéntanos qué le han dicho al veterinario sobre \(name) y si necesita algún tratamiento.")
+        }
         if prefix.hasPrefix("visit.") {
             return advanceDays == 1
-                ? String(localized: "Mañana \(name) tiene cita veterinaria.")
-                : String(localized: "Próxima cita veterinaria de \(name).")
+                ? String(localized: "Mañana tienes que llevar a \(name) al veterinario.")
+                : String(localized: "Se acerca la visita veterinaria de \(name).")
         }
         if prefix.hasPrefix("vaccine.") {
-            if advanceDays == 7 { return String(localized: "La vacuna de \(name) vence la semana que viene.") }
-            if advanceDays == 1 { return String(localized: "La vacuna de \(name) vence mañana.") }
-            return String(localized: "Revisa la próxima vacuna de \(name).")
+            if advanceDays == 7 { return String(localized: "La próxima vacunación de \(name) es la semana que viene.") }
+            if advanceDays == 1 { return String(localized: "Mañana tienes que vacunar a \(name).") }
+            return String(localized: "Se acerca una vacunación importante para \(name).")
         }
         if prefix.hasPrefix("medication.") {
-            return String(localized: "Toca administrar la medicación de \(name).")
+            return String(localized: "Hoy tienes que administrar la medicación de \(name).")
         }
         if prefix.hasPrefix("deworming.") {
-            return String(localized: "Se acerca la desparasitación de \(name).")
+            return String(localized: "Se acerca la próxima desparasitación de \(name).")
         }
         return reminder.notes.isEmpty ? String(localized: "Tienes un cuidado pendiente para \(name) en PetPlanify.") : reminder.notes
     }
 
     private func notificationTitle(for reminder: CareReminder) -> String {
         let key = reminder.sourceKey ?? ""
-        if key.hasPrefix("visit.") || key.hasPrefix("followup.") { return "🩺 PetPlanify · (reminder.title)" }
-        if key.hasPrefix("vaccine.") { return "💉 PetPlanify · (reminder.title)" }
-        if key.hasPrefix("deworming.") { return "🟠 PetPlanify · (reminder.title)" }
-        if key.hasPrefix("medication.") { return "💊 PetPlanify · (reminder.title)" }
-        return "🐾 PetPlanify · (reminder.title)"
+        if key.hasPrefix("visit.") || key.hasPrefix("followup.") { return "🩺 PetPlanify · \(reminder.title)" }
+        if key.hasPrefix("vaccine.") { return "💉 PetPlanify · \(reminder.title)" }
+        if key.hasPrefix("deworming.") { return "🟠 PetPlanify · \(reminder.title)" }
+        if key.hasPrefix("medication.") { return "💊 PetPlanify · \(reminder.title)" }
+        return "🐾 PetPlanify · \(reminder.title)"
     }
 }
 

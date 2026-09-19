@@ -149,7 +149,7 @@ struct VisitDetailView: View {
                     CareSection(title: "Documentos", style: .compact, symbol: "paperclip") {
                         let documents = store.snapshot.health.documents.filter { $0.linkedVisitID == visitID }
                         if documents.isEmpty {
-                            EmptyCareState(title: "Adjunta informes, resultados o la cartilla de vacunación.", symbol: "doc.text")
+                            EmptyCareState(title: "Adjunta resultados, facturas…", symbol: "doc.text")
                         }
                         ForEach(documents) { document in HealthDocumentRow(document: document) }
                         Button("Adjuntar documento", systemImage: "paperclip") { importing = true }

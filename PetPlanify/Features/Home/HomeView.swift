@@ -211,10 +211,6 @@ struct HomeView: View {
                         .fontDesign(.serif)
                         .foregroundStyle(AppTheme.ink)
                     Text(scoreDetail(for: score))
-                        .font(.subheadline)
-                        .foregroundStyle(AppTheme.secondaryInk)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Text("Se basa en perfil, alimentación, salud, peso, entrenamiento y próximos eventos.")
                         .font(.caption)
                         .foregroundStyle(AppTheme.secondaryInk)
                         .fixedSize(horizontal: false, vertical: true)
@@ -675,9 +671,9 @@ struct HomeView: View {
     }
 
     private func scoreDetail(for score: Int) -> String {
-        if isInitialProfile { return String(localized: "Añade alimentación, salud y recordatorios para mejorarla.") }
-        if score >= 84 { return String(localized: "Resume las áreas de cuidado registradas para") + " " + petName + "." }
-        return String(localized: "Faltan algunos datos para calcular una puntuación más precisa.")
+        if isInitialProfile { return String(localized: "Puntuación inicial basada en perfil, alimentación, salud, peso, entrenamiento y próximos eventos.") }
+        if score >= 84 { return String(localized: "Puntuación basada en perfil, alimentación, salud, peso, entrenamiento y próximos eventos.") }
+        return String(localized: "Puntuación provisional basada en perfil, alimentación, salud, peso, entrenamiento y próximos eventos.")
     }
 
     private var avatar: some View {
