@@ -8,6 +8,7 @@ struct HealthView: View {
     @State private var sheet: HealthSheet?
     @State private var showObservation = false
     @State private var observation: PetObservation?
+    @State private var observationDetail: PetObservation?
     @State private var showsAllObservations = false
     @State private var expandedHistory: Set<HealthHistorySection> = []
 
@@ -54,6 +55,7 @@ struct HealthView: View {
         }
         .sheet(item: $sheet) { HealthSheetContent(sheet: $0) }
         .sheet(isPresented: $showObservation) { ObservationEditor(context: .health, record: observation) }
+        .sheet(item: $observationDetail) { ObservationDetailView(record: $0) }
     }
 
     private var healthSummary: some View {
@@ -262,8 +264,7 @@ struct HealthView: View {
             }
             ForEach(Array(records.prefix(showsAllObservations ? records.count : 2))) { record in
                 HealthRecordRow(title: record.title, subtitle: observationSubtitle(record)) {
-                    observation = record
-                    showObservation = true
+                    observationDetail = record
                 }
             }
             if records.count > 2 {
