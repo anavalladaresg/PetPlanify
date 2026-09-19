@@ -205,7 +205,7 @@ struct HomeView: View {
             }
             HStack(spacing: compact ? AppTheme.Space.md : AppTheme.Space.lg) {
                 scoreRing(score: score)
-                VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
+                VStack(alignment: compact ? .center : .leading, spacing: AppTheme.Space.xs) {
                     Text(scoreLabel(for: score))
                         .font(.title3.weight(.semibold))
                         .fontDesign(.serif)
@@ -218,12 +218,12 @@ struct HomeView: View {
                         StatusBadge(title: isInitialProfile ? "Estimación inicial" : "En progreso", symbol: "clock.fill", tint: AppTheme.green)
                     }
                 }
-                Spacer(minLength: 0)
             }
+            .frame(maxWidth: .infinity, alignment: .center)
             Button("Ver evolución", systemImage: "chart.xyaxis.line") { sheet = .evolution }
                 .buttonStyle(.borderless)
                 .foregroundStyle(AppTheme.green)
-                .frame(minHeight: 44, alignment: .leading)
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: .center)
                 .accessibilityIdentifier("home.evolution")
         }
         .padding(compact ? AppTheme.Space.sm : AppTheme.Space.xl)
