@@ -112,7 +112,7 @@ struct CustomTrickEditor: View {
             }
         }
         .disabled(isDeleting)
-        .confirmationDialog("¿Eliminar este truco personalizado?", isPresented: $confirmDeletion, titleVisibility: .visible) {
+        .alert("¿Eliminar este truco personalizado?", isPresented: $confirmDeletion) {
             Button("Eliminar truco", role: .destructive) { Task { await delete() } }
         } message: {
             Text("Se eliminarán la guía, el progreso y la nota personal de este truco.")
@@ -209,7 +209,7 @@ struct BehaviorObservationEditor: View {
             }
         }
         .disabled(isDeleting)
-        .confirmationDialog("¿Eliminar esta observación?", isPresented: $confirmDeletion, titleVisibility: .visible) {
+        .alert("¿Eliminar esta observación?", isPresented: $confirmDeletion) {
             Button("Eliminar observación", role: .destructive) { Task { await delete() } }
         } message: {
             Text("La observación se eliminará del historial de comportamiento.")

@@ -93,7 +93,7 @@ struct HealthDocumentRow: View {
         .quickLookPreview($previewURL)
         .sheet(isPresented: $renaming) { DocumentMetadataEditor(document: document) }
         .sheet(isPresented: $linking) { DocumentMetadataEditor(document: document, editsVisit: true) }
-        .confirmationDialog("¿Eliminar este documento?", isPresented: $confirmsDelete, titleVisibility: .visible) {
+        .alert("¿Eliminar este documento?", isPresented: $confirmsDelete) {
             Button("Eliminar documento", role: .destructive) {
                 busy = true
                 Task {
@@ -103,7 +103,7 @@ struct HealthDocumentRow: View {
             }
             Button("Cancelar", role: .cancel) { }
         } message: { Text("Se eliminará de PetPlanify y de la visita vinculada.") }
-        .confirmationDialog("¿Quitar el documento de esta visita?", isPresented: $confirmsUnlink, titleVisibility: .visible) {
+        .alert("¿Quitar el documento de esta visita?", isPresented: $confirmsUnlink) {
             Button("Quitar de la visita") {
                 busy = true
                 Task {

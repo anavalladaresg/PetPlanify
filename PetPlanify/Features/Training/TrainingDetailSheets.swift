@@ -197,7 +197,7 @@ struct TrickDetailView: View {
         .sheet(isPresented: $isEditingCustom) {
             if let customTrick { CustomTrickEditor(record: customTrick) }
         }
-        .confirmationDialog("¿Quitar este truco de Mis trucos?", isPresented: $confirmRemoval, titleVisibility: .visible) {
+        .alert("¿Quitar este truco de Mis trucos?", isPresented: $confirmRemoval) {
             Button("Quitar truco", role: .destructive) { Task { await removeTrick() } }
         } message: {
             Text("Se eliminarán su progreso y su nota personal. La guía seguirá en la biblioteca.")

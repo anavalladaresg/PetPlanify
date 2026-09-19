@@ -108,7 +108,7 @@ struct PetProfilesView: View {
         }
         .careSheet()
         .sheet(isPresented: $addingPet) { AddPetView() }
-        .confirmationDialog("¿Eliminar esta mascota?", isPresented: Binding(get: { petToDelete != nil }, set: { if !$0 { petToDelete = nil } }), titleVisibility: .visible) {
+        .alert("¿Eliminar esta mascota?", isPresented: Binding(get: { petToDelete != nil }, set: { if !$0 { petToDelete = nil } })) {
             Button("Eliminar", role: .destructive) {
                 guard let id = petToDelete else { return }
                 Task { _ = await store.removePet(id); petToDelete = nil }
@@ -117,14 +117,14 @@ struct PetProfilesView: View {
         } message: {
             Text("Se eliminarán su perfil y todos sus registros de salud, alimentación, entrenamiento y recordatorios.")
         }
-        .confirmationDialog("¿Eliminar este familiar?", isPresented: Binding(get: { familyMemberToDelete != nil }, set: { if !$0 { familyMemberToDelete = nil } }), titleVisibility: .visible) {
+        .alert("¿Eliminar este familiar?", isPresented: Binding(get: { familyMemberToDelete != nil }, set: { if !$0 { familyMemberToDelete = nil } })) {
             Button("Eliminar", role: .destructive) {
                 guard let id = familyMemberToDelete else { return }
                 Task { _ = await store.removeFamilyMember(id); familyMemberToDelete = nil }
             }
             Button("Cancelar", role: .cancel) { familyMemberToDelete = nil }
         }
-        .confirmationDialog("¿Invalidar este código?", isPresented: Binding(get: { invitationToRevoke != nil }, set: { if !$0 { invitationToRevoke = nil } }), titleVisibility: .visible) {
+        .alert("¿Invalidar este código?", isPresented: Binding(get: { invitationToRevoke != nil }, set: { if !$0 { invitationToRevoke = nil } })) {
             Button("Invalidar código", role: .destructive) {
                 guard let id = invitationToRevoke else { return }
                 Task { _ = await store.revokeFamilyInvitation(id); invitationToRevoke = nil }

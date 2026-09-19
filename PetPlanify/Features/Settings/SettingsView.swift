@@ -62,7 +62,7 @@ struct SettingsView: View {
         .accessibilityIdentifier("settings.screen")
         .sheet(isPresented: $profile) { ProfileEditor() }
         .sheet(isPresented: $profiles) { PetProfilesView() }
-        .confirmationDialog("¿Cerrar sesión en este dispositivo?", isPresented: $confirmsSignOut, titleVisibility: .visible) {
+        .alert("¿Cerrar sesión en este dispositivo?", isPresented: $confirmsSignOut) {
             Button("Cerrar sesión", role: .destructive) {
                 Task { if await store.signOut() { signedIn = false } }
             }
@@ -70,7 +70,7 @@ struct SettingsView: View {
         } message: {
             Text("Tus mascotas y cuidados no se borrarán. Podrás recuperarlos al volver a iniciar sesión.")
         }
-        .confirmationDialog("¿Qué hacemos con los eventos de PetPlanify?", isPresented: $confirmsCalendarUnlink, titleVisibility: .visible) {
+        .alert("¿Qué hacemos con los eventos de PetPlanify?", isPresented: $confirmsCalendarUnlink) {
             Button("Mantenerlos en Calendario") {
                 Task { await store.setAppleCalendarLinked(false) }
             }

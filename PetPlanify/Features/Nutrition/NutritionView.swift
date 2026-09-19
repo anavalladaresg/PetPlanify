@@ -94,7 +94,7 @@ struct NutritionView: View {
         .sheet(isPresented: $addingTransition) { FoodTransitionEditor() }
         .sheet(item: $editingTransition) { FoodTransitionEditor(record: $0) }
         .sheet(isPresented: $addingObservation) { ObservationEditor(context: .nutrition) }
-        .confirmationDialog("¿Eliminar esta observación?", isPresented: Binding(get: { observationToDelete != nil }, set: { if !$0 { observationToDelete = nil } })) {
+        .alert("¿Eliminar esta observación?", isPresented: Binding(get: { observationToDelete != nil }, set: { if !$0 { observationToDelete = nil } })) {
             Button("Eliminar observación", role: .destructive) {
                 guard let item = observationToDelete else { return }
                 Task { _ = await store.softDeleteObservation(item) }

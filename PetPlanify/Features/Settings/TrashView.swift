@@ -62,10 +62,9 @@ struct TrashView: View {
             }
         }
         .careSheet()
-        .confirmationDialog(
+        .alert(
             "¿Eliminar definitivamente?",
             isPresented: Binding(get: { permanentlyDeleting != nil }, set: { if !$0 { permanentlyDeleting = nil } }),
-            titleVisibility: .visible
         ) {
             Button("Eliminar definitivamente", role: .destructive) {
                 guard let item = permanentlyDeleting else { return }

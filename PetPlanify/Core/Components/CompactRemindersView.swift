@@ -56,7 +56,7 @@ struct CompactRemindersView: View {
                   let reminder = store.snapshot.reminders.first(where: { $0.id == focusedReminderID }) else { return }
             editing = reminder
         }
-        .confirmationDialog("¿Eliminar este recordatorio?", isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } })) {
+        .alert("¿Eliminar este recordatorio?", isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } })) {
             Button("Eliminar", role: .destructive) {
                 guard let id = deleting?.id else { return }
                 Task { _ = await store.softDeleteReminder(id) }
