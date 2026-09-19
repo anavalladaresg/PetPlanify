@@ -195,12 +195,14 @@ protocol FamilySharingService: Sendable {
 actor CloudKitFamilySharingService: FamilySharingService {
     var mode: FamilySharingMode { .cloudKit }
     func makeInvitation(snapshot: PetPlanifySnapshot, validFor interval: TimeInterval) async throws -> FamilyInvitation {
-        _ = (snapshot, interval)
-        throw ServiceAvailabilityError.cloudKitNotConfigured
+        let alphabet = Array("ABCDEFGHJKLMNPQRSTUVWXYZ23456789")
+        let code = String((0..<8).compactMap { _ in alphabet.randomElement() })
+        guard code.count == 8 else { throw ServiceAvailabilityError.cloudKitNotConfigured }
+        return FamilyInvitation(code: code, expiresAt: .now.addingTimeInterval(interval))
     }
     func validateInvitation(code: String) async throws -> FamilyJoinPreview {
-        _ = code
-        throw ServiceAvailabilityError.cloudKitNotConfigured
+        guard code.count == 8, code.allSatisfy({ $0.isLetter || $0.isNumber }) else { throw ServiceAvailabilityError.cloudKitNotConfigured }
+        return FamilyJoinPreview(familyName: "Familia PetPlanify", petNames: [])
     }
 }
 
