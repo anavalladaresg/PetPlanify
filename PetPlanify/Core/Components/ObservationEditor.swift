@@ -45,3 +45,36 @@ struct ObservationEditor: View {
         return saved
     }
 }
+
+struct ObservationDetailView: View {
+    @Environment(\.dismiss) private var dismiss
+    let record: PetObservation
+    @State private var editing = false
+
+    var body: some View {
+        NavigationStack {
+            CarePage {
+                VStack(alignment: .leading, spacing: AppTheme.Space.md) {
+                    CareSymbol(systemName: "text.bubble.fill", accent: AppTheme.blue, size: 54)
+                    Text(record.title).font(.title2.weight(.bold)).foregroundStyle(AppTheme.ink)
+                    Text(AppFormat.date(record.date)).font(.subheadline).foregroundStyle(AppTheme.secondaryInk)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(AppTheme.Space.lg)
+                .background(AppTheme.blue.opacity(0.12), in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+                CareSection(title: "Observación", style: .compact) {
+                    Text(record.body).frame(maxWidth: .infinity, alignment: .leading).textSelection(.enabled)
+                }
+            }
+            .navigationTitle("Detalle de observación")
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Cerrar") { dismiss() } }
+                ToolbarItem(placement: .primaryAction) { Button("Editar") { editing = true } }
+            }
+        }
+        .sheet(isPresented: $editing) { ObservationEditor(context: record.context, record: record) }
+    }
+}

@@ -27,9 +27,11 @@ actor LocalReminderSchedulingService: ReminderSchedulingService {
         }.sorted { $0.1 < $1.1 }.prefix(60)
         for (reminder, date) in eligible {
             let content = UNMutableNotificationContent()
-            content.title = reminder.title
+            content.title = notificationTitle(for: reminder)
             content.body = notificationBody(for: reminder, petName: petName, advanceDays: preferences.advanceTime.rawValue)
             content.sound = .default
+            content.threadIdentifier = "petplanify.care"
+            content.categoryIdentifier = "PETPLANIFY_CARE"
             content.userInfo = ["feature": reminder.relatedFeature.rawValue, "reminderID": reminder.id.uuidString]
             let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
@@ -60,6 +62,15 @@ actor LocalReminderSchedulingService: ReminderSchedulingService {
             return String(localized: "Se acerca la desparasitación de \(name).")
         }
         return reminder.notes.isEmpty ? String(localized: "Tienes un cuidado pendiente para \(name) en PetPlanify.") : reminder.notes
+    }
+
+    private func notificationTitle(for reminder: CareReminder) -> String {
+        let key = reminder.sourceKey ?? ""
+        if key.hasPrefix("visit.") || key.hasPrefix("followup.") { return "🩺 PetPlanify · (reminder.title)" }
+        if key.hasPrefix("vaccine.") { return "💉 PetPlanify · (reminder.title)" }
+        if key.hasPrefix("deworming.") { return "🟠 PetPlanify · (reminder.title)" }
+        if key.hasPrefix("medication.") { return "💊 PetPlanify · (reminder.title)" }
+        return "🐾 PetPlanify · (reminder.title)"
     }
 }
 
