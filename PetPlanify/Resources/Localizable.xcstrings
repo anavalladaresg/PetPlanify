@@ -293,7 +293,7 @@
     "Activa sus recordatorios" : {
 
     },
-    "Actívalas en Ajustes del sistema" : {
+    "Actívalas en Ajustes del sistema > PetPlanify > Notificaciones" : {
 
     },
     "Actualizar transición" : {
@@ -311,7 +311,13 @@
     "Adjuntar documento" : {
 
     },
+    "Adjuntar informes, facturas…" : {
+
+    },
     "Adjuntar PDF" : {
+
+    },
+    "Administrada" : {
 
     },
     "Administrada el" : {
@@ -521,12 +527,6 @@
     "Avisar" : {
 
     },
-    "Aviso de Calendario" : {
-
-    },
-    "Avisos para los cuidados pendientes" : {
-
-    },
     "Ayudar constantemente o apresurar la búsqueda." : {
 
     },
@@ -537,6 +537,9 @@
 
     },
     "Bajar con calma de una superficie baja al suelo." : {
+
+    },
+    "Basado en perfil, alimentación, salud, peso, entrenamiento y próximos eventos." : {
 
     },
     "Base" : {
@@ -582,9 +585,6 @@
 
     },
     "Calendario" : {
-
-    },
-    "Calendario de Apple avisará con esta antelación" : {
 
     },
     "Calendario de salud" : {
@@ -897,7 +897,13 @@
     "Después" : {
 
     },
+    "Detalle" : {
+
+    },
     "Detalle de la visita" : {
+
+    },
+    "Detalle de observación" : {
 
     },
     "Detalles opcionales" : {
@@ -1458,7 +1464,13 @@
     "Indica una edad aproximada entre 0 y 1.200 meses." : {
 
     },
+    "Indicaciones" : {
+
+    },
     "Indicaciones y notas" : {
+
+    },
+    "Información" : {
 
     },
     "Información de la consulta" : {
@@ -1600,6 +1612,9 @@
 
     },
     "Llamar para regañar o terminar siempre la diversión." : {
+
+    },
+    "Los avisos se enviarán desde PetPlanify. El calendario de Apple solo conservará los eventos." : {
 
     },
     "Los cambios de plan se guardarán aquí." : {
@@ -1887,6 +1902,9 @@
     "Nombre del documento" : {
 
     },
+    "Nota" : {
+
+    },
     "Nota opcional" : {
 
     },
@@ -1903,6 +1921,9 @@
 
     },
     "Notas opcionales" : {
+
+    },
+    "Notificaciones de PetPlanify para próximos cuidados" : {
 
     },
     "Notificaciones del dispositivo" : {
@@ -1998,9 +2019,6 @@
 
     },
     "PDF" : {
-
-    },
-    "PDF e imágenes · hasta 50 MB por archivo" : {
 
     },
     "Pedir atención cuando la distracción lo supera." : {

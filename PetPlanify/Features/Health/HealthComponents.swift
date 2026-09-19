@@ -106,7 +106,15 @@ private struct HealthRecordDetailView: View {
                 ToolbarItem(placement: .primaryAction) { Button("Editar") { editor = editingSheet } }
             }
         }
-        .sheet(item: $editor) { HealthSheetContent(sheet: $0) }
+        .sheet(item: $editor) { sheet in
+            switch sheet {
+            case let .weight(record): WeightEditor(record: record)
+            case let .vaccine(record): VaccinationEditor(record: record)
+            case let .deworming(record, kind): DewormingEditor(record: record, kind: kind)
+            case let .medication(record): MedicationEditor(record: record)
+            default: HealthSheetContent(sheet: sheet)
+            }
+        }
     }
     @ViewBuilder private var detailContent: some View {
         switch kind {
@@ -160,7 +168,7 @@ struct HealthRecordRow: View {
                     .foregroundStyle(AppTheme.secondaryInk.opacity(0.65))
                     .accessibilityHidden(true)
             }
-            .padding(.vertical, 8)
+            .padding(.vertical, 4)
             .frame(minHeight: 44)
             .contentShape(Rectangle())
         }
@@ -307,7 +315,7 @@ struct HealthDeleteButton: View {
                 .font(.body.weight(.semibold))
                 .foregroundStyle(.red)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 12)
+                .padding(.vertical, 6)
         }
             .disabled(deleting)
             .alert("¿Eliminar este registro?", isPresented: $confirmsDeletion) {

@@ -208,10 +208,14 @@ protocol ReminderSchedulingService: Sendable {
     func permissionStatus() async -> UNAuthorizationStatus
     func requestPermission() async throws -> Bool
     func synchronize(reminders: [CareReminder], preferences: ReminderPreferences, petName: String, now: Date) async throws
+    func scheduleTestNotifications() async throws
+    func cancelTestNotifications() async
 }
 
 extension ReminderSchedulingService {
     func synchronize(reminders: [CareReminder], preferences: ReminderPreferences, petName: String) async throws {
         try await synchronize(reminders: reminders, preferences: preferences, petName: petName, now: .now)
     }
+    func scheduleTestNotifications() async throws { }
+    func cancelTestNotifications() async { }
 }

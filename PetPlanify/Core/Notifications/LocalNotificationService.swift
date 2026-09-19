@@ -3,6 +3,30 @@ import UserNotifications
 
 actor LocalReminderSchedulingService: ReminderSchedulingService {
     private let center = UNUserNotificationCenter.current()
+    private let testPrefix = "petplanify.test."
+
+    func scheduleTestNotifications() async throws {
+        let status = await permissionStatus()
+        guard status == .authorized || status == .provisional else { throw NSError(domain: "PetPlanifyNotifications", code: 1) }
+        center.removePendingNotificationRequests(withIdentifiers: (0..<8).map { "\(testPrefix)\($0)" })
+        let messages = [
+            ("🩺 Próxima visita", "Recuerda la cita veterinaria de tu perro."),
+            ("💉 Próxima vacuna", "Se acerca una vacuna importante para tu perro."),
+            ("🟠 Desparasitación", "Toca revisar la próxima desparasitación."),
+            ("💊 Medicación", "Tu perro tiene una medicación pendiente."),
+            ("🐾 PetPlanify", "Cuéntanos cómo sigue tu perro después de su visita."),
+            ("📋 Historia de salud", "Puedes actualizar hoy la historia de tu perro."),
+            ("🍽️ Alimentación", "Es un buen momento para revisar su plan de alimentación."),
+            ("🐶 PetPlanify", "Un pequeño cuidado hoy hace la diferencia.")
+        ].shuffled()
+        for (index, message) in messages.enumerated() {
+            let content = UNMutableNotificationContent(); content.title = message.0; content.body = message.1; content.sound = .default; content.threadIdentifier = "petplanify.test"
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(5 + index * 7), repeats: false)
+            try await center.add(UNNotificationRequest(identifier: "\(testPrefix)\(index)", content: content, trigger: trigger))
+        }
+    }
+
+    func cancelTestNotifications() async { center.removePendingNotificationRequests(withIdentifiers: (0..<8).map { "\(testPrefix)\($0)" }) }
 
     func permissionStatus() async -> UNAuthorizationStatus { await center.notificationSettings().authorizationStatus }
 

@@ -195,7 +195,7 @@ struct HomeView: View {
     private func careScoreCard(now: Date) -> some View {
         let score = careScore(at: now)
         let compact = horizontalSizeClass == .compact
-        return VStack(alignment: .leading, spacing: AppTheme.Space.md) {
+        return VStack(alignment: .leading, spacing: compact ? AppTheme.Space.xs : AppTheme.Space.md) {
             HStack(spacing: AppTheme.Space.sm) {
                 CareSymbol(systemName: "sparkles", accent: AppTheme.green, size: 32)
                 Text("Pet Care Score")
@@ -214,7 +214,7 @@ struct HomeView: View {
                         .font(.subheadline)
                         .foregroundStyle(AppTheme.secondaryInk)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text("Basado en perfil, alimentación, salud, peso, entrenamiento y próximos eventos.")
+                    Text("Se basa en perfil, alimentación, salud, peso, entrenamiento y próximos eventos.")
                         .font(.caption)
                         .foregroundStyle(AppTheme.secondaryInk)
                         .fixedSize(horizontal: false, vertical: true)
@@ -230,7 +230,7 @@ struct HomeView: View {
                 .frame(minHeight: 44, alignment: .leading)
                 .accessibilityIdentifier("home.evolution")
         }
-        .padding(compact ? AppTheme.Space.lg : AppTheme.Space.xl)
+        .padding(compact ? AppTheme.Space.sm : AppTheme.Space.xl)
         .background(
             LinearGradient(colors: [AppTheme.scoreSurface, AppTheme.greenSoft.opacity(0.78)], startPoint: .topLeading, endPoint: .bottomTrailing),
             in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
@@ -420,7 +420,7 @@ struct HomeView: View {
                 .monospacedDigit()
                 .foregroundStyle(AppTheme.green)
         }
-        .frame(width: horizontalSizeClass == .compact ? 82 : 108, height: horizontalSizeClass == .compact ? 82 : 108)
+        .frame(width: horizontalSizeClass == .compact ? 68 : 108, height: horizontalSizeClass == .compact ? 68 : 108)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(score) por ciento")
     }

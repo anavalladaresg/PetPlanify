@@ -13,6 +13,7 @@ struct SettingsView: View {
     @State private var profiles = false
     @State private var confirmsSignOut = false
     @State private var confirmsCalendarUnlink = false
+    @State private var testNotificationMessage: String?
     @AppStorage("petplanify.apple.signedIn") private var signedIn = true
     var body: some View {
         CarePage {
@@ -154,6 +155,13 @@ struct SettingsView: View {
                 Toggle("Entrenamiento", isOn: reminderPreference(\.trainingEnabled))
             }
             SettingRow(title: "Anticipación", symbol: "clock") { Picker("Avisar", selection: reminderPreference(\.advanceTime)) { ForEach(ReminderAdvanceTime.allCases) { Text($0.title).tag($0) } }.labelsHidden() }
+            VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
+                Button("Probar notificaciones", systemImage: "bell.and.waves.left.and.right") {
+                    Task { testNotificationMessage = await store.scheduleTestNotifications() ? "Se han programado 8 avisos de prueba, uno cada 7 segundos." : "Activa las notificaciones en Ajustes > PetPlanify > Notificaciones." }
+                }
+                Button("Borrar avisos de prueba", systemImage: "trash", role: .destructive) { Task { await store.cancelTestNotifications(); testNotificationMessage = "Avisos de prueba eliminados." } }
+                if let testNotificationMessage { Text(testNotificationMessage).font(.caption).foregroundStyle(AppTheme.secondaryInk) }
+            }
         }
     }
 
@@ -178,14 +186,8 @@ struct SettingsView: View {
                     .labelsHidden()
                     .accessibilityIdentifier("settings.appleCalendar")
             }
-            Text("Al activarlo, los eventos de salud y cuidados se vincularán automáticamente. PetPlanify seguirá siendo la fuente principal de tus registros.")
-                .font(.caption)
-                .foregroundStyle(AppTheme.secondaryInk)
-                .fixedSize(horizontal: false, vertical: true)
-            if store.snapshot.preferences.appleCalendarLinked {
-                Text("Los avisos se enviarán desde PetPlanify. El calendario de Apple solo conservará los eventos.")
-                    .font(.caption).foregroundStyle(AppTheme.secondaryInk)
-            }
+            Text("Vincula tus cuidados con un calendario PetPlanify dentro de Apple Calendar; los avisos seguirán llegando desde PetPlanify.")
+                .font(.caption).foregroundStyle(AppTheme.secondaryInk).fixedSize(horizontal: false, vertical: true)
         }
     }
 

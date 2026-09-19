@@ -295,6 +295,13 @@ final class PetPlanifyStore {
         _ = await update { $0.preferences.reminders.notificationsEnabled = enabled }
     }
 
+    func scheduleTestNotifications() async -> Bool {
+        guard let notifications else { return false }
+        do { try await notifications.scheduleTestNotifications(); return true } catch { return false }
+    }
+
+    func cancelTestNotifications() async { await notifications?.cancelTestNotifications() }
+
     func refreshNotificationStatus() async { if let notifications { notificationStatus = await notifications.permissionStatus() } }
 
     func setAppleCalendarLinked(_ enabled: Bool) async {
