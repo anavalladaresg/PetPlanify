@@ -21,6 +21,9 @@ enum ReminderEngine {
             if medication.startDate > now || snapshot.reminders.contains(where: { $0.sourceKey == key }) {
                 sources.append((key, medication.id, String(localized: "Administrar \(medication.name)"), medication.startDate, medication.notes))
             }
+            if let endDate = medication.endDate, endDate >= now {
+                sources.append(("medication.end.\(medication.id)", medication.id, String(localized: "Último día de medicación: \(medication.name)"), endDate, medication.notes))
+            }
         }
         for visit in snapshot.health.visits {
             let key = "visit.\(visit.id)"
@@ -61,6 +64,7 @@ enum ReminderEngine {
         case .training where !preferences.trainingEnabled: return nil
         default: break
         }
+        if reminder.sourceKey?.hasPrefix("medication.") == true { return reminder.date }
         return calendar.date(byAdding: .day, value: -preferences.advanceTime.rawValue, to: reminder.date)
     }
 }

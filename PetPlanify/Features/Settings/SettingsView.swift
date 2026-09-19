@@ -153,7 +153,6 @@ struct SettingsView: View {
                 Toggle("Alimentación", isOn: reminderPreference(\.nutritionEnabled))
                 Toggle("Entrenamiento", isOn: reminderPreference(\.trainingEnabled))
             }
-            SettingRow(title: "Anticipación", symbol: "clock") { Picker("Avisar", selection: reminderPreference(\.advanceTime)) { ForEach(ReminderAdvanceTime.allCases) { Text($0.title).tag($0) } }.labelsHidden() }
             Text("Te avisaremos el día anterior de vacunas, desparasitaciones, visitas y comienzos o finales de medicación. Después de una visita, te preguntaremos 30 minutos más tarde cómo ha ido.")
                 .font(.caption).foregroundStyle(AppTheme.secondaryInk).fixedSize(horizontal: false, vertical: true)
         }

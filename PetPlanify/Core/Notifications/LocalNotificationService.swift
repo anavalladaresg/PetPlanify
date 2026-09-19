@@ -81,6 +81,7 @@ actor LocalReminderSchedulingService: ReminderSchedulingService {
             return String(localized: "Se acerca una vacunación importante para \(name).")
         }
         if prefix.hasPrefix("medication.") {
+            if prefix.hasPrefix("medication.end.") { return String(localized: "Hoy es el último día de medicación de \(name).") }
             return String(localized: "Hoy tienes que administrar la medicación de \(name).")
         }
         if prefix.hasPrefix("deworming.") {
