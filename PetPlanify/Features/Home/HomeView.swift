@@ -205,7 +205,7 @@ struct HomeView: View {
             }
             HStack(spacing: compact ? AppTheme.Space.md : AppTheme.Space.lg) {
                 scoreRing(score: score)
-                VStack(alignment: compact ? .center : .leading, spacing: AppTheme.Space.xs) {
+                VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
                     Text(scoreLabel(for: score))
                         .font(.title3.weight(.semibold))
                         .fontDesign(.serif)
@@ -217,11 +217,11 @@ struct HomeView: View {
                 }
             }
             .padding(.leading, compact ? AppTheme.Space.md : 0)
-            .frame(maxWidth: .infinity, alignment: .center)
+            .frame(maxWidth: .infinity, alignment: .leading)
             Button("Ver evolución", systemImage: "chart.xyaxis.line") { sheet = .evolution }
                 .buttonStyle(.borderless)
                 .foregroundStyle(AppTheme.green)
-                .frame(maxWidth: .infinity, minHeight: 44, alignment: .center)
+                .frame(minHeight: 44, alignment: .leading)
                 .accessibilityIdentifier("home.evolution")
         }
         .padding(compact ? AppTheme.Space.sm : AppTheme.Space.xl)
