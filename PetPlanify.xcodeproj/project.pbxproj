@@ -256,6 +256,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = PetPlanify;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCalendarsWriteOnlyAccessUsageDescription = "PetPlanify solo necesita permiso para añadir al Calendario los cuidados que decidas exportar.";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "PetPlanify necesita acceso completo para localizar, actualizar y eliminar únicamente los eventos creados por PetPlanify cuando tú lo solicites.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -300,6 +301,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = PetPlanify;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCalendarsWriteOnlyAccessUsageDescription = "PetPlanify solo necesita permiso para añadir al Calendario los cuidados que decidas exportar.";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "PetPlanify necesita acceso completo para localizar, actualizar y eliminar únicamente los eventos creados por PetPlanify cuando tú lo solicites.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

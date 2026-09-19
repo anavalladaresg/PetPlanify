@@ -13,6 +13,7 @@ struct SettingsView: View {
     @State private var profiles = false
     @State private var confirmsSignOut = false
     @State private var confirmsCalendarUnlink = false
+    @State private var calendarMessage: String?
     @AppStorage("petplanify.apple.signedIn") private var signedIn = true
     var body: some View {
         CarePage {
@@ -128,7 +129,6 @@ struct SettingsView: View {
         SettingsSectionCard(title: "Recordatorios", symbol: "bell.fill", accent: AppTheme.reminder) {
             SettingRow(
                 title: "Notificaciones del dispositivo",
-                detail: store.notificationStatus == .denied ? "Actívalas en Ajustes del sistema > PetPlanify > Notificaciones" : "Notificaciones de PetPlanify para próximos cuidados",
                 symbol: "bell.fill",
                 accent: AppTheme.reminder
             ) {
@@ -162,7 +162,6 @@ struct SettingsView: View {
         SettingsSectionCard(title: "Calendario", symbol: "calendar", accent: AppTheme.blue) {
             SettingRow(
                 title: "Vincular con Calendario de Apple",
-                detail: "Añade y mantiene tus cuidados en el calendario del dispositivo",
                 symbol: "calendar.badge.plus",
                 accent: AppTheme.blue
             ) {
@@ -170,12 +169,7 @@ struct SettingsView: View {
                     get: { store.snapshot.preferences.appleCalendarLinked },
                     set: { value in
                         if value {
-                            Task {
-                                _ = try? await AppleCalendarExportService.shared.requestCalendarAccess()
-                                try? await AppleCalendarExportService.shared.deletePetPlanifyEvents()
-                                await store.setAppleCalendarLinked(true)
-                                await syncExistingCalendarEvents()
-                            }
+                            Task { await linkCalendar() }
                         } else {
                             confirmsCalendarUnlink = true
                         }
@@ -184,8 +178,9 @@ struct SettingsView: View {
                     .labelsHidden()
                     .accessibilityIdentifier("settings.appleCalendar")
             }
-            Text("Vincula tus cuidados con un calendario PetPlanify dentro de Apple Calendar; los avisos seguirán llegando desde PetPlanify.")
+            Text("Vincula tus cuidados con un calendario PetPlanify dentro del Calendario de Apple.")
                 .font(.caption).foregroundStyle(AppTheme.secondaryInk).fixedSize(horizontal: false, vertical: true)
+            if let calendarMessage { Text(calendarMessage).font(.caption).foregroundStyle(AppTheme.secondaryInk) }
         }
     }
 
@@ -235,6 +230,19 @@ struct SettingsView: View {
             )
         } catch {
             store.message = error.localizedDescription
+        }
+    }
+
+    private func linkCalendar() async {
+        do {
+            guard try await AppleCalendarExportService.shared.requestCalendarAccess() else { throw AppleCalendarExportService.ExportError.permissionDenied }
+            try await AppleCalendarExportService.shared.deletePetPlanifyEvents()
+            await store.setAppleCalendarLinked(true)
+            await syncExistingCalendarEvents()
+            calendarMessage = "Calendario PetPlanify preparado y sincronizado."
+        } catch {
+            await store.setAppleCalendarLinked(false)
+            calendarMessage = error.localizedDescription
         }
     }
 }

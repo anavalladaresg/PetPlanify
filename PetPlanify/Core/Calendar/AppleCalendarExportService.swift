@@ -95,10 +95,18 @@ actor AppleCalendarExportService {
         guard try await requestFullAccess() else { throw ExportError.permissionDenied }
         let calendars = eventStore.calendars(for: .event).filter { $0.title == calendarTitle }
         guard !calendars.isEmpty else { return }
-        let predicate = eventStore.predicateForEvents(withStart: .distantPast, end: .distantFuture, calendars: calendars)
-        let events = eventStore.events(matching: predicate)
-        for event in events { try eventStore.remove(event, span: .thisEvent, commit: false) }
-        if !events.isEmpty { try eventStore.commit() }
+        for calendar in calendars {
+            do { try eventStore.removeCalendar(calendar, commit: true) }
+            catch {
+                let now = Date()
+                let start = Calendar.current.date(byAdding: .year, value: -2, to: now) ?? now.addingTimeInterval(-63113904)
+                let end = Calendar.current.date(byAdding: .year, value: 2, to: now) ?? now.addingTimeInterval(63113904)
+                let predicate = eventStore.predicateForEvents(withStart: start, end: end, calendars: [calendar])
+                let events = eventStore.events(matching: predicate)
+                for event in events { try eventStore.remove(event, span: .thisEvent, commit: false) }
+                if !events.isEmpty { try eventStore.commit() }
+            }
+        }
     }
 
     func requestCalendarAccess() async throws -> Bool { try await requestFullAccess() }
