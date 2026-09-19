@@ -93,8 +93,9 @@ actor AppleCalendarExportService {
 
     func deletePetPlanifyEvents() async throws {
         guard try await requestFullAccess() else { throw ExportError.permissionDenied }
-        guard let calendar = eventStore.calendars(for: .event).first(where: { $0.title == calendarTitle }) else { return }
-        let predicate = eventStore.predicateForEvents(withStart: .distantPast, end: .distantFuture, calendars: [calendar])
+        let calendars = eventStore.calendars(for: .event).filter { $0.title == calendarTitle }
+        guard !calendars.isEmpty else { return }
+        let predicate = eventStore.predicateForEvents(withStart: .distantPast, end: .distantFuture, calendars: calendars)
         let events = eventStore.events(matching: predicate)
         for event in events { try eventStore.remove(event, span: .thisEvent, commit: false) }
         if !events.isEmpty { try eventStore.commit() }

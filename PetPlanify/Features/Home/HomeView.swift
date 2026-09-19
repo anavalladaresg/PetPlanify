@@ -214,11 +214,9 @@ struct HomeView: View {
                         .font(.caption)
                         .foregroundStyle(AppTheme.secondaryInk)
                         .fixedSize(horizontal: false, vertical: true)
-                    if score < 84 {
-                        StatusBadge(title: isInitialProfile ? "Estimación inicial" : "En progreso", symbol: "clock.fill", tint: AppTheme.green)
-                    }
                 }
             }
+            .padding(.leading, compact ? AppTheme.Space.md : 0)
             .frame(maxWidth: .infinity, alignment: .center)
             Button("Ver evolución", systemImage: "chart.xyaxis.line") { sheet = .evolution }
                 .buttonStyle(.borderless)

@@ -170,7 +170,12 @@ struct SettingsView: View {
                     get: { store.snapshot.preferences.appleCalendarLinked },
                     set: { value in
                         if value {
-                            Task { _ = try? await AppleCalendarExportService.shared.requestCalendarAccess(); await store.setAppleCalendarLinked(true); await syncExistingCalendarEvents() }
+                            Task {
+                                _ = try? await AppleCalendarExportService.shared.requestCalendarAccess()
+                                try? await AppleCalendarExportService.shared.deletePetPlanifyEvents()
+                                await store.setAppleCalendarLinked(true)
+                                await syncExistingCalendarEvents()
+                            }
                         } else {
                             confirmsCalendarUnlink = true
                         }

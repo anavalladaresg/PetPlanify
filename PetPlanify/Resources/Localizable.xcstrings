@@ -290,6 +290,9 @@
     "Activa" : {
 
     },
+    "Activa el acceso completo al calendario en Ajustes del iPhone > Apps > PetPlanify > Calendarios y vuelve a intentarlo." : {
+
+    },
     "Activa sus recordatorios" : {
 
     },
@@ -305,16 +308,10 @@
     "Acudir a una manta o cama y sentirse cómodo allí." : {
 
     },
-    "Adjunta resultados, facturas…" : {
-
-    },
     "Adjuntar documento" : {
 
     },
     "Adjuntar informes, facturas…" : {
-
-    },
-    "Adjuntar PDF" : {
 
     },
     "Administrada" : {
@@ -461,9 +458,6 @@
     "Ante una puerta interior cerrada, recompensa un instante de calma." : {
 
     },
-    "Anticipación" : {
-
-    },
     "Apariencia" : {
 
     },
@@ -518,9 +512,6 @@
     "Avanzada" : {
 
     },
-    "Avisar" : {
-
-    },
     "Ayudar constantemente o apresurar la búsqueda." : {
 
     },
@@ -534,9 +525,6 @@
 
     },
     "Base" : {
-
-    },
-    "Borrar avisos de prueba" : {
 
     },
     "Buen comienzo" : {
@@ -925,9 +913,6 @@
 
     },
     "Diversión" : {
-
-    },
-    "Documento" : {
 
     },
     "Documentos" : {
@@ -1404,6 +1389,9 @@
     "Hoy · %@" : {
 
     },
+    "Hoy es el último día de medicación de %@." : {
+
+    },
     "Hoy tienes que administrar la medicación de %@." : {
 
     },
@@ -1774,9 +1762,6 @@
 
     },
     "No se ha podido acceder al archivo." : {
-
-    },
-    "No se ha podido añadir al Calendario porque el permiso de escritura no está activo. Puedes activarlo en Ajustes del sistema." : {
 
     },
     "No se ha podido cargar la foto. Prueba con otra imagen." : {
@@ -2150,9 +2135,6 @@
     "Presenta una mano cerrada con un premio a baja altura y espera un movimiento de pata." : {
 
     },
-    "Probar notificaciones" : {
-
-    },
     "Producto opcional" : {
 
     },
@@ -2517,6 +2499,9 @@
     "Suplemento" : {
 
     },
+    "Te avisaremos el día anterior de vacunas, desparasitaciones, visitas y comienzos o finales de medicación. Después de una visita, te preguntaremos 30 minutos más tarde cómo ha ido." : {
+
+    },
     "Te mira un instante al oír la señal con distracciones leves y a distancia." : {
 
     },
@@ -2638,6 +2623,9 @@
 
     },
     "Última aplicación: %@" : {
+
+    },
+    "Último día de medicación: %@" : {
 
     },
     "Un lugar para recordar sus cuidados, guardar su historia y acompañar cada aprendizaje." : {
