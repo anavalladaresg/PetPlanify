@@ -51,7 +51,7 @@ struct MedicationEditor: View {
                 }
             }
         }
-        .confirmationDialog("¿Finalizar esta medicación?", isPresented: $confirmsFinish, titleVisibility: .visible) {
+        .alert("¿Finalizar esta medicación?", isPresented: $confirmsFinish) {
             Button("Finalizar hoy") {
                 Task {
                     guard var value = record else { return }

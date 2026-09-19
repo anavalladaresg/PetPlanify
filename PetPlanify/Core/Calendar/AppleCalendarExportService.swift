@@ -48,7 +48,7 @@ actor AppleCalendarExportService {
         event.startDate = date
         event.endDate = max(endDate ?? date.addingTimeInterval(30 * 60), date.addingTimeInterval(60))
         event.notes = notes?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
-        if alertAdvance != .none { event.addAlarm(EKAlarm(relativeOffset: -TimeInterval(alertAdvance.rawValue * 60))) }
+        // Los avisos los gestiona PetPlanify para evitar duplicados del Calendario.
         try eventStore.save(event, span: .thisEvent, commit: true)
     }
 

@@ -194,6 +194,7 @@ struct HomeView: View {
 
     private func careScoreCard(now: Date) -> some View {
         let score = careScore(at: now)
+        let compact = horizontalSizeClass == .compact
         return VStack(alignment: .leading, spacing: AppTheme.Space.md) {
             HStack(spacing: AppTheme.Space.sm) {
                 CareSymbol(systemName: "sparkles", accent: AppTheme.green, size: 32)
@@ -202,7 +203,7 @@ struct HomeView: View {
                     .foregroundStyle(AppTheme.ink)
                 Spacer(minLength: 0)
             }
-            HStack(spacing: AppTheme.Space.lg) {
+            HStack(spacing: compact ? AppTheme.Space.md : AppTheme.Space.lg) {
                 scoreRing(score: score)
                 VStack(alignment: .leading, spacing: AppTheme.Space.xs) {
                     Text(scoreLabel(for: score))
@@ -211,6 +212,10 @@ struct HomeView: View {
                         .foregroundStyle(AppTheme.ink)
                     Text(scoreDetail(for: score))
                         .font(.subheadline)
+                        .foregroundStyle(AppTheme.secondaryInk)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text("Basado en perfil, alimentación, salud, peso, entrenamiento y próximos eventos.")
+                        .font(.caption)
                         .foregroundStyle(AppTheme.secondaryInk)
                         .fixedSize(horizontal: false, vertical: true)
                     if score < 84 {
@@ -225,7 +230,7 @@ struct HomeView: View {
                 .frame(minHeight: 44, alignment: .leading)
                 .accessibilityIdentifier("home.evolution")
         }
-        .padding(AppTheme.Space.xl)
+        .padding(compact ? AppTheme.Space.lg : AppTheme.Space.xl)
         .background(
             LinearGradient(colors: [AppTheme.scoreSurface, AppTheme.greenSoft.opacity(0.78)], startPoint: .topLeading, endPoint: .bottomTrailing),
             in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous)
@@ -415,7 +420,7 @@ struct HomeView: View {
                 .monospacedDigit()
                 .foregroundStyle(AppTheme.green)
         }
-        .frame(width: 108, height: 108)
+        .frame(width: horizontalSizeClass == .compact ? 82 : 108, height: horizontalSizeClass == .compact ? 82 : 108)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(score) por ciento")
     }

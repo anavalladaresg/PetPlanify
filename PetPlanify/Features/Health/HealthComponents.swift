@@ -51,16 +51,73 @@ struct HealthSheetContent: View {
     let sheet: HealthSheet
     var body: some View {
         switch sheet {
-        case let .weight(record): WeightEditor(record: record)
-        case let .vaccine(record): VaccinationEditor(record: record)
-        case let .deworming(record, kind): DewormingEditor(record: record, kind: kind)
-        case let .medication(record): MedicationEditor(record: record)
+        case let .weight(record):
+            if let record { HealthRecordDetailView(kind: .weight(record)) } else { WeightEditor(record: nil) }
+        case let .vaccine(record):
+            if let record { HealthRecordDetailView(kind: .vaccine(record)) } else { VaccinationEditor(record: nil) }
+        case let .deworming(record, kind):
+            if let record { HealthRecordDetailView(kind: .deworming(record, kind)) } else { DewormingEditor(record: nil, kind: kind) }
+        case let .medication(record):
+            if let record { HealthRecordDetailView(kind: .medication(record)) } else { MedicationEditor(record: nil) }
         case let .visit(record): VisitEditor(record: record)
         case let .visitDetail(id): VisitDetailView(visitID: id)
         case let .history(kind): HealthHistoryView(kind: kind)
         case .documents: HealthDocumentsView()
         }
     }
+}
+
+private enum HealthDetailKind { case weight(WeightRecord), vaccine(VaccinationRecord), deworming(DewormingRecord, DewormingKind), medication(MedicationRecord) }
+
+private struct HealthRecordDetailView: View {
+    @Environment(\.dismiss) private var dismiss
+    let kind: HealthDetailKind
+    @State private var editor: HealthSheet?
+
+    private var accent: Color {
+        switch kind { case .weight: AppTheme.weight; case .vaccine: AppTheme.vaccine; case .deworming: AppTheme.deworming; case .medication: AppTheme.medication }
+    }
+    private var symbol: String {
+        switch kind { case .weight: "scalemass"; case .vaccine: "syringe"; case .deworming: "pills"; case .medication: "pills.fill" }
+    }
+    private var title: String {
+        switch kind { case let .weight(r): "Peso · \(AppFormat.number(r.weight)) kg"; case let .vaccine(r): "Vacuna · \(r.name)"; case let .deworming(r, _): "Desparasitación · \(r.category?.title ?? r.kind.shortTitle)"; case let .medication(r): "Medicación · \(r.name)" }
+    }
+    private var date: String {
+        switch kind { case let .weight(r): AppFormat.date(r.date); case let .vaccine(r): AppFormat.date(r.dateAdministered); case let .deworming(r, _): AppFormat.date(r.applicationDate); case let .medication(r): AppFormat.date(r.startDate) }
+    }
+    var body: some View {
+        NavigationStack {
+            CarePage {
+                VStack(spacing: AppTheme.Space.lg) {
+                    CareSymbol(systemName: symbol, accent: accent, size: 58)
+                    Text(title).font(.title2.weight(.bold)).multilineTextAlignment(.center).foregroundStyle(AppTheme.ink)
+                    Text(date).font(.headline).foregroundStyle(accent)
+                }.frame(maxWidth: .infinity).padding(.vertical, AppTheme.Space.lg)
+                    .background(accent.opacity(0.12), in: RoundedRectangle(cornerRadius: AppTheme.cornerRadius, style: .continuous))
+                detailContent
+            }
+            .navigationTitle("Detalle")
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Cerrar") { dismiss() } }
+                ToolbarItem(placement: .primaryAction) { Button("Editar") { editor = editingSheet } }
+            }
+        }
+        .sheet(item: $editor) { HealthSheetContent(sheet: $0) }
+    }
+    @ViewBuilder private var detailContent: some View {
+        switch kind {
+        case let .weight(r): detailRows([(String(localized: "Peso"), "\(AppFormat.number(r.weight)) kg"), (String(localized: "Nota"), r.note ?? "—")])
+        case let .vaccine(r): detailRows([(String(localized: "Administrada"), AppFormat.date(r.dateAdministered)), (String(localized: "Próxima"), r.nextDueDate.map(AppFormat.date) ?? "—"), (String(localized: "Notas"), r.notes ?? "—")])
+        case let .deworming(r, _): detailRows([(String(localized: "Tipo"), r.kind.title), (String(localized: "Categoría"), r.category?.title ?? "—"), (String(localized: "Próxima"), r.nextDueDate.map(AppFormat.date) ?? "—"), (String(localized: "Notas"), r.notes ?? "—")])
+        case let .medication(r): detailRows([(String(localized: "Inicio"), AppFormat.date(r.startDate)), (String(localized: "Fin"), r.endDate.map(AppFormat.date) ?? "Activa"), (String(localized: "Indicaciones"), r.notes)])
+        }
+    }
+    private func detailRows(_ rows: [(String, String)]) -> some View { CareSection(title: "Información", style: .compact) { ForEach(Array(rows.enumerated()), id: \.offset) { _, row in LabeledContent(row.0, value: row.1) } } }
+    private var editingSheet: HealthSheet { switch kind { case let .weight(r): .weight(r); case let .vaccine(r): .vaccine(r); case let .deworming(r, k): .deworming(r, k); case let .medication(r): .medication(r) } }
 }
 
 struct HealthRecordRow: View {
@@ -245,9 +302,15 @@ struct HealthDeleteButton: View {
     @State private var deleting = false
 
     var body: some View {
-        Button(title, role: .destructive) { confirmsDeletion = true }
+        Button { confirmsDeletion = true } label: {
+            Label(title, systemImage: "trash")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(.red)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 12)
+        }
             .disabled(deleting)
-            .confirmationDialog("¿Eliminar este registro?", isPresented: $confirmsDeletion, titleVisibility: .visible) {
+            .alert("¿Eliminar este registro?", isPresented: $confirmsDeletion) {
                 Button("Eliminar", role: .destructive) {
                     deleting = true
                     Task {

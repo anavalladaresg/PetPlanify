@@ -157,7 +157,7 @@ struct VisitDetailView: View {
                             .disabled(busy)
                             .accessibilityIdentifier("health.attachDocument")
                         if busy { ProgressView("Guardando documento…") }
-                        Text("PDF e imágenes · hasta 50 MB por archivo").font(.caption).foregroundStyle(AppTheme.secondaryInk)
+                        Text("Adjuntar informes, facturas…").font(.caption).foregroundStyle(AppTheme.secondaryInk)
                     }
                 }
                 if let error { Text(error).foregroundStyle(.red) }

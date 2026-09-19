@@ -128,7 +128,7 @@ struct SettingsView: View {
         SettingsSectionCard(title: "Recordatorios", symbol: "bell.fill", accent: AppTheme.reminder) {
             SettingRow(
                 title: "Notificaciones del dispositivo",
-                detail: store.notificationStatus == .denied ? "Actívalas en Ajustes del sistema" : "Avisos para los cuidados pendientes",
+                detail: store.notificationStatus == .denied ? "Actívalas en Ajustes del sistema > PetPlanify > Notificaciones" : "Notificaciones de PetPlanify para próximos cuidados",
                 symbol: "bell.fill",
                 accent: AppTheme.reminder
             ) {
@@ -183,15 +183,8 @@ struct SettingsView: View {
                 .foregroundStyle(AppTheme.secondaryInk)
                 .fixedSize(horizontal: false, vertical: true)
             if store.snapshot.preferences.appleCalendarLinked {
-                SettingRow(title: "Aviso de Calendario", detail: "Calendario de Apple avisará con esta antelación", symbol: "bell.badge", accent: AppTheme.reminder) {
-                    Picker("Aviso de Calendario", selection: Binding(
-                        get: { store.snapshot.preferences.appleCalendarAlertAdvance },
-                        set: { value in Task { _ = await store.update { $0.preferences.appleCalendarAlertAdvance = value } } }
-                    )) {
-                        ForEach(AppleCalendarAlertAdvance.allCases) { Text($0.title).tag($0) }
-                    }
-                    .labelsHidden()
-                }
+                Text("Los avisos se enviarán desde PetPlanify. El calendario de Apple solo conservará los eventos.")
+                    .font(.caption).foregroundStyle(AppTheme.secondaryInk)
             }
         }
     }

@@ -73,9 +73,9 @@ struct HealthView: View {
             symbol: "scalemass",
             accent: AppTheme.health
         )
-        healthMetric(value: "\(health.vaccines.count)", label: "Vacunas", symbol: "syringe", accent: AppTheme.health)
-        healthMetric(value: "\(health.dewormings.count)", label: "Desparasitaciones", symbol: "pills", accent: AppTheme.orange)
-        healthMetric(value: "\(health.visits.count)", label: "Visitas", symbol: "cross.case.fill", accent: AppTheme.blue)
+        healthMetric(value: "\(health.vaccines.count)", label: "Vacunas", symbol: "syringe", accent: AppTheme.vaccine)
+        healthMetric(value: "\(health.dewormings.count)", label: "Desparasitaciones", symbol: "pills", accent: AppTheme.deworming)
+        healthMetric(value: "\(health.visits.count)", label: "Visitas", symbol: "cross.case.fill", accent: AppTheme.visit)
     }
 
     private func healthMetric(value: String, label: LocalizedStringKey, symbol: String, accent: Color) -> some View {
