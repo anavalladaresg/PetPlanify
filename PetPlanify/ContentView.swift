@@ -9,7 +9,7 @@ struct ContentView: View {
     var body: some View {
         Group {
             if !signedIn { AppleSignInView { signedIn = true } }
-            else if !store.isLoaded { ProgressView("Abriendo PetPlanify…").frame(maxWidth: .infinity, maxHeight: .infinity).appCanvas() }
+            else if !store.isLoaded { PetPlanifyLoadingView() }
             else if store.cloudKitUnavailable { CloudKitRetryView() }
             else if !store.snapshot.onboarding.isComplete { OnboardingView() }
             else {
@@ -64,6 +64,70 @@ struct ContentView: View {
             set: { if !$0 { navigation.presentedReminderID = nil } }
         )) {
             CompactRemindersView(focusedReminderID: navigation.presentedReminderID)
+        }
+    }
+}
+
+private struct PetPlanifyLoadingView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var rotation = 0.0
+    @State private var shimmer = false
+    @State private var progress = 0.18
+
+    var body: some View {
+        ZStack {
+            AppTheme.canvas
+            Circle()
+                .fill(AppTheme.greenSoft.opacity(0.42))
+                .frame(width: 280, height: 280)
+                .blur(radius: 10)
+                .offset(x: 115, y: -180)
+            Circle()
+                .fill(AppTheme.peachSoft.opacity(0.36))
+                .frame(width: 220, height: 220)
+                .blur(radius: 8)
+                .offset(x: -130, y: 210)
+            VStack(spacing: 22) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 34, style: .continuous)
+                        .fill(.regularMaterial)
+                        .frame(width: 126, height: 126)
+                        .overlay(RoundedRectangle(cornerRadius: 34, style: .continuous).stroke(AppTheme.green.opacity(0.28), lineWidth: 1))
+                        .shadow(color: AppTheme.green.opacity(0.2), radius: 22)
+                    Image("AppIcon-Default")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 92, height: 92)
+                        .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
+                        .rotationEffect(.degrees(reduceMotion ? 0 : rotation))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 25, style: .continuous)
+                                .fill(LinearGradient(colors: [.white.opacity(0.45), .clear, .white.opacity(0.2)], startPoint: shimmer ? .topLeading : .bottomTrailing, endPoint: shimmer ? .bottomTrailing : .topLeading))
+                                .blendMode(.screen)
+                        }
+                }
+                VStack(spacing: 8) {
+                    Text("Abriendo PetPlanify")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(AppTheme.ink)
+                    ProgressView(value: progress, total: 1)
+                        .tint(AppTheme.green)
+                        .frame(width: 190)
+                        .accessibilityLabel("Abriendo PetPlanify")
+                        .accessibilityValue(progress.formatted(.percent))
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .appCanvas()
+        .task {
+            guard !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 1.8).repeatForever(autoreverses: false)) { rotation = 360 }
+            withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true)) { shimmer = true }
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .milliseconds(180))
+                withAnimation(.easeOut(duration: 0.18)) { progress = min(progress + 0.018, 0.92) }
+            }
         }
     }
 }
