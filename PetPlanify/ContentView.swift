@@ -94,14 +94,14 @@ private struct PetPlanifyLoadingView: View {
                         .frame(width: 126, height: 126)
                         .overlay(RoundedRectangle(cornerRadius: 34, style: .continuous).stroke(AppTheme.green.opacity(0.28), lineWidth: 1))
                         .shadow(color: AppTheme.green.opacity(0.2), radius: 22)
-                    Image("AppIcon-Default")
+                    Image("PetPlanifyLaunchLogo")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 92, height: 92)
-                        .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
+                        .frame(width: 104, height: 104)
                         .rotationEffect(.degrees(reduceMotion ? 0 : rotation))
+                        .accessibilityHidden(true)
                         .overlay {
-                            RoundedRectangle(cornerRadius: 25, style: .continuous)
+                            RoundedRectangle(cornerRadius: 28, style: .continuous)
                                 .fill(LinearGradient(colors: [.white.opacity(0.45), .clear, .white.opacity(0.2)], startPoint: shimmer ? .topLeading : .bottomTrailing, endPoint: shimmer ? .bottomTrailing : .topLeading))
                                 .blendMode(.screen)
                         }
