@@ -126,12 +126,11 @@ struct SettingsView: View {
     }
 
     private var remindersCard: some View {
-        SettingsSectionCard(title: "Recordatorios", symbol: "bell.fill", accent: AppTheme.reminder) {
-            SettingRow(
-                title: "Recordatorios",
-                symbol: "bell.fill",
-                accent: AppTheme.reminder
-            ) {
+        SettingsSectionCard(
+            title: "Recordatorios",
+            symbol: "bell.fill",
+            accent: AppTheme.reminder,
+            accessory: AnyView(
                 Toggle("Recordatorios", isOn: Binding(
                     get: { store.snapshot.preferences.reminders.notificationsEnabled },
                     set: { value in Task { await store.setNotificationsEnabled(value) } }
@@ -139,7 +138,8 @@ struct SettingsView: View {
                 .labelsHidden()
                 .accessibilityIdentifier("notifications.enable")
                 .accessibilityLabel("Recordatorios")
-            }
+            )
+        ) {
             if store.notificationStatus == .denied {
                 HStack {
                     StatusBadge(title: "Permiso pendiente", symbol: "info.circle.fill", tint: AppTheme.reminder)
@@ -154,25 +154,23 @@ struct SettingsView: View {
     }
 
     private var calendarCard: some View {
-        SettingsSectionCard(title: "Calendario de Apple", symbol: "calendar", accent: AppTheme.blue) {
-            SettingRow(
-                title: "Calendario de Apple",
-                symbol: "calendar.badge.plus",
-                accent: AppTheme.blue
-            ) {
+        SettingsSectionCard(
+            title: "Calendario de Apple",
+            symbol: "calendar",
+            accent: AppTheme.blue,
+            accessory: AnyView(
                 Toggle("Vincular con Calendario de Apple", isOn: Binding(
                     get: { store.snapshot.preferences.appleCalendarLinked },
                     set: { value in
-                        if value {
-                            Task { await linkCalendar() }
-                        } else {
-                            confirmsCalendarUnlink = true
-                        }
+                        if value { Task { await linkCalendar() } }
+                        else { confirmsCalendarUnlink = true }
                     }
                 ))
-                    .labelsHidden()
-                    .accessibilityIdentifier("settings.appleCalendar")
-            }
+                .labelsHidden()
+                .accessibilityIdentifier("settings.appleCalendar")
+                .accessibilityLabel("Calendario de Apple")
+            )
+        ) {
             Text("Vincula tus cuidados con un calendario PetPlanify dentro del Calendario de Apple.")
                 .font(.caption).foregroundStyle(AppTheme.secondaryInk).fixedSize(horizontal: false, vertical: true)
             if let calendarMessage { Text(calendarMessage).font(.caption).foregroundStyle(AppTheme.secondaryInk) }
@@ -247,7 +245,22 @@ private struct SettingsSectionCard<Content: View>: View {
     let title: LocalizedStringKey
     let symbol: String
     let accent: Color
+    let accessory: AnyView?
     @ViewBuilder var content: Content
+
+    init(
+        title: LocalizedStringKey,
+        symbol: String,
+        accent: Color,
+        accessory: AnyView? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.title = title
+        self.symbol = symbol
+        self.accent = accent
+        self.accessory = accessory
+        self.content = content()
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: horizontalSizeClass == .compact ? AppTheme.Space.sm : AppTheme.Space.lg) {
@@ -258,6 +271,9 @@ private struct SettingsSectionCard<Content: View>: View {
                     .foregroundStyle(AppTheme.ink)
                     .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 0)
+                if let accessory {
+                    accessory
+                }
             }
             content
         }
