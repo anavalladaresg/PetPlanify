@@ -225,7 +225,6 @@ private struct AppleSignInView: View {
         }
         .alert("Acceso de pruebas", isPresented: $showingTestLogin) {
             TextField("Usuario", text: $testUsername)
-                .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
             SecureField("Contraseña", text: $testPassword)
             Button("Entrar") {
