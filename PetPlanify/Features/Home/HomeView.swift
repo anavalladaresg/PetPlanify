@@ -410,7 +410,7 @@ struct HomeView: View {
                 .stroke(AppTheme.green, style: StrokeStyle(lineWidth: 11, lineCap: .round))
                 .rotationEffect(.degrees(-90))
             Text("\(score)%")
-                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .font(.system(size: horizontalSizeClass == .compact ? 21 : 24, weight: .bold, design: .rounded))
                 .monospacedDigit()
                 .foregroundStyle(AppTheme.green)
         }
