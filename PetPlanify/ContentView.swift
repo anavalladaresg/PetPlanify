@@ -201,7 +201,7 @@ private struct AppleSignInView: View {
                 .signInWithAppleButtonStyle(.black)
                 .frame(width: 280, height: 52)
                 .accessibilityIdentifier("auth.signInWithApple")
-                Button("Acceso de pruebas") { showingTestLogin = true }
+                Button("Iniciar sesión con usuario y contraseña") { showingTestLogin = true }
                     .buttonStyle(.borderless)
                     .foregroundStyle(AppTheme.secondaryInk)
                     .accessibilityIdentifier("auth.testLogin")
@@ -223,13 +223,13 @@ private struct AppleSignInView: View {
             .frame(maxWidth: 560)
             .padding(AppTheme.Space.xl)
         }
-        .alert("Acceso de pruebas", isPresented: $showingTestLogin) {
+        .alert("Iniciar sesión", isPresented: $showingTestLogin) {
             TextField("Usuario", text: $testUsername)
                 .autocorrectionDisabled()
             SecureField("Contraseña", text: $testPassword)
             Button("Entrar") {
                 guard testUsername == "qa@petplanify.test", testPassword == "PetPlanify-QA-2026" else {
-                    errorMessage = "Credenciales de pruebas incorrectas."
+                    errorMessage = "Usuario o contraseña incorrectos."
                     return
                 }
                 displayName = "QA"
@@ -237,7 +237,7 @@ private struct AppleSignInView: View {
             }
             Button("Cancelar", role: .cancel) { }
         } message: {
-            Text("Este acceso usa un espacio de pruebas aislado y no mezcla tus datos con la cuenta de Apple.")
+            Text("Introduce tu usuario y contraseña para continuar.")
         }
     }
 }
