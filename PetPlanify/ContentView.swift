@@ -12,9 +12,7 @@ struct ContentView: View {
                 AppleSignInView {
                     signedIn = true
                 } onTestSignedIn: {
-                    #if DEBUG
                     store.activateDevelopmentTestMode()
-                    #endif
                     signedIn = true
                 }
             }
@@ -161,11 +159,9 @@ private struct AppleSignInView: View {
     var onTestSignedIn: () -> Void
     @AppStorage("petplanify.apple.displayName") private var displayName = ""
     @State private var errorMessage: String?
-    #if DEBUG
     @State private var showingTestLogin = false
     @State private var testUsername = ""
     @State private var testPassword = ""
-    #endif
 
     var body: some View {
         ZStack {
@@ -205,12 +201,10 @@ private struct AppleSignInView: View {
                 .signInWithAppleButtonStyle(.black)
                 .frame(width: 280, height: 52)
                 .accessibilityIdentifier("auth.signInWithApple")
-#if DEBUG
                 Button("Acceso de pruebas") { showingTestLogin = true }
                     .buttonStyle(.borderless)
                     .foregroundStyle(AppTheme.secondaryInk)
                     .accessibilityIdentifier("auth.testLogin")
-#endif
                 if let errorMessage {
                     Text(errorMessage)
                         .font(.footnote)
@@ -229,7 +223,6 @@ private struct AppleSignInView: View {
             .frame(maxWidth: 560)
             .padding(AppTheme.Space.xl)
         }
-#if DEBUG
         .alert("Acceso de pruebas", isPresented: $showingTestLogin) {
             TextField("Usuario", text: $testUsername)
                 .textInputAutocapitalization(.never)
@@ -245,9 +238,8 @@ private struct AppleSignInView: View {
             }
             Button("Cancelar", role: .cancel) { }
         } message: {
-            Text("Este acceso solo existe en builds Debug y usa datos aislados de iCloud.")
+            Text("Este acceso usa un espacio de pruebas aislado y no mezcla tus datos con la cuenta de Apple.")
         }
-#endif
     }
 }
 

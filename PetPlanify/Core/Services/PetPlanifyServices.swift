@@ -9,9 +9,8 @@ protocol PetPlanifyPersistence: Sendable {
     func clearSession() async throws
 }
 
-#if DEBUG
-/// Isolated persistence used only by development/QA builds. It never touches
-/// CloudKit and is intentionally excluded from Release builds.
+/// Isolated persistence used by the shared QA account. It never touches the
+/// user's CloudKit data, so test sessions cannot overwrite production data.
 actor DevelopmentTestPersistenceService: PetPlanifyPersistence {
     private let key = "petplanify.debug.testSnapshot"
 
@@ -32,7 +31,6 @@ actor DevelopmentTestPersistenceService: PetPlanifyPersistence {
 
     func clearSession() async throws { }
 }
-#endif
 
 enum ServiceAvailabilityError: LocalizedError, Sendable {
     case cloudKitNotConfigured

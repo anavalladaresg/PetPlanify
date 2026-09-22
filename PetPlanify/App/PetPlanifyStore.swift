@@ -41,14 +41,12 @@ final class PetPlanifyStore {
         return PetPlanifyStore(storage: storage, attachments: ManagedAttachmentStorage(), notifications: LocalReminderSchedulingService(), familySharing: CloudKitFamilySharingService(), syncStatusProvider: CloudKitSyncStatusProvider())
     }
 
-#if DEBUG
     func activateDevelopmentTestMode() {
         storage = DevelopmentTestPersistenceService()
         cloudKitUnavailable = false
         isLoaded = false
         syncStatus = PetPlanifySyncStatus(mode: .cloudKit, title: "Modo de pruebas", detail: "Datos aislados de iCloud", lastSuccessfulSync: .now)
     }
-#endif
 
     var externalServicesEnabled: Bool { notifications != nil }
     var currentWeight: Double? { snapshot.currentWeight }
