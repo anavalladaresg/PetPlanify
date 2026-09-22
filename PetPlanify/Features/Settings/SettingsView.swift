@@ -128,17 +128,17 @@ struct SettingsView: View {
     private var remindersCard: some View {
         SettingsSectionCard(title: "Recordatorios", symbol: "bell.fill", accent: AppTheme.reminder) {
             SettingRow(
-                title: "Notificaciones del dispositivo",
+                title: "Recordatorios",
                 symbol: "bell.fill",
                 accent: AppTheme.reminder
             ) {
-                Toggle("Notificaciones del dispositivo", isOn: Binding(
+                Toggle("Recordatorios", isOn: Binding(
                     get: { store.snapshot.preferences.reminders.notificationsEnabled },
                     set: { value in Task { await store.setNotificationsEnabled(value) } }
                 ))
                 .labelsHidden()
                 .accessibilityIdentifier("notifications.enable")
-                .accessibilityLabel("Notificaciones del dispositivo")
+                .accessibilityLabel("Recordatorios")
             }
             if store.notificationStatus == .denied {
                 HStack {
@@ -148,20 +148,15 @@ struct SettingsView: View {
                         .buttonStyle(.bordered)
                 }
             }
-            if store.snapshot.preferences.reminders.notificationsEnabled {
-                Toggle("Salud", isOn: reminderPreference(\.healthEnabled))
-                Toggle("Alimentación", isOn: reminderPreference(\.nutritionEnabled))
-                Toggle("Entrenamiento", isOn: reminderPreference(\.trainingEnabled))
-            }
             Text("Te avisaremos el día anterior de vacunas, desparasitaciones, visitas y comienzos o finales de medicación. Después de una visita, te preguntaremos 30 minutos más tarde cómo ha ido.")
                 .font(.caption).foregroundStyle(AppTheme.secondaryInk).fixedSize(horizontal: false, vertical: true)
         }
     }
 
     private var calendarCard: some View {
-        SettingsSectionCard(title: "Calendario", symbol: "calendar", accent: AppTheme.blue) {
+        SettingsSectionCard(title: "Calendario de Apple", symbol: "calendar", accent: AppTheme.blue) {
             SettingRow(
-                title: "Vincular con Calendario de Apple",
+                title: "Calendario de Apple",
                 symbol: "calendar.badge.plus",
                 accent: AppTheme.blue
             ) {

@@ -292,7 +292,12 @@ final class PetPlanifyStore {
                 }
             } catch { snapshot.preferences.reminders.notificationsEnabled = previous; report(error); return }
         }
-        _ = await update { $0.preferences.reminders.notificationsEnabled = enabled }
+        _ = await update {
+            $0.preferences.reminders.notificationsEnabled = enabled
+            $0.preferences.reminders.healthEnabled = enabled
+            $0.preferences.reminders.nutritionEnabled = enabled
+            $0.preferences.reminders.trainingEnabled = enabled
+        }
     }
 
     func scheduleTestNotifications() async -> Bool {
