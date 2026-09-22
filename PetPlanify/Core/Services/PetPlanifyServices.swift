@@ -9,6 +9,31 @@ protocol PetPlanifyPersistence: Sendable {
     func clearSession() async throws
 }
 
+#if DEBUG
+/// Isolated persistence used only by development/QA builds. It never touches
+/// CloudKit and is intentionally excluded from Release builds.
+actor DevelopmentTestPersistenceService: PetPlanifyPersistence {
+    private let key = "petplanify.debug.testSnapshot"
+
+    func load() async throws -> SnapshotLoadResult {
+        guard let data = UserDefaults.standard.data(forKey: key) else {
+            return SnapshotLoadResult(snapshot: nil)
+        }
+        return SnapshotLoadResult(snapshot: try SnapshotCodec.decode(data))
+    }
+
+    func save(_ snapshot: PetPlanifySnapshot) async throws {
+        UserDefaults.standard.set(try SnapshotCodec.encode(snapshot), forKey: key)
+    }
+
+    func reset() async throws {
+        UserDefaults.standard.removeObject(forKey: key)
+    }
+
+    func clearSession() async throws { }
+}
+#endif
+
 enum ServiceAvailabilityError: LocalizedError, Sendable {
     case cloudKitNotConfigured
     case sharingRequiresCloudKit

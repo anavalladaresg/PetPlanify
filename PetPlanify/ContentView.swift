@@ -8,7 +8,16 @@ struct ContentView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
         Group {
-            if !signedIn { AppleSignInView { signedIn = true } }
+            if !signedIn {
+                AppleSignInView {
+                    signedIn = true
+                } onTestSignedIn: {
+                    #if DEBUG
+                    store.activateDevelopmentTestMode()
+                    #endif
+                    signedIn = true
+                }
+            }
             else if !store.isLoaded { PetPlanifyLoadingView() }
             else if store.cloudKitUnavailable { CloudKitRetryView() }
             else if !store.snapshot.onboarding.isComplete { OnboardingView() }
@@ -149,8 +158,14 @@ private struct CloudKitRetryView: View {
 
 private struct AppleSignInView: View {
     var onSignedIn: () -> Void
+    var onTestSignedIn: () -> Void
     @AppStorage("petplanify.apple.displayName") private var displayName = ""
     @State private var errorMessage: String?
+    #if DEBUG
+    @State private var showingTestLogin = false
+    @State private var testUsername = ""
+    @State private var testPassword = ""
+    #endif
 
     var body: some View {
         ZStack {
@@ -190,6 +205,12 @@ private struct AppleSignInView: View {
                 .signInWithAppleButtonStyle(.black)
                 .frame(width: 280, height: 52)
                 .accessibilityIdentifier("auth.signInWithApple")
+#if DEBUG
+                Button("Acceso de pruebas") { showingTestLogin = true }
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(AppTheme.secondaryInk)
+                    .accessibilityIdentifier("auth.testLogin")
+#endif
                 if let errorMessage {
                     Text(errorMessage)
                         .font(.footnote)
@@ -208,6 +229,25 @@ private struct AppleSignInView: View {
             .frame(maxWidth: 560)
             .padding(AppTheme.Space.xl)
         }
+#if DEBUG
+        .alert("Acceso de pruebas", isPresented: $showingTestLogin) {
+            TextField("Usuario", text: $testUsername)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+            SecureField("Contraseña", text: $testPassword)
+            Button("Entrar") {
+                guard testUsername == "qa@petplanify.test", testPassword == "PetPlanify-QA-2026" else {
+                    errorMessage = "Credenciales de pruebas incorrectas."
+                    return
+                }
+                displayName = "QA"
+                onTestSignedIn()
+            }
+            Button("Cancelar", role: .cancel) { }
+        } message: {
+            Text("Este acceso solo existe en builds Debug y usa datos aislados de iCloud.")
+        }
+#endif
     }
 }
 
